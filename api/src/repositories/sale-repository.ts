@@ -1,0 +1,109 @@
+export type SaleChannel = "Amazon" | "Mercado Livre" | "Shopee" | "Direto"
+
+export interface Sale {
+	id: string
+	product_id: string
+	stock_id: string
+	store_id: string | null
+	quantity: number
+	sale_price: number
+	total_price: number
+	channel: SaleChannel
+	sale_date: Date
+	created_at: Date
+	updated_at: Date
+	product: {
+		id: string
+		sku: string
+		ean: string
+		brand_id: string | null
+		url_image: string | null
+		created_at: Date
+		updated_at: Date
+	}
+	stock: {
+		id: string
+		product_id: string
+		title: string
+		qtde: number
+		full: boolean
+		created_at: Date
+		updated_at: Date
+	}
+	store: {
+		id: string
+		name: string
+		created_at: Date
+		updated_at: Date
+	} | null
+}
+
+export interface FetchSalesRequest {
+	startDate?: Date
+	endDate?: Date
+	brandId?: string
+	storeId?: string
+	page: number
+	limit: number
+}
+
+export interface BrandSalesCount {
+	brand_id: string
+	brand_name: string
+	count: number
+}
+
+export interface FetchSalesReply {
+	items: Sale[]
+	totalCount: number
+	totalPages: number
+	currentPage: number
+	brandCounts: BrandSalesCount[]
+}
+
+export interface MonthlySalesMetricItem {
+	date: string
+	total_cents: number
+}
+
+export interface FetchCurrentMonthSalesMetricsReply {
+	items: MonthlySalesMetricItem[]
+	daily_average_cents: number
+}
+
+export interface FetchLastMonthSalesMetricsReply {
+	total_cents: number
+}
+
+export interface CreateSaleInput {
+	product_id: string
+	stock_id: string
+	store_id?: string | null
+	quantity: number
+	sale_price: number
+	total_price: number
+	channel: SaleChannel
+	sale_date: Date
+}
+
+export interface UpdateSaleInput {
+	quantity?: number
+	sale_price?: number
+	total_price?: number
+	channel?: SaleChannel
+	sale_date?: Date
+	store_id?: string | null
+}
+
+export interface SaleRepository {
+	fetchSales(filters: FetchSalesRequest): Promise<FetchSalesReply>
+	fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply>
+	fetchLastMonthSalesMetrics(): Promise<FetchLastMonthSalesMetricsReply>
+	getById(id: string): Promise<Sale | null>
+	create(data: CreateSaleInput): Promise<Sale>
+	update(id: string, data: UpdateSaleInput): Promise<Sale | null>
+	delete(id: string): Promise<void>
+	createInTransaction(data: CreateSaleInput): Promise<Sale>
+	deleteInTransaction(id: string): Promise<void>
+	updateInTransaction(id: string, data: UpdateSaleInput): Promise<Sale | null>
+}

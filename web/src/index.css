@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-display: "Manrope", sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --animate-shimmer: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #f5f7f8;
+  --foreground: #163746;
+
+  --card: #ffffff;
+  --card-foreground: #163746;
+
+  --popover: #ffffff;
+  --popover-foreground: #163746;
+
+  --primary: #1f5b72;
+  --primary-foreground: #ffffff;
+
+  --secondary: #e9eff2;
+  --secondary-foreground: #163746;
+
+  --muted: #eef2f4;
+  --muted-foreground: #6f7e86;
+
+  --accent: #e9eff2;
+  --accent-foreground: #163746;
+
+  --destructive: #ba1a1a;
+
+  --border: #d6dee2;
+  --input: #d6dee2;
+  --ring: #1f5b72;
+
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(at 0% 0%, rgb(31 91 114 / 0.08) 0px, transparent 45%),
+      radial-gradient(at 100% 100%, rgb(111 126 134 / 0.1) 0px, transparent 45%);
+    min-height: 100vh;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-bold tracking-tight;
+  }
+  button,
+  a,
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+.glass-card {
+  @apply bg-card border border-border shadow-sm;
+  box-shadow: 0 10px 24px -20px rgba(7, 77, 99, 0.45);
+}
+
+.glow-hover {
+  @apply transition-all duration-300 hover:shadow-[0_16px_32px_-24px_rgba(7,77,99,0.75)];
+}

@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: analise_de_valores
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d analise_de_valores"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    command: sh -c "pnpm install --frozen-lockfile && pnpm dev"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./api/.env
+    environment:
+      CI: "true"
+      HOST: 0.0.0.0
+      PORT: 3333
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/analise_de_valores}
+      CORS_ORIGINS: http://localhost:5173
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./api:/app
+      - api_node_modules:/app/node_modules
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    command: sh -c "pnpm install --frozen-lockfile && pnpm dev --host 0.0.0.0 --port 5173"
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      CI: "true"
+      VITE_API_URL: http://localhost:3333
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+      - web_node_modules:/app/node_modules
+
+
+volumes:
+  postgres_data:
+    external: true
+    name: ${POSTGRES_VOLUME_NAME:-api_postgres_data}
+  api_node_modules:
+  web_node_modules:
