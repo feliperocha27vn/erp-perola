@@ -107,7 +107,7 @@ await app.register(fbaRoutes)
 
 // Serve arquivos estáticos do frontend (produção)
 if (env.NODE_ENV === "production") {
-	const webDistPath = path.join(__dirname, "../../web")
+	const webDistPath = path.join(__dirname, "../web")
 
 	app.register(fastifyStatic, {
 		root: webDistPath,
