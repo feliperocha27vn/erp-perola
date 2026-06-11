@@ -7,6 +7,8 @@ import type {
 	FetchProductsRequest,
 	Product,
 	ProductRepository,
+	SalesDailyStore,
+	SalesVelocityItem,
 	UpdateProductInput,
 } from "../../repositories/product-repository.js"
 import { UpdateProductUseCase } from "./update-product.js"
@@ -121,6 +123,14 @@ class FakeProductRepository implements ProductRepository {
 
 	async updateProductImage(_id: string, _url_image: string): Promise<Product | null> {
 		return null
+	}
+
+	async fetchSalesVelocity(): Promise<SalesVelocityItem[]> {
+		return []
+	}
+
+	async fetchProductSalesDaily(): Promise<SalesDailyStore[]> {
+		return []
 	}
 }
 

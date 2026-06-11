@@ -45,6 +45,14 @@ class FakeProductRepository implements ProductRepository {
 	async updateProductImage() {
 		return null
 	}
+
+	async fetchSalesVelocity() {
+		return []
+	}
+
+	async fetchProductSalesDaily() {
+		return []
+	}
 }
 
 class FakeGeminiClient {
