@@ -9,3 +9,5 @@ dist/
 swagger.json
 .virtual_documents/
 nul
+dump.sql
+dump-custom.dmp
