@@ -1,14 +1,25 @@
 import client, {
-  type Client,
-  type RequestConfig,
-  type ResponseConfig,
-  type ResponseErrorConfig,
-  setConfig,
+	type Client,
+	type RequestConfig,
+	type ResponseConfig,
+	type ResponseErrorConfig,
+	setConfig,
 } from '@kubb/plugin-client/clients/axios'
 
 setConfig({
-  baseURL: import.meta.env.VITE_API_URL,
+	baseURL: import.meta.env.VITE_API_URL,
+	withCredentials: true,
 })
+
+client.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error.response?.status === 401) {
+			window.location.href = '/login'
+		}
+		return Promise.reject(error)
+	},
+)
 
 export type { Client, RequestConfig, ResponseConfig, ResponseErrorConfig }
 

@@ -11,9 +11,11 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from "fastify-type-provider-zod"
+import { auth } from "./auth.js"
 import { db } from "./db/connection.js"
 import { env } from "./env.js"
 import { makeAnalyzeFbaCsvUseCase } from "./factories/fba/make-analyze-fba-csv-use-case.js"
+import { authRoutes } from "./http/controllers/auth/routes.js"
 import { brandsRoutes } from "./http/controllers/brands/routes.js"
 import { fbaRoutes } from "./http/controllers/fba/routes.js"
 import { dashboardRoutes } from "./http/controllers/metrics/routes.js"
@@ -21,6 +23,7 @@ import { productsRoutes } from "./http/controllers/products/routes.js"
 import { salesRoutes } from "./http/controllers/sales/routes.js"
 import { stocksRoutes } from "./http/controllers/stocks/routes.js"
 import { storesRoutes } from "./http/controllers/stores/routes.js"
+import { verifyAuth } from "./http/middlewares/verify-auth.js"
 import "./types.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -53,7 +56,6 @@ const corsOrigins = env.CORS_ORIGINS
 			.filter(Boolean)
 	: []
 
-// CORS para permitir requisições do frontend
 await app.register(fastifyCors, {
 	origin:
 		corsOrigins.length > 0
@@ -67,11 +69,12 @@ await app.register(fastifyCors, {
 				}
 			: true,
 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+	credentials: true,
 })
 
-// Registra a instância do banco como decorator
 app.decorate("db", db)
 app.decorate("analyzeFbaCsvUseCase", makeAnalyzeFbaCsvUseCase())
+app.decorate("auth", auth)
 
 await app.register(fastifySwagger, {
 	openapi: {
@@ -91,12 +94,14 @@ await app.register(scalarApiReference, {
 	},
 })
 
-// Health check endpoint
 app.get("/health", async () => {
 	return { status: "ok", timestamp: new Date().toISOString() }
 })
 
-// Registra as rotas da API
+await app.register(authRoutes)
+
+app.addHook("onRequest", verifyAuth)
+
 await app.register(productsRoutes)
 await app.register(brandsRoutes)
 await app.register(storesRoutes)
@@ -105,7 +110,6 @@ await app.register(salesRoutes)
 await app.register(stocksRoutes)
 await app.register(fbaRoutes)
 
-// Serve arquivos estáticos do frontend (produção)
 if (env.NODE_ENV === "production") {
 	const webDistPath = path.join(__dirname, "../web")
 
@@ -117,7 +121,6 @@ if (env.NODE_ENV === "production") {
 		immutable: true,
 	})
 
-	// SPA fallback: rotas não-estáticas retornam index.html
 	app.setNotFoundHandler((_request, reply) => {
 		return reply.sendFile("index.html", { maxAge: 0, immutable: false })
 	})
