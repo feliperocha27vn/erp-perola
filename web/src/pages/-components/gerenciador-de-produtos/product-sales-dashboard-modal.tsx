@@ -13,7 +13,10 @@ import {
 } from 'recharts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetProductSalesDaily } from '@/api/hooks/productsController/useGetProductSalesDaily'
-import type { SalesDailyPeriod, SalesDailyStore } from '@/api/types/productsController/GetProductSalesDaily'
+import type { GetProductSalesDaily200 } from '@/api/types/productsController/GetProductSalesDaily'
+
+type SalesDailyStore = GetProductSalesDaily200['stores'][number]
+type SalesDailyPeriod = SalesDailyStore['periods'][number]
 
 const PERIODS = [15, 30, 60, 90] as const
 type Period = (typeof PERIODS)[number]
@@ -181,7 +184,7 @@ export function ProductSalesDashboardModal({
   const [activeStore, setActiveStore] = useState<string | null>(null)
 
   const { data, isLoading } = useGetProductSalesDaily(productId, {
-    enabled: open,
+    query: { enabled: open },
   })
 
   const stores = data?.stores ?? []
