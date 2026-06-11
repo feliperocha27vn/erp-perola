@@ -1,6 +1,7 @@
 import { db } from "../db/connection.js"
 import { user, account } from "../db/schema.js"
 import { hashPassword } from "better-auth/crypto"
+import { eq } from "drizzle-orm"
 
 async function createAdmin() {
 	const args = process.argv.slice(2)
@@ -15,8 +16,17 @@ async function createAdmin() {
 	}
 
 	if (!email || !password) {
-		console.error("Uso: tsx src/scripts/create-admin.ts --email admin@example.com --password secretpassword [--name Admin]")
+		console.error("Uso: node dist/scripts/create-admin.js --email admin@example.com --password secretpassword [--name Admin]")
 		process.exit(1)
+	}
+
+	const existingUser = await db.select().from(user).where(eq(user.email, email))
+
+	if (existingUser.length > 0) {
+		const userId = existingUser[0].id
+		await db.delete(account).where(eq(account.userId, userId))
+		await db.delete(user).where(eq(user.id, userId))
+		console.log(`Usuario existente removido: ${email}`)
 	}
 
 	const hashedPassword = await hashPassword(password)
@@ -33,7 +43,7 @@ async function createAdmin() {
 	await db.insert(account).values({
 		id: crypto.randomUUID(),
 		accountId: email,
-		providerId: "credential",
+		providerId: "password",
 		userId,
 		password: hashedPassword,
 	})
