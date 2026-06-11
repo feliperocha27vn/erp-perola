@@ -9,12 +9,12 @@ const monthlySalesPointSchema = z.object({
 
 export const fetchMonthlySales: FastifyPluginAsyncZod = async (app) => {
 	app.get(
-		"/metrics/monthly-sales",
+		"/dashboard/monthly-sales",
 		{
 			schema: {
-				operationId: "getMetricsMonthlySales",
+				operationId: "getDashboardMonthlySales",
 				description: "Retorna faturamento diario do mes atual com media diaria",
-				tags: ["metrics"],
+				tags: ["dashboard"],
 				response: {
 					200: z.object({
 						items: z.array(monthlySalesPointSchema),

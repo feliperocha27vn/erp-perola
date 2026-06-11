@@ -14,30 +14,30 @@ import type {
   QueryObserverOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import type { GetMetricsLastMonthSalesQueryResponse } from "../../types/metricsController/GetMetricsLastMonthSales.ts";
+import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getMetricsLastMonthSales } from "../../clients/metricsController/getMetricsLastMonthSales.ts";
+import { getDashboardMonthlySales } from "../../clients/dashboardController/getDashboardMonthlySales.ts";
 
-export const getMetricsLastMonthSalesQueryKey = () =>
-  [{ url: "/metrics/last-month-sales" }] as const;
+export const getDashboardMonthlySalesQueryKey = () =>
+  [{ url: "/dashboard/monthly-sales" }] as const;
 
-export type GetMetricsLastMonthSalesQueryKey = ReturnType<
-  typeof getMetricsLastMonthSalesQueryKey
+export type GetDashboardMonthlySalesQueryKey = ReturnType<
+  typeof getDashboardMonthlySalesQueryKey
 >;
 
-export function getMetricsLastMonthSalesQueryOptions(
+export function getDashboardMonthlySalesQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getMetricsLastMonthSalesQueryKey();
+  const queryKey = getDashboardMonthlySalesQueryKey();
   return queryOptions<
-    GetMetricsLastMonthSalesQueryResponse,
+    GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
-    GetMetricsLastMonthSalesQueryResponse,
+    GetDashboardMonthlySalesQueryResponse,
     typeof queryKey
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getMetricsLastMonthSales({
+      return getDashboardMonthlySales({
         ...config,
         signal: config.signal ?? signal,
       });
@@ -46,18 +46,18 @@ export function getMetricsLastMonthSalesQueryOptions(
 }
 
 /**
- * @description Retorna o total de vendas do mes passado em centavos
- * {@link /metrics/last-month-sales}
+ * @description Retorna faturamento diario do mes atual com media diaria
+ * {@link /dashboard/monthly-sales}
  */
-export function useGetMetricsLastMonthSales<
-  TData = GetMetricsLastMonthSalesQueryResponse,
-  TQueryData = GetMetricsLastMonthSalesQueryResponse,
-  TQueryKey extends QueryKey = GetMetricsLastMonthSalesQueryKey,
+export function useGetDashboardMonthlySales<
+  TData = GetDashboardMonthlySalesQueryResponse,
+  TQueryData = GetDashboardMonthlySalesQueryResponse,
+  TQueryKey extends QueryKey = GetDashboardMonthlySalesQueryKey,
 >(
   options: {
     query?: Partial<
       QueryObserverOptions<
-        GetMetricsLastMonthSalesQueryResponse,
+        GetDashboardMonthlySalesQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
         TQueryData,
@@ -70,11 +70,11 @@ export function useGetMetricsLastMonthSales<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getMetricsLastMonthSalesQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesQueryKey();
 
   const query = useQuery(
     {
-      ...getMetricsLastMonthSalesQueryOptions(config),
+      ...getDashboardMonthlySalesQueryOptions(config),
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,

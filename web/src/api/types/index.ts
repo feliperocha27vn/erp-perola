@@ -29,6 +29,16 @@ export type {
   PostBrandsMutationResponse,
 } from "./brandsController/PostBrands.ts";
 export type {
+  GetDashboardLastMonthSales200,
+  GetDashboardLastMonthSalesQuery,
+  GetDashboardLastMonthSalesQueryResponse,
+} from "./dashboardController/GetDashboardLastMonthSales.ts";
+export type {
+  GetDashboardMonthlySales200,
+  GetDashboardMonthlySalesQuery,
+  GetDashboardMonthlySalesQueryResponse,
+} from "./dashboardController/GetDashboardMonthlySales.ts";
+export type {
   ItemsAnalysisSourceEnumKey,
   ItemsConfidenceEnumKey,
   PostFbaAnalyze200,
@@ -39,15 +49,15 @@ export type {
   SummaryAnalysisSourceEnumKey,
 } from "./fbaController/PostFbaAnalyze.ts";
 export type {
-  GetMetricsLastMonthSales200,
-  GetMetricsLastMonthSalesQuery,
-  GetMetricsLastMonthSalesQueryResponse,
-} from "./metricsController/GetMetricsLastMonthSales.ts";
-export type {
-  GetMetricsMonthlySales200,
-  GetMetricsMonthlySalesQuery,
-  GetMetricsMonthlySalesQueryResponse,
-} from "./metricsController/GetMetricsMonthlySales.ts";
+  GetProductSalesDaily200,
+  GetProductSalesDailyPathParams,
+  GetProductSalesDailyQuery,
+  GetProductSalesDailyQueryResponse,
+  PeriodsPeriodEnum2Key,
+  PeriodsPeriodEnum3Key,
+  PeriodsPeriodEnum4Key,
+  PeriodsPeriodEnumKey,
+} from "./productsController/GetProductSalesDaily.ts";
 export type {
   GetProducts200,
   GetProductsQuery,
@@ -167,6 +177,10 @@ export type {
 export { itemsAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";
 export { itemsConfidenceEnum } from "./fbaController/PostFbaAnalyze.ts";
 export { summaryAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";
+export { periodsPeriodEnum } from "./productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum2 } from "./productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum3 } from "./productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum4 } from "./productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./productsController/GetProductsSalesVelocity.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";

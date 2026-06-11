@@ -14,30 +14,30 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import type { GetMetricsLastMonthSalesQueryResponse } from "../../types/metricsController/GetMetricsLastMonthSales.ts";
+import type { GetDashboardLastMonthSalesQueryResponse } from "../../types/dashboardController/GetDashboardLastMonthSales.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getMetricsLastMonthSales } from "../../clients/metricsController/getMetricsLastMonthSales.ts";
+import { getDashboardLastMonthSales } from "../../clients/dashboardController/getDashboardLastMonthSales.ts";
 
-export const getMetricsLastMonthSalesSuspenseQueryKey = () =>
-  [{ url: "/metrics/last-month-sales" }] as const;
+export const getDashboardLastMonthSalesSuspenseQueryKey = () =>
+  [{ url: "/dashboard/last-month-sales" }] as const;
 
-export type GetMetricsLastMonthSalesSuspenseQueryKey = ReturnType<
-  typeof getMetricsLastMonthSalesSuspenseQueryKey
+export type GetDashboardLastMonthSalesSuspenseQueryKey = ReturnType<
+  typeof getDashboardLastMonthSalesSuspenseQueryKey
 >;
 
-export function getMetricsLastMonthSalesSuspenseQueryOptions(
+export function getDashboardLastMonthSalesSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getMetricsLastMonthSalesSuspenseQueryKey();
+  const queryKey = getDashboardLastMonthSalesSuspenseQueryKey();
   return queryOptions<
-    GetMetricsLastMonthSalesQueryResponse,
+    GetDashboardLastMonthSalesQueryResponse,
     ResponseErrorConfig<Error>,
-    GetMetricsLastMonthSalesQueryResponse,
+    GetDashboardLastMonthSalesQueryResponse,
     typeof queryKey
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getMetricsLastMonthSales({
+      return getDashboardLastMonthSales({
         ...config,
         signal: config.signal ?? signal,
       });
@@ -47,16 +47,16 @@ export function getMetricsLastMonthSalesSuspenseQueryOptions(
 
 /**
  * @description Retorna o total de vendas do mes passado em centavos
- * {@link /metrics/last-month-sales}
+ * {@link /dashboard/last-month-sales}
  */
-export function useGetMetricsLastMonthSalesSuspense<
-  TData = GetMetricsLastMonthSalesQueryResponse,
-  TQueryKey extends QueryKey = GetMetricsLastMonthSalesSuspenseQueryKey,
+export function useGetDashboardLastMonthSalesSuspense<
+  TData = GetDashboardLastMonthSalesQueryResponse,
+  TQueryKey extends QueryKey = GetDashboardLastMonthSalesSuspenseQueryKey,
 >(
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
-        GetMetricsLastMonthSalesQueryResponse,
+        GetDashboardLastMonthSalesQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
         TQueryKey
@@ -68,11 +68,11 @@ export function useGetMetricsLastMonthSalesSuspense<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getMetricsLastMonthSalesSuspenseQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardLastMonthSalesSuspenseQueryKey();
 
   const query = useSuspenseQuery(
     {
-      ...getMetricsLastMonthSalesSuspenseQueryOptions(config),
+      ...getDashboardLastMonthSalesSuspenseQueryOptions(config),
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,

@@ -14,30 +14,30 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import type { GetMetricsMonthlySalesQueryResponse } from "../../types/metricsController/GetMetricsMonthlySales.ts";
+import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getMetricsMonthlySales } from "../../clients/metricsController/getMetricsMonthlySales.ts";
+import { getDashboardMonthlySales } from "../../clients/dashboardController/getDashboardMonthlySales.ts";
 
-export const getMetricsMonthlySalesSuspenseQueryKey = () =>
-  [{ url: "/metrics/monthly-sales" }] as const;
+export const getDashboardMonthlySalesSuspenseQueryKey = () =>
+  [{ url: "/dashboard/monthly-sales" }] as const;
 
-export type GetMetricsMonthlySalesSuspenseQueryKey = ReturnType<
-  typeof getMetricsMonthlySalesSuspenseQueryKey
+export type GetDashboardMonthlySalesSuspenseQueryKey = ReturnType<
+  typeof getDashboardMonthlySalesSuspenseQueryKey
 >;
 
-export function getMetricsMonthlySalesSuspenseQueryOptions(
+export function getDashboardMonthlySalesSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getMetricsMonthlySalesSuspenseQueryKey();
+  const queryKey = getDashboardMonthlySalesSuspenseQueryKey();
   return queryOptions<
-    GetMetricsMonthlySalesQueryResponse,
+    GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
-    GetMetricsMonthlySalesQueryResponse,
+    GetDashboardMonthlySalesQueryResponse,
     typeof queryKey
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getMetricsMonthlySales({
+      return getDashboardMonthlySales({
         ...config,
         signal: config.signal ?? signal,
       });
@@ -47,16 +47,16 @@ export function getMetricsMonthlySalesSuspenseQueryOptions(
 
 /**
  * @description Retorna faturamento diario do mes atual com media diaria
- * {@link /metrics/monthly-sales}
+ * {@link /dashboard/monthly-sales}
  */
-export function useGetMetricsMonthlySalesSuspense<
-  TData = GetMetricsMonthlySalesQueryResponse,
-  TQueryKey extends QueryKey = GetMetricsMonthlySalesSuspenseQueryKey,
+export function useGetDashboardMonthlySalesSuspense<
+  TData = GetDashboardMonthlySalesQueryResponse,
+  TQueryKey extends QueryKey = GetDashboardMonthlySalesSuspenseQueryKey,
 >(
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
-        GetMetricsMonthlySalesQueryResponse,
+        GetDashboardMonthlySalesQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
         TQueryKey
@@ -68,11 +68,11 @@ export function useGetMetricsMonthlySalesSuspense<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getMetricsMonthlySalesSuspenseQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesSuspenseQueryKey();
 
   const query = useSuspenseQuery(
     {
-      ...getMetricsMonthlySalesSuspenseQueryOptions(config),
+      ...getDashboardMonthlySalesSuspenseQueryOptions(config),
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,

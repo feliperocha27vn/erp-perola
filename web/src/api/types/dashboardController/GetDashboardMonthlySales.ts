@@ -6,7 +6,7 @@
 /**
  * @description Default Response
  */
-export type GetMetricsMonthlySales200 = {
+export type GetDashboardMonthlySales200 = {
   /**
    * @type array
    */
@@ -30,9 +30,9 @@ export type GetMetricsMonthlySales200 = {
   daily_average_cents: number;
 };
 
-export type GetMetricsMonthlySalesQueryResponse = GetMetricsMonthlySales200;
+export type GetDashboardMonthlySalesQueryResponse = GetDashboardMonthlySales200;
 
-export type GetMetricsMonthlySalesQuery = {
-  Response: GetMetricsMonthlySales200;
+export type GetDashboardMonthlySalesQuery = {
+  Response: GetDashboardMonthlySales200;
   Errors: any;
 };

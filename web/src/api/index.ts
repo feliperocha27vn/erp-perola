@@ -3,11 +3,13 @@ export type { GetBrandsQueryKey } from "./hooks/brandsController/useGetBrands.ts
 export type { GetBrandsSuspenseQueryKey } from "./hooks/brandsController/useGetBrandsSuspense.ts";
 export type { PatchBrandsIdMutationKey } from "./hooks/brandsController/usePatchBrandsId.ts";
 export type { PostBrandsMutationKey } from "./hooks/brandsController/usePostBrands.ts";
+export type { GetDashboardLastMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
+export type { GetDashboardLastMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export type { GetDashboardMonthlySalesQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySales.ts";
+export type { GetDashboardMonthlySalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export type { PostFbaAnalyzeMutationKey } from "./hooks/fbaController/usePostFbaAnalyze.ts";
-export type { GetMetricsLastMonthSalesQueryKey } from "./hooks/metricsController/useGetMetricsLastMonthSales.ts";
-export type { GetMetricsLastMonthSalesSuspenseQueryKey } from "./hooks/metricsController/useGetMetricsLastMonthSalesSuspense.ts";
-export type { GetMetricsMonthlySalesQueryKey } from "./hooks/metricsController/useGetMetricsMonthlySales.ts";
-export type { GetMetricsMonthlySalesSuspenseQueryKey } from "./hooks/metricsController/useGetMetricsMonthlySalesSuspense.ts";
+export type { GetProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
+export type { GetProductSalesDailySuspenseQueryKey } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
 export type { GetProductsQueryKey } from "./hooks/productsController/useGetProducts.ts";
 export type { GetProductsSalesVelocityQueryKey } from "./hooks/productsController/useGetProductsSalesVelocity.ts";
 export type { GetProductsSalesVelocitySuspenseQueryKey } from "./hooks/productsController/useGetProductsSalesVelocitySuspense.ts";
@@ -60,6 +62,16 @@ export type {
   PostBrandsMutationResponse,
 } from "./types/brandsController/PostBrands.ts";
 export type {
+  GetDashboardLastMonthSales200,
+  GetDashboardLastMonthSalesQuery,
+  GetDashboardLastMonthSalesQueryResponse,
+} from "./types/dashboardController/GetDashboardLastMonthSales.ts";
+export type {
+  GetDashboardMonthlySales200,
+  GetDashboardMonthlySalesQuery,
+  GetDashboardMonthlySalesQueryResponse,
+} from "./types/dashboardController/GetDashboardMonthlySales.ts";
+export type {
   ItemsAnalysisSourceEnumKey,
   ItemsConfidenceEnumKey,
   PostFbaAnalyze200,
@@ -70,15 +82,15 @@ export type {
   SummaryAnalysisSourceEnumKey,
 } from "./types/fbaController/PostFbaAnalyze.ts";
 export type {
-  GetMetricsLastMonthSales200,
-  GetMetricsLastMonthSalesQuery,
-  GetMetricsLastMonthSalesQueryResponse,
-} from "./types/metricsController/GetMetricsLastMonthSales.ts";
-export type {
-  GetMetricsMonthlySales200,
-  GetMetricsMonthlySalesQuery,
-  GetMetricsMonthlySalesQueryResponse,
-} from "./types/metricsController/GetMetricsMonthlySales.ts";
+  GetProductSalesDaily200,
+  GetProductSalesDailyPathParams,
+  GetProductSalesDailyQuery,
+  GetProductSalesDailyQueryResponse,
+  PeriodsPeriodEnum2Key,
+  PeriodsPeriodEnum3Key,
+  PeriodsPeriodEnum4Key,
+  PeriodsPeriodEnumKey,
+} from "./types/productsController/GetProductSalesDaily.ts";
 export type {
   GetProducts200,
   GetProductsQuery,
@@ -199,9 +211,10 @@ export { deleteBrandsId } from "./clients/brandsController/deleteBrandsId.ts";
 export { getBrands } from "./clients/brandsController/getBrands.ts";
 export { patchBrandsId } from "./clients/brandsController/patchBrandsId.ts";
 export { postBrands } from "./clients/brandsController/postBrands.ts";
+export { getDashboardLastMonthSales } from "./clients/dashboardController/getDashboardLastMonthSales.ts";
+export { getDashboardMonthlySales } from "./clients/dashboardController/getDashboardMonthlySales.ts";
 export { postFbaAnalyze } from "./clients/fbaController/postFbaAnalyze.ts";
-export { getMetricsLastMonthSales } from "./clients/metricsController/getMetricsLastMonthSales.ts";
-export { getMetricsMonthlySales } from "./clients/metricsController/getMetricsMonthlySales.ts";
+export { getProductSalesDaily } from "./clients/productsController/getProductSalesDaily.ts";
 export { getProducts } from "./clients/productsController/getProducts.ts";
 export { getProductsSalesVelocity } from "./clients/productsController/getProductsSalesVelocity.ts";
 export { patchProductsId } from "./clients/productsController/patchProductsId.ts";
@@ -232,21 +245,27 @@ export { usePatchBrandsId } from "./hooks/brandsController/usePatchBrandsId.ts";
 export { postBrandsMutationKey } from "./hooks/brandsController/usePostBrands.ts";
 export { postBrandsMutationOptions } from "./hooks/brandsController/usePostBrands.ts";
 export { usePostBrands } from "./hooks/brandsController/usePostBrands.ts";
+export { getDashboardLastMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
+export { getDashboardLastMonthSalesQueryOptions } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
+export { useGetDashboardLastMonthSales } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
+export { getDashboardLastMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export { getDashboardLastMonthSalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export { useGetDashboardLastMonthSalesSuspense } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export { getDashboardMonthlySalesQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySales.ts";
+export { getDashboardMonthlySalesQueryOptions } from "./hooks/dashboardController/useGetDashboardMonthlySales.ts";
+export { useGetDashboardMonthlySales } from "./hooks/dashboardController/useGetDashboardMonthlySales.ts";
+export { getDashboardMonthlySalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
+export { getDashboardMonthlySalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
+export { useGetDashboardMonthlySalesSuspense } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export { postFbaAnalyzeMutationKey } from "./hooks/fbaController/usePostFbaAnalyze.ts";
 export { postFbaAnalyzeMutationOptions } from "./hooks/fbaController/usePostFbaAnalyze.ts";
 export { usePostFbaAnalyze } from "./hooks/fbaController/usePostFbaAnalyze.ts";
-export { getMetricsLastMonthSalesQueryKey } from "./hooks/metricsController/useGetMetricsLastMonthSales.ts";
-export { getMetricsLastMonthSalesQueryOptions } from "./hooks/metricsController/useGetMetricsLastMonthSales.ts";
-export { useGetMetricsLastMonthSales } from "./hooks/metricsController/useGetMetricsLastMonthSales.ts";
-export { getMetricsLastMonthSalesSuspenseQueryKey } from "./hooks/metricsController/useGetMetricsLastMonthSalesSuspense.ts";
-export { getMetricsLastMonthSalesSuspenseQueryOptions } from "./hooks/metricsController/useGetMetricsLastMonthSalesSuspense.ts";
-export { useGetMetricsLastMonthSalesSuspense } from "./hooks/metricsController/useGetMetricsLastMonthSalesSuspense.ts";
-export { getMetricsMonthlySalesQueryKey } from "./hooks/metricsController/useGetMetricsMonthlySales.ts";
-export { getMetricsMonthlySalesQueryOptions } from "./hooks/metricsController/useGetMetricsMonthlySales.ts";
-export { useGetMetricsMonthlySales } from "./hooks/metricsController/useGetMetricsMonthlySales.ts";
-export { getMetricsMonthlySalesSuspenseQueryKey } from "./hooks/metricsController/useGetMetricsMonthlySalesSuspense.ts";
-export { getMetricsMonthlySalesSuspenseQueryOptions } from "./hooks/metricsController/useGetMetricsMonthlySalesSuspense.ts";
-export { useGetMetricsMonthlySalesSuspense } from "./hooks/metricsController/useGetMetricsMonthlySalesSuspense.ts";
+export { getProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
+export { getProductSalesDailyQueryOptions } from "./hooks/productsController/useGetProductSalesDaily.ts";
+export { useGetProductSalesDaily } from "./hooks/productsController/useGetProductSalesDaily.ts";
+export { getProductSalesDailySuspenseQueryKey } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
+export { getProductSalesDailySuspenseQueryOptions } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
+export { useGetProductSalesDailySuspense } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
 export { getProductsQueryKey } from "./hooks/productsController/useGetProducts.ts";
 export { getProductsQueryOptions } from "./hooks/productsController/useGetProducts.ts";
 export { useGetProducts } from "./hooks/productsController/useGetProducts.ts";
@@ -313,6 +332,10 @@ export { useGetHealthSuspense } from "./hooks/undefinedController/useGetHealthSu
 export { itemsAnalysisSourceEnum } from "./types/fbaController/PostFbaAnalyze.ts";
 export { itemsConfidenceEnum } from "./types/fbaController/PostFbaAnalyze.ts";
 export { summaryAnalysisSourceEnum } from "./types/fbaController/PostFbaAnalyze.ts";
+export { periodsPeriodEnum } from "./types/productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum2 } from "./types/productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum3 } from "./types/productsController/GetProductSalesDaily.ts";
+export { periodsPeriodEnum4 } from "./types/productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./types/productsController/GetProductsSalesVelocity.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";

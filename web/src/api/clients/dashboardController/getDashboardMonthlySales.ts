@@ -9,29 +9,29 @@ import type {
   RequestConfig,
   ResponseErrorConfig,
 } from "@/lib/kubb-axios-client";
-import type { GetMetricsMonthlySalesQueryResponse } from "../../types/metricsController/GetMetricsMonthlySales.ts";
+import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
 
-function getGetMetricsMonthlySalesUrl() {
-  const res = { method: "GET", url: `/metrics/monthly-sales` as const };
+function getGetDashboardMonthlySalesUrl() {
+  const res = { method: "GET", url: `/dashboard/monthly-sales` as const };
   return res;
 }
 
 /**
  * @description Retorna faturamento diario do mes atual com media diaria
- * {@link /metrics/monthly-sales}
+ * {@link /dashboard/monthly-sales}
  */
-export async function getMetricsMonthlySales(
+export async function getDashboardMonthlySales(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
   const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
-    GetMetricsMonthlySalesQueryResponse,
+    GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
     method: "GET",
-    url: getGetMetricsMonthlySalesUrl().url.toString(),
+    url: getGetDashboardMonthlySalesUrl().url.toString(),
     ...requestConfig,
   });
   return res.data;

@@ -16,7 +16,7 @@ import { env } from "./env.js"
 import { makeAnalyzeFbaCsvUseCase } from "./factories/fba/make-analyze-fba-csv-use-case.js"
 import { brandsRoutes } from "./http/controllers/brands/routes.js"
 import { fbaRoutes } from "./http/controllers/fba/routes.js"
-import { metricsRoutes } from "./http/controllers/metrics/routes.js"
+import { dashboardRoutes } from "./http/controllers/metrics/routes.js"
 import { productsRoutes } from "./http/controllers/products/routes.js"
 import { salesRoutes } from "./http/controllers/sales/routes.js"
 import { stocksRoutes } from "./http/controllers/stocks/routes.js"
@@ -100,7 +100,7 @@ app.get("/health", async () => {
 await app.register(productsRoutes)
 await app.register(brandsRoutes)
 await app.register(storesRoutes)
-await app.register(metricsRoutes)
+await app.register(dashboardRoutes)
 await app.register(salesRoutes)
 await app.register(stocksRoutes)
 await app.register(fbaRoutes)

@@ -6,8 +6,8 @@ import {
   PackageCheck,
   Receipt,
 } from 'lucide-react'
-import { useGetMetricsLastMonthSales } from '@/api/hooks/metricsController/useGetMetricsLastMonthSales'
-import { useGetMetricsMonthlySales } from '@/api/hooks/metricsController/useGetMetricsMonthlySales'
+import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
+import { useGetDashboardMonthlySales } from '@/api/hooks/dashboardController/useGetDashboardMonthlySales'
 import { LastMonthRevenueCard } from './-components/dashboard/last-month-revenue-card'
 import { MonthlyRevenueChart } from './-components/dashboard/monthly-revenue-chart'
 
@@ -21,14 +21,14 @@ function Dashboard() {
     isLoading: isMonthlySalesLoading,
     isError: isMonthlySalesError,
     refetch: refetchMonthlySales,
-  } = useGetMetricsMonthlySales()
+  } = useGetDashboardMonthlySales()
 
   const {
     data: lastMonthSalesData,
     isLoading: isLastMonthSalesLoading,
     isError: isLastMonthSalesError,
     refetch: refetchLastMonthSales,
-  } = useGetMetricsLastMonthSales()
+  } = useGetDashboardLastMonthSales()
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">

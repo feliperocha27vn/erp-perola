@@ -114,7 +114,7 @@ function VendasPage() {
     queryClient.invalidateQueries({ queryKey: [{ url: '/sales' }] })
     queryClient.invalidateQueries({ queryKey: [{ url: '/products' }] })
     queryClient.invalidateQueries({
-      queryKey: [{ url: '/metrics/monthly-sales' }],
+      queryKey: [{ url: '/dashboard/monthly-sales' }],
     })
     if (selectedCreateProduct?.id) {
       queryClient.invalidateQueries({

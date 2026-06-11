@@ -11,29 +11,29 @@ import type {
 import type {
   QueryKey,
   QueryClient,
-  QueryObserverOptions,
-  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from "@tanstack/react-query";
 import type {
   GetProductSalesDailyQueryResponse,
   GetProductSalesDailyPathParams,
 } from "../../types/productsController/GetProductSalesDaily.ts";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getProductSalesDaily } from "../../clients/productsController/getProductSalesDaily.ts";
 
-export const getProductSalesDailyQueryKey = (
+export const getProductSalesDailySuspenseQueryKey = (
   id: GetProductSalesDailyPathParams["id"],
 ) => [{ url: "/products/:id/sales-daily", params: { id: id } }] as const;
 
-export type GetProductSalesDailyQueryKey = ReturnType<
-  typeof getProductSalesDailyQueryKey
+export type GetProductSalesDailySuspenseQueryKey = ReturnType<
+  typeof getProductSalesDailySuspenseQueryKey
 >;
 
-export function getProductSalesDailyQueryOptions(
+export function getProductSalesDailySuspenseQueryOptions(
   id: GetProductSalesDailyPathParams["id"],
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getProductSalesDailyQueryKey(id);
+  const queryKey = getProductSalesDailySuspenseQueryKey(id);
   return queryOptions<
     GetProductSalesDailyQueryResponse,
     ResponseErrorConfig<Error>,
@@ -55,19 +55,17 @@ export function getProductSalesDailyQueryOptions(
  * @description Retorna vendas diárias por loja e período para um produto
  * {@link /products/:id/sales-daily}
  */
-export function useGetProductSalesDaily<
+export function useGetProductSalesDailySuspense<
   TData = GetProductSalesDailyQueryResponse,
-  TQueryData = GetProductSalesDailyQueryResponse,
-  TQueryKey extends QueryKey = GetProductSalesDailyQueryKey,
+  TQueryKey extends QueryKey = GetProductSalesDailySuspenseQueryKey,
 >(
   id: GetProductSalesDailyPathParams["id"],
   options: {
     query?: Partial<
-      QueryObserverOptions<
+      UseSuspenseQueryOptions<
         GetProductSalesDailyQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
-        TQueryData,
         TQueryKey
       >
     > & { client?: QueryClient };
@@ -77,16 +75,16 @@ export function useGetProductSalesDaily<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getProductSalesDailyQueryKey(id);
+    resolvedOptions?.queryKey ?? getProductSalesDailySuspenseQueryKey(id);
 
-  const query = useQuery(
+  const query = useSuspenseQuery(
     {
-      ...getProductSalesDailyQueryOptions(id, config),
+      ...getProductSalesDailySuspenseQueryOptions(id, config),
       ...resolvedOptions,
       queryKey,
-    } as unknown as QueryObserverOptions,
+    } as unknown as UseSuspenseQueryOptions,
     queryClient,
-  ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
+  ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
     queryKey: TQueryKey;
   };
 

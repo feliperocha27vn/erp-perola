@@ -6,7 +6,7 @@
 /**
  * @description Default Response
  */
-export type GetMetricsLastMonthSales200 = {
+export type GetDashboardLastMonthSales200 = {
   /**
    * @minLength -9007199254740991
    * @maxLength 9007199254740991
@@ -15,9 +15,10 @@ export type GetMetricsLastMonthSales200 = {
   total_cents: number;
 };
 
-export type GetMetricsLastMonthSalesQueryResponse = GetMetricsLastMonthSales200;
+export type GetDashboardLastMonthSalesQueryResponse =
+  GetDashboardLastMonthSales200;
 
-export type GetMetricsLastMonthSalesQuery = {
-  Response: GetMetricsLastMonthSales200;
+export type GetDashboardLastMonthSalesQuery = {
+  Response: GetDashboardLastMonthSales200;
   Errors: any;
 };

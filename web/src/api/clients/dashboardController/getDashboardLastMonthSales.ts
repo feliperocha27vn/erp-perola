@@ -9,29 +9,29 @@ import type {
   RequestConfig,
   ResponseErrorConfig,
 } from "@/lib/kubb-axios-client";
-import type { GetMetricsLastMonthSalesQueryResponse } from "../../types/metricsController/GetMetricsLastMonthSales.ts";
+import type { GetDashboardLastMonthSalesQueryResponse } from "../../types/dashboardController/GetDashboardLastMonthSales.ts";
 
-function getGetMetricsLastMonthSalesUrl() {
-  const res = { method: "GET", url: `/metrics/last-month-sales` as const };
+function getGetDashboardLastMonthSalesUrl() {
+  const res = { method: "GET", url: `/dashboard/last-month-sales` as const };
   return res;
 }
 
 /**
  * @description Retorna o total de vendas do mes passado em centavos
- * {@link /metrics/last-month-sales}
+ * {@link /dashboard/last-month-sales}
  */
-export async function getMetricsLastMonthSales(
+export async function getDashboardLastMonthSales(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
   const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
-    GetMetricsLastMonthSalesQueryResponse,
+    GetDashboardLastMonthSalesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
     method: "GET",
-    url: getGetMetricsLastMonthSalesUrl().url.toString(),
+    url: getGetDashboardLastMonthSalesUrl().url.toString(),
     ...requestConfig,
   });
   return res.data;

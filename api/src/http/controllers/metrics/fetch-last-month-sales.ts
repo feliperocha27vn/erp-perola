@@ -4,12 +4,12 @@ import { makeFetchLastMonthSalesMetricsUseCase } from "../../../factories/sales/
 
 export const fetchLastMonthSales: FastifyPluginAsyncZod = async (app) => {
 	app.get(
-		"/metrics/last-month-sales",
+		"/dashboard/last-month-sales",
 		{
 			schema: {
-				operationId: "getMetricsLastMonthSales",
+				operationId: "getDashboardLastMonthSales",
 				description: "Retorna o total de vendas do mes passado em centavos",
-				tags: ["metrics"],
+				tags: ["dashboard"],
 				response: {
 					200: z.object({
 						total_cents: z.number().int(),
