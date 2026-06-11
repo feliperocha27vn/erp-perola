@@ -8,6 +8,9 @@ function isPublicPath(url: string): boolean {
 	if (url.startsWith("/docs")) return true
 	if (url === "/documentation/json") return true
 	if (url.startsWith("/documentation")) return true
+
+	if (!url.startsWith("/api/")) return true
+
 	return false
 }
 
