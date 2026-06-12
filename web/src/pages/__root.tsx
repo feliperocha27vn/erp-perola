@@ -14,7 +14,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		if (location.pathname === '/login') return
 
 		try {
-			const apiBase = import.meta.env.VITE_API_URL || ''
+			const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 			const res = await fetch(`${apiBase}/api/auth/get-session`, {
 				credentials: 'include',
 			})
