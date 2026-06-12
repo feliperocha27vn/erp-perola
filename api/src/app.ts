@@ -116,7 +116,6 @@ if (env.NODE_ENV === "production") {
 	app.register(fastifyStatic, {
 		root: webDistPath,
 		prefix: "/",
-		wildcard: false,
 		maxAge: "30d",
 		immutable: true,
 	})
