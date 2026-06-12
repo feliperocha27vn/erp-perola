@@ -1,7 +1,4 @@
-import { db } from "../db/connection.js"
-import { user, account } from "../db/schema.js"
-import { hashPassword } from "better-auth/crypto"
-import { eq } from "drizzle-orm"
+import { auth } from "../auth.js"
 
 async function createAdmin() {
 	const args = process.argv.slice(2)
@@ -20,41 +17,49 @@ async function createAdmin() {
 		process.exit(1)
 	}
 
-	const existingUser = await db.select().from(user).where(eq(user.email, email))
+	try {
+		const res = await auth.api.signUpEmail({
+			body: {
+				email,
+				password,
+				name,
+			},
+		})
 
-	if (existingUser.length > 0) {
-		const userId = existingUser[0].id
-		await db.delete(account).where(eq(account.userId, userId))
-		await db.delete(user).where(eq(user.id, userId))
-		console.log(`Usuario existente removido: ${email}`)
+		console.log("Admin criado com sucesso!")
+		console.log(`  Email: ${email}`)
+		console.log(`  Name: ${name}`)
+		console.log(`  User ID: ${res.user.id}`)
+		process.exit(0)
+	} catch (err: any) {
+		if (err?.body?.code === "USER_ALREADY_EXISTS") {
+			console.error("Usuario ja existe. Removendo e recriando...")
+			const { db } = await import("../db/connection.js")
+			const { user, account } = await import("../db/schema.js")
+			const { eq } = await import("drizzle-orm")
+
+			const existing = await db.select().from(user).where(eq(user.email, email))
+			if (existing.length > 0) {
+				await db.delete(account).where(eq(account.userId, existing[0].id))
+				await db.delete(user).where(eq(user.id, existing[0].id))
+			}
+
+			const res = await auth.api.signUpEmail({
+				body: {
+					email,
+					password,
+					name,
+				},
+			})
+			console.log("Admin recriado com sucesso!")
+			console.log(`  Email: ${email}`)
+			console.log(`  Name: ${name}`)
+			console.log(`  User ID: ${res.user.id}`)
+			process.exit(0)
+		}
+		console.error("Erro ao criar admin:", err?.body || err?.message || err)
+		process.exit(1)
 	}
-
-	const hashedPassword = await hashPassword(password)
-
-	const userId = crypto.randomUUID()
-
-	await db.insert(user).values({
-		id: userId,
-		name,
-		email,
-		emailVerified: true,
-	})
-
-	await db.insert(account).values({
-		id: crypto.randomUUID(),
-		accountId: email,
-		providerId: "password",
-		userId,
-		password: hashedPassword,
-	})
-
-	console.log(`Admin criado com sucesso!`)
-	console.log(`  Email: ${email}`)
-	console.log(`  Name: ${name}`)
-	process.exit(0)
 }
 
-createAdmin().catch((err) => {
-	console.error("Erro ao criar admin:", err)
-	process.exit(1)
-})
+createAdmin()
