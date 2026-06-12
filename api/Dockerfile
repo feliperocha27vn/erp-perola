@@ -13,6 +13,7 @@ RUN pnpm install --frozen-lockfile
 COPY web/ ./
 ARG VITE_API_URL=http://localhost:3333
 ENV VITE_API_URL=$VITE_API_URL
+ENV NODE_OPTIONS=--max-old-space-size=768
 RUN pnpm build
 
 # ============================================================
