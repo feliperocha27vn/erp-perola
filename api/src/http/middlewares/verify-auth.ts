@@ -3,13 +3,20 @@ import type { FastifyReply, FastifyRequest } from "fastify"
 import { auth } from "../../auth.js"
 
 function isPublicPath(url: string): boolean {
+	// Health check
 	if (url === "/health") return true
+
+	// Auth endpoints (login, logout, session, etc.)
 	if (url.startsWith("/api/auth")) return true
+
+	// API documentation
 	if (url.startsWith("/docs")) return true
 	if (url === "/documentation/json") return true
 	if (url.startsWith("/documentation")) return true
 
-	if (!url.startsWith("/api/")) return true
+	// SPA root and static assets (production)
+	if (url === "/") return true
+	if (url.lastIndexOf(".") > url.lastIndexOf("/")) return true
 
 	return false
 }

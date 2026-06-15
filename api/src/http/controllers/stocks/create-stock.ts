@@ -48,7 +48,7 @@ export const createStock: FastifyPluginAsyncZod = async (app) => {
 				return reply.status(201).send(result)
 			} catch (error) {
 				if (error instanceof ProductNotFoundError) {
-					return reply.status(404).send({ error: "Produto não encontrado" })
+					return reply.status(404).send({ error: error.message })
 				}
 
 				throw error

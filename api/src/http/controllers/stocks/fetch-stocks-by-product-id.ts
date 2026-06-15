@@ -41,7 +41,7 @@ export const fetchStocksByProductId: FastifyPluginAsyncZod = async (app) => {
 				return reply.send(result)
 			} catch (error) {
 				if (error instanceof ProductNotFoundError) {
-					return reply.status(404).send({ error: "Produto não encontrado" })
+					return reply.status(404).send({ error: error.message })
 				}
 
 				throw error

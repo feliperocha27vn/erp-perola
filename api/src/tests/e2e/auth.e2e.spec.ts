@@ -31,4 +31,24 @@ describe("Authentication (e2e)", () => {
 		expect(response.body.session).toBeDefined()
 		expect(response.body.user).toBeDefined()
 	})
+
+	it("should reject unauthenticated requests to business routes", async () => {
+		const app = await makeTestApp()
+
+		const response = await request(app.server).get("/products")
+
+		expect(response.status).toBe(401)
+		expect(response.body.message).toContain("Sessão expirada ou inválida")
+	})
+
+	it("should allow authenticated requests to business routes", async () => {
+		const app = await makeTestApp()
+		const { cookie } = await createAndAuthenticateUser(app)
+
+		const response = await request(app.server)
+			.get("/products")
+			.set("Cookie", cookie)
+
+		expect(response.status).toBe(200)
+	})
 })

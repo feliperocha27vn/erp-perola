@@ -28,7 +28,7 @@ export const deleteStock: FastifyPluginAsyncZod = async (app) => {
 				return reply.status(204).send(null)
 			} catch (error) {
 				if (error instanceof StockNotFoundError) {
-					return reply.status(404).send({ error: "Estoque não encontrado" })
+					return reply.status(404).send({ error: error.message })
 				}
 
 				throw error
