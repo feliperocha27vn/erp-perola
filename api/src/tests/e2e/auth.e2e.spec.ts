@@ -41,6 +41,14 @@ describe("Authentication (e2e)", () => {
 		expect(response.body.message).toContain("Sessão expirada ou inválida")
 	})
 
+	it("should reject unauthenticated requests even with dotted query strings", async () => {
+		const app = await makeTestApp()
+
+		const response = await request(app.server).get("/products?foo.bar=baz")
+
+		expect(response.status).toBe(401)
+	})
+
 	it("should allow authenticated requests to business routes", async () => {
 		const app = await makeTestApp()
 		const { cookie } = await createAndAuthenticateUser(app)

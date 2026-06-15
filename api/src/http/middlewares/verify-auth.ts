@@ -2,21 +2,31 @@ import { fromNodeHeaders } from "better-auth/node"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import { auth } from "../../auth.js"
 
+function getPathname(url: string): string {
+	try {
+		return new URL(url, "http://localhost").pathname
+	} catch {
+		return url
+	}
+}
+
 function isPublicPath(url: string): boolean {
+	const pathname = getPathname(url)
+
 	// Health check
-	if (url === "/health") return true
+	if (pathname === "/health") return true
 
 	// Auth endpoints (login, logout, session, etc.)
-	if (url.startsWith("/api/auth")) return true
+	if (pathname.startsWith("/api/auth")) return true
 
 	// API documentation
-	if (url.startsWith("/docs")) return true
-	if (url === "/documentation/json") return true
-	if (url.startsWith("/documentation")) return true
+	if (pathname.startsWith("/docs")) return true
+	if (pathname === "/documentation/json") return true
+	if (pathname.startsWith("/documentation")) return true
 
 	// SPA root and static assets (production)
-	if (url === "/") return true
-	if (url.lastIndexOf(".") > url.lastIndexOf("/")) return true
+	if (pathname === "/") return true
+	if (pathname.lastIndexOf(".") > pathname.lastIndexOf("/")) return true
 
 	return false
 }
