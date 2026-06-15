@@ -180,24 +180,25 @@ pnpm run db:studio     # abre Drizzle Studio (GUI)
 
 ### Como usar nas rotas
 
-O banco está disponível como `app.db` em todas as rotas. Quando você criar o schema, importe as tabelas dele:
+**Não acesse o banco diretamente nos controllers.** Use factories para instanciar use cases, e use cases para orquestrar repositories:
 
 ```ts
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
-import { minhaTabela } from '../db/schema.js'
+import { makeFetchAllProductsUseCase } from '../factories/products/make-fetch-all-products-use-case.js'
 
-app.withTypeProvider<ZodTypeProvider>().route({
-  method: 'GET',
-  url: '/exemplo',
-  schema: {
-    response: { 200: z.array(z.object({ id: z.string(), name: z.string() })) },
-  },
-  handler: async (req, reply) => {
-    const dados = await app.db.select().from(minhaTabela)
-    reply.send(dados)
-  },
-})
+export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
+  app.get('/exemplo', {
+    schema: {
+      response: { 200: z.array(z.object({ id: z.string(), name: z.string() })) },
+    },
+    handler: async (req, reply) => {
+      const useCase = makeFetchAllProductsUseCase()
+      const dados = await useCase.execute()
+      reply.send(dados)
+    },
+  })
+}
 ```
 
 ### Workflow de mudanças no schema
