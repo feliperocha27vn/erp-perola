@@ -1,6 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
 import { InvalidFbaCsvError } from "../../../errors/invalid-fba-csv-error.js"
+import { makeAnalyzeFbaCsvUseCase } from "../../../factories/fba/make-analyze-fba-csv-use-case.js"
 
 const itemSchema = z.object({
 	sku: z.string(),
@@ -54,7 +55,8 @@ export const analyzeFbaCsv: FastifyPluginAsyncZod = async (app) => {
 		},
 		async (req, reply) => {
 			try {
-				const result = await app.analyzeFbaCsvUseCase.execute({
+				const analyzeFbaCsvUseCase = makeAnalyzeFbaCsvUseCase()
+				const result = await analyzeFbaCsvUseCase.execute({
 					csvContent: req.body.csv_content,
 				})
 

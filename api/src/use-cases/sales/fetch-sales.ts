@@ -1,4 +1,8 @@
-import type { SaleRepository } from "../../repositories/sale-repository.js"
+import type {
+	BrandSalesCount,
+	Sale,
+	SaleRepository,
+} from "../../repositories/sale-repository.js"
 
 interface FetchSalesUseCaseRequest {
 	startDate?: Date
@@ -10,11 +14,11 @@ interface FetchSalesUseCaseRequest {
 }
 
 interface FetchSalesUseCaseResponse {
-	items: Awaited<ReturnType<SaleRepository["fetchSales"]>>["items"]
+	items: Sale[]
 	totalCount: number
 	totalPages: number
 	currentPage: number
-	brandCounts: Awaited<ReturnType<SaleRepository["fetchSales"]>>["brandCounts"]
+	brandCounts: BrandSalesCount[]
 }
 
 export class FetchSalesUseCase {
@@ -28,20 +32,24 @@ export class FetchSalesUseCase {
 		page,
 		limit,
 	}: FetchSalesUseCaseRequest): Promise<FetchSalesUseCaseResponse> {
-		const result = await this.saleRepository.fetchSales({
+		const offset = (page - 1) * limit
+
+		const result = await this.saleRepository.findMany({
 			startDate,
 			endDate,
 			brandId,
 			storeId,
-			page,
 			limit,
+			offset,
 		})
+
+		const totalPages = Math.max(1, Math.ceil(result.totalCount / limit))
 
 		return {
 			items: result.items,
 			totalCount: result.totalCount,
-			totalPages: result.totalPages,
-			currentPage: result.currentPage,
+			totalPages,
+			currentPage: page,
 			brandCounts: result.brandCounts,
 		}
 	}

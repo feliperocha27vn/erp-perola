@@ -9,8 +9,8 @@ import type {
 	CreateSaleInput,
 	FetchCurrentMonthSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
-	FetchSalesReply,
-	FetchSalesRequest,
+	FindManySalesFilters,
+	FindManySalesReply,
 	Sale,
 	SaleRepository,
 	UpdateSaleInput,
@@ -116,7 +116,7 @@ export class DrizzleSaleRepository implements SaleRepository {
 		}
 	}
 
-	async fetchSales(filters: FetchSalesRequest): Promise<FetchSalesReply> {
+	async findMany(filters: FindManySalesFilters): Promise<FindManySalesReply> {
 		// Constraints de período se aplicam tanto à listagem quanto à contagem por marca.
 		const dateConstraints = [
 			filters.startDate ? gte(sales.sale_date, filters.startDate) : undefined,
@@ -135,9 +135,6 @@ export class DrizzleSaleRepository implements SaleRepository {
 			listConstraints.length > 0 ? and(...listConstraints) : undefined
 		const dateWhere =
 			dateConstraints.length > 0 ? and(...dateConstraints) : undefined
-		const safeLimit = Math.min(Math.max(filters.limit, 1), 100)
-		const currentPage = Math.max(filters.page, 1)
-		const offset = (currentPage - 1) * safeLimit
 
 		const countBase = db
 			.select({ count: sql<number>`count(*)` })
@@ -147,7 +144,6 @@ export class DrizzleSaleRepository implements SaleRepository {
 		const countRows = where ? await countBase.where(where) : await countBase
 
 		const totalCount = Number(countRows[0]?.count ?? 0)
-		const totalPages = Math.max(1, Math.ceil(totalCount / safeLimit))
 
 		const dataBase = db
 			.select({ sale: sales, product: products, stock: stocks, store: stores })
@@ -158,8 +154,8 @@ export class DrizzleSaleRepository implements SaleRepository {
 
 		const rows = await (where ? dataBase.where(where) : dataBase)
 			.orderBy(asc(sales.sale_date), asc(sales.created_at))
-			.limit(safeLimit)
-			.offset(offset)
+			.limit(filters.limit)
+			.offset(filters.offset)
 
 		const brandCountBase = db
 			.select({
@@ -189,8 +185,6 @@ export class DrizzleSaleRepository implements SaleRepository {
 				mapSale(row.sale, row.product, row.stock, row.store),
 			),
 			totalCount,
-			totalPages,
-			currentPage,
 			brandCounts,
 		}
 	}

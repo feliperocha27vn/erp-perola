@@ -3,8 +3,8 @@ import type {
 	CreateSaleInput,
 	FetchCurrentMonthSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
-	FetchSalesReply,
-	FetchSalesRequest,
+	FindManySalesFilters,
+	FindManySalesReply,
 	Sale,
 	SaleRepository,
 	UpdateSaleInput,
@@ -13,7 +13,7 @@ import type {
 export class InMemorySaleRepository implements SaleRepository {
 	public sales: Sale[] = []
 
-	async fetchSales(filters: FetchSalesRequest): Promise<FetchSalesReply> {
+	async findMany(filters: FindManySalesFilters): Promise<FindManySalesReply> {
 		let items = this.sales
 
 		if (filters.startDate) {
@@ -35,19 +35,16 @@ export class InMemorySaleRepository implements SaleRepository {
 		}
 
 		const totalCount = items.length
-		const currentPage = Math.max(1, filters.page)
-		const safeLimit = Math.min(Math.max(filters.limit, 1), 100)
-		const totalPages = Math.max(1, Math.ceil(totalCount / safeLimit))
-		const offset = (currentPage - 1) * safeLimit
-		const paginatedItems = items.slice(offset, offset + safeLimit)
+		const paginatedItems = items.slice(
+			filters.offset,
+			filters.offset + filters.limit,
+		)
 
 		const brandCounts: BrandSalesCount[] = []
 
 		return {
 			items: paginatedItems,
 			totalCount,
-			totalPages,
-			currentPage,
 			brandCounts,
 		}
 	}

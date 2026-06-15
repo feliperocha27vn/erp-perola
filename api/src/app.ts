@@ -11,10 +11,7 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from "fastify-type-provider-zod"
-import { auth } from "./auth.js"
-import { db } from "./db/connection.js"
 import { env } from "./env.js"
-import { makeAnalyzeFbaCsvUseCase } from "./factories/fba/make-analyze-fba-csv-use-case.js"
 import { authRoutes } from "./http/controllers/auth/routes.js"
 import { brandsRoutes } from "./http/controllers/brands/routes.js"
 import { fbaRoutes } from "./http/controllers/fba/routes.js"
@@ -72,10 +69,6 @@ export async function buildApp() {
 		methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 		credentials: true,
 	})
-
-	app.decorate("db", db)
-	app.decorate("analyzeFbaCsvUseCase", makeAnalyzeFbaCsvUseCase())
-	app.decorate("auth", auth)
 
 	await app.register(fastifySwagger, {
 		openapi: {

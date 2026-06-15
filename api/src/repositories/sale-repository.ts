@@ -38,27 +38,10 @@ export interface Sale {
 	} | null
 }
 
-export interface FetchSalesRequest {
-	startDate?: Date
-	endDate?: Date
-	brandId?: string
-	storeId?: string
-	page: number
-	limit: number
-}
-
 export interface BrandSalesCount {
 	brand_id: string
 	brand_name: string
 	count: number
-}
-
-export interface FetchSalesReply {
-	items: Sale[]
-	totalCount: number
-	totalPages: number
-	currentPage: number
-	brandCounts: BrandSalesCount[]
 }
 
 export interface MonthlySalesMetricItem {
@@ -95,8 +78,23 @@ export interface UpdateSaleInput {
 	store_id?: string | null
 }
 
+export interface FindManySalesFilters {
+	startDate?: Date
+	endDate?: Date
+	brandId?: string
+	storeId?: string
+	limit: number
+	offset: number
+}
+
+export interface FindManySalesReply {
+	items: Sale[]
+	totalCount: number
+	brandCounts: BrandSalesCount[]
+}
+
 export interface SaleRepository {
-	fetchSales(filters: FetchSalesRequest): Promise<FetchSalesReply>
+	findMany(filters: FindManySalesFilters): Promise<FindManySalesReply>
 	fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply>
 	fetchLastMonthSalesMetrics(): Promise<FetchLastMonthSalesMetricsReply>
 	getById(id: string): Promise<Sale | null>
