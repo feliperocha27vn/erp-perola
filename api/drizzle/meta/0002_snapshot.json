@@ -1,165 +1,157 @@
 {
-  "id": "13feccc2-cbc5-4eac-a9e5-4780053f8869",
-  "prevId": "48512db2-cc3c-4aae-b877-35a8d98d4375",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.products": {
-      "name": "products",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "sku": {
-          "name": "sku",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ean": {
-          "name": "ean",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "url_image": {
-          "name": "url_image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "marca": {
-          "name": "marca",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "products_sku_unique": {
-          "name": "products_sku_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "sku"
-          ]
-        },
-        "products_ean_unique": {
-          "name": "products_ean_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "ean"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.stocks": {
-      "name": "stocks",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "qtde": {
-          "name": "qtde",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "full": {
-          "name": "full",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "stocks_product_id_products_id_fk": {
-          "name": "stocks_product_id_products_id_fk",
-          "tableFrom": "stocks",
-          "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "13feccc2-cbc5-4eac-a9e5-4780053f8869",
+	"prevId": "48512db2-cc3c-4aae-b877-35a8d98d4375",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.products": {
+			"name": "products",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"sku": {
+					"name": "sku",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"ean": {
+					"name": "ean",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"url_image": {
+					"name": "url_image",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"marca": {
+					"name": "marca",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"products_sku_unique": {
+					"name": "products_sku_unique",
+					"nullsNotDistinct": false,
+					"columns": ["sku"]
+				},
+				"products_ean_unique": {
+					"name": "products_ean_unique",
+					"nullsNotDistinct": false,
+					"columns": ["ean"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.stocks": {
+			"name": "stocks",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"product_id": {
+					"name": "product_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"qtde": {
+					"name": "qtde",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"full": {
+					"name": "full",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"stocks_product_id_products_id_fk": {
+					"name": "stocks_product_id_products_id_fk",
+					"tableFrom": "stocks",
+					"tableTo": "products",
+					"columnsFrom": ["product_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

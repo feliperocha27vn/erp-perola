@@ -121,7 +121,9 @@ async function seed() {
 		await upsertProduct(row)
 	}
 
-	console.log(`Importação concluída: ${lines.length - 1} linha(s) processada(s).`)
+	console.log(
+		`Importação concluída: ${lines.length - 1} linha(s) processada(s).`,
+	)
 }
 
 seed()

@@ -1,6 +1,6 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises"
-import { join } from "node:path"
 import { tmpdir } from "node:os"
+import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
 import { createEnv } from "./env.js"
 
@@ -14,14 +14,16 @@ async function makeTempEnvFile(contents: string) {
 }
 
 afterEach(async () => {
-	await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
+	await Promise.all(
+		tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })),
+	)
 })
 
 describe("createEnv", () => {
 	it("loads Gemini key from .env when missing from process env", async () => {
-		const cwd = await makeTempEnvFile([
-			"GEMINI_API_KEY=gemini-from-file",
-		].join("\n"))
+		const cwd = await makeTempEnvFile(
+			["GEMINI_API_KEY=gemini-from-file"].join("\n"),
+		)
 
 		const env = createEnv({}, cwd)
 
@@ -29,9 +31,9 @@ describe("createEnv", () => {
 	})
 
 	it("preserves explicit process env values over .env values", async () => {
-		const cwd = await makeTempEnvFile([
-			"GEMINI_API_KEY=gemini-from-file",
-		].join("\n"))
+		const cwd = await makeTempEnvFile(
+			["GEMINI_API_KEY=gemini-from-file"].join("\n"),
+		)
 
 		const env = createEnv(
 			{

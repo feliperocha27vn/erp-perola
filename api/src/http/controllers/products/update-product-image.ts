@@ -1,7 +1,7 @@
-import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
-import { makeUpdateProductImageUseCase } from "../../../factories/products/make-update-product-image-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
+import { makeUpdateProductImageUseCase } from "../../../factories/products/make-update-product-image-use-case.js"
 
 const stockSchema = z.object({
 	id: z.string().uuid(),
@@ -37,11 +37,11 @@ export const updateProductImage: FastifyPluginAsyncZod = async (app) => {
 				response: {
 					200: z.object({
 						product: z.object({
-						id: z.string().uuid(),
-						sku: z.string(),
-						ean: z.string(),
-						sale_price_cents: z.number().int().nullable(),
-						brand_id: z.string().uuid().nullable(),
+							id: z.string().uuid(),
+							sku: z.string(),
+							ean: z.string(),
+							sale_price_cents: z.number().int().nullable(),
+							brand_id: z.string().uuid().nullable(),
 							brand: brandSchema.nullable(),
 							url_image: z.string().nullable(),
 							stocks: z.array(stockSchema),

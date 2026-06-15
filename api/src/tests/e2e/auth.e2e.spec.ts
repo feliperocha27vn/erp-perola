@@ -1,0 +1,34 @@
+import request from "supertest"
+import { beforeEach, describe, expect, it } from "vitest"
+import { makeTestApp } from "./utils/build-app.js"
+import { cleanDatabase } from "./utils/clean-database.js"
+import { createAndAuthenticateUser } from "./utils/create-and-authenticate-user.js"
+
+describe("Authentication (e2e)", () => {
+	beforeEach(async () => {
+		await cleanDatabase()
+	})
+
+	it("should create a user and return a session cookie", async () => {
+		const app = await makeTestApp()
+
+		const { cookie } = await createAndAuthenticateUser(app)
+
+		expect(cookie).toBeDefined()
+		expect(cookie.length).toBeGreaterThan(0)
+		expect(cookie[0]).toContain("better-auth.session_token")
+	})
+
+	it("should return a valid session when calling get-session with cookie", async () => {
+		const app = await makeTestApp()
+		const { cookie } = await createAndAuthenticateUser(app)
+
+		const response = await request(app.server)
+			.get("/api/auth/get-session")
+			.set("Cookie", cookie)
+
+		expect(response.status).toBe(200)
+		expect(response.body.session).toBeDefined()
+		expect(response.body.user).toBeDefined()
+	})
+})

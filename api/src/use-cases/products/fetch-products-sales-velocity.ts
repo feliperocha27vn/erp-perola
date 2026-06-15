@@ -1,4 +1,7 @@
-import type { FetchProductsRequest, ProductRepository } from "../../repositories/product-repository.js"
+import type {
+	FetchProductsRequest,
+	ProductRepository,
+} from "../../repositories/product-repository.js"
 
 export class FetchProductsSalesVelocityUseCase {
 	constructor(private productRepository: ProductRepository) {}

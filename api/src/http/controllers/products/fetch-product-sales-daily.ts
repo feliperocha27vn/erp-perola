@@ -25,7 +25,8 @@ export const fetchProductSalesDaily: FastifyPluginAsyncZod = async (app) => {
 		{
 			schema: {
 				operationId: "getProductSalesDaily",
-				description: "Retorna vendas diárias por loja e período para um produto",
+				description:
+					"Retorna vendas diárias por loja e período para um produto",
 				tags: ["products"],
 				params: z.object({
 					id: z.string().uuid(),

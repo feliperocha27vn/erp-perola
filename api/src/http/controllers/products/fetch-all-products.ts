@@ -1,6 +1,6 @@
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import z from "zod";
-import { makeFetchAllProductsUseCase } from "../../../factories/products/make-fetch-all-products-use-case.js";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
+import { makeFetchAllProductsUseCase } from "../../../factories/products/make-fetch-all-products-use-case.js"
 
 const stockSchema = z.object({
 	id: z.string().uuid(),
@@ -10,14 +10,14 @@ const stockSchema = z.object({
 	full: z.boolean(),
 	created_at: z.date(),
 	updated_at: z.date(),
-});
+})
 
 const brandSchema = z.object({
 	id: z.string().uuid(),
 	name: z.string(),
 	created_at: z.date(),
 	updated_at: z.date(),
-});
+})
 
 export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 	app.get(
@@ -44,25 +44,25 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 					200: z.object({
 						items: z.array(
 							z.object({
-						id: z.string().uuid(),
-						sku: z.string(),
-						ean: z.string(),
-						sale_price_cents: z.number().int().nullable(),
-						brand_id: z.string().uuid().nullable(),
-							brand: brandSchema.nullable(),
-							url_image: z.string().nullable(),
-							technical_title: z.string().nullable(),
-							technical_subtitle: z.string().nullable(),
-							technical_analysis: z.string().nullable(),
-							technical_movement: z.string().nullable(),
-							technical_case_and_crystal: z.string().nullable(),
-							technical_specific_functionality: z.string().nullable(),
-							technical_dial_and_luminosity: z.string().nullable(),
-							technical_bracelet_construction: z.string().nullable(),
-							technical_table: z.string().nullable(),
-							stocks: z.array(stockSchema),
-							created_at: z.date(),
-							updated_at: z.date(),
+								id: z.string().uuid(),
+								sku: z.string(),
+								ean: z.string(),
+								sale_price_cents: z.number().int().nullable(),
+								brand_id: z.string().uuid().nullable(),
+								brand: brandSchema.nullable(),
+								url_image: z.string().nullable(),
+								technical_title: z.string().nullable(),
+								technical_subtitle: z.string().nullable(),
+								technical_analysis: z.string().nullable(),
+								technical_movement: z.string().nullable(),
+								technical_case_and_crystal: z.string().nullable(),
+								technical_specific_functionality: z.string().nullable(),
+								technical_dial_and_luminosity: z.string().nullable(),
+								technical_bracelet_construction: z.string().nullable(),
+								technical_table: z.string().nullable(),
+								stocks: z.array(stockSchema),
+								created_at: z.date(),
+								updated_at: z.date(),
 							}),
 						),
 						total: z.number(),
@@ -82,5 +82,5 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 
 			return reply.send(result)
 		},
-	);
-};
+	)
+}

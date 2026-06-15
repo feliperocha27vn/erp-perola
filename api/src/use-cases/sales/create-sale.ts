@@ -1,6 +1,9 @@
 import { ProductNotFoundError } from "../../errors/product-not-found-error.js"
 import type { ProductRepository } from "../../repositories/product-repository.js"
-import type { SaleChannel, SaleRepository } from "../../repositories/sale-repository.js"
+import type {
+	SaleChannel,
+	SaleRepository,
+} from "../../repositories/sale-repository.js"
 
 interface CreateSaleUseCaseRequest {
 	product_id: string

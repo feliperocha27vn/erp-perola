@@ -1,6 +1,7 @@
 import type { ProductRepository } from "../../repositories/product-repository.js"
 import { calculateFbaBaseRecommendation } from "./fba-calculations.js"
 import { parseFbaBusinessReportCsv } from "./fba-csv-parser.js"
+import { FbaGeminiClient } from "./fba-gemini-client.js"
 import type {
 	AnalyzeFbaCsvUseCaseRequest,
 	AnalyzeFbaCsvUseCaseResponse,
@@ -8,7 +9,6 @@ import type {
 	FbaGeminiRecommendation,
 	FbaPendingItem,
 } from "./fba-types.js"
-import { FbaGeminiClient } from "./fba-gemini-client.js"
 
 const TARGET_DAYS = 60
 
@@ -34,12 +34,17 @@ function toSafeRecommendation(
 		}
 	}
 
-	const recommendedRaw = Number.isFinite(recommendation.recommended_send_quantity)
+	const recommendedRaw = Number.isFinite(
+		recommendation.recommended_send_quantity,
+	)
 		? Math.floor(recommendation.recommended_send_quantity)
 		: item.conservative_send_cap
 
 	const clamped = Math.max(0, Math.min(recommendedRaw, item.max_sendable_units))
-	const reason = recommendation.reason.trim().length > 0 ? recommendation.reason.trim() : fallbackReason(item)
+	const reason =
+		recommendation.reason.trim().length > 0
+			? recommendation.reason.trim()
+			: fallbackReason(item)
 
 	return {
 		recommended_send_quantity: clamped,
@@ -53,15 +58,22 @@ function toSafeRecommendation(
 export class AnalyzeFbaCsvUseCase {
 	constructor(
 		private productRepository: ProductRepository,
-		private geminiClient: Pick<FbaGeminiClient, "recommend"> = new FbaGeminiClient(),
+		private geminiClient: Pick<
+			FbaGeminiClient,
+			"recommend"
+		> = new FbaGeminiClient(),
 		private logger: Pick<Console, "warn"> = console,
 	) {}
 
-	async execute({ csvContent }: AnalyzeFbaCsvUseCaseRequest): Promise<AnalyzeFbaCsvUseCaseResponse> {
+	async execute({
+		csvContent,
+	}: AnalyzeFbaCsvUseCaseRequest): Promise<AnalyzeFbaCsvUseCaseResponse> {
 		const parsed = parseFbaBusinessReportCsv(csvContent)
 		const allSkus = [...new Set(parsed.rows.map((row) => row.sku))]
 		const products = await this.productRepository.getBySkus(allSkus)
-		const productsBySku = new Map(products.map((product) => [product.sku, product]))
+		const productsBySku = new Map(
+			products.map((product) => [product.sku, product]),
+		)
 
 		const pending_items: FbaPendingItem[] = [...parsed.pending_items]
 		const baseItems: FbaAnalysisItemBase[] = []
@@ -78,7 +90,9 @@ export class AnalyzeFbaCsvUseCase {
 				continue
 			}
 
-			const physicalStock = product.stocks.find((stock) => stock.title === "Físico")
+			const physicalStock = product.stocks.find(
+				(stock) => stock.title === "Físico",
+			)
 			if (!physicalStock) {
 				pending_items.push({
 					sku: row.sku,
@@ -121,11 +135,16 @@ export class AnalyzeFbaCsvUseCase {
 			recommendations = []
 		}
 
-		const recommendationsBySku = new Map(recommendations.map((item) => [item.sku, item]))
+		const recommendationsBySku = new Map(
+			recommendations.map((item) => [item.sku, item]),
+		)
 		const analysisSource = recommendations.length > 0 ? "gemini" : "fallback"
 
 		const items = baseItems.map((item) => {
-			const safe = toSafeRecommendation(item, recommendationsBySku.get(item.sku))
+			const safe = toSafeRecommendation(
+				item,
+				recommendationsBySku.get(item.sku),
+			)
 
 			return {
 				sku: item.sku,
@@ -142,10 +161,15 @@ export class AnalyzeFbaCsvUseCase {
 			}
 		})
 
-		const total_recommended_units = items.reduce((acc, item) => acc + item.recommended_send_quantity, 0)
+		const total_recommended_units = items.reduce(
+			(acc, item) => acc + item.recommended_send_quantity,
+			0,
+		)
 		const top =
 			items.length > 0
-				? [...items].sort((a, b) => b.recommended_send_quantity - a.recommended_send_quantity)[0]
+				? [...items].sort(
+						(a, b) => b.recommended_send_quantity - a.recommended_send_quantity,
+					)[0]
 				: null
 
 		return {

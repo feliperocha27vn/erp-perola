@@ -1,11 +1,16 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
 import { InsufficientStockError } from "../../../errors/insufficient-stock-error.js"
 import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
 import { StockProductMismatchError } from "../../../errors/stock-product-mismatch-error.js"
 import { makeCreateSaleUseCase } from "../../../factories/sales/make-create-sale-use-case.js"
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
-import z from "zod"
 
-const saleChannelSchema = z.enum(["Amazon", "Mercado Livre", "Shopee", "Direto"])
+const saleChannelSchema = z.enum([
+	"Amazon",
+	"Mercado Livre",
+	"Shopee",
+	"Direto",
+])
 
 const storeSchema = z.object({
 	id: z.string().uuid(),

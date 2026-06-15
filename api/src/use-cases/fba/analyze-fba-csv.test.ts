@@ -1,10 +1,15 @@
 import { describe, expect, it, vi } from "vitest"
 import type { ProductRepository } from "../../repositories/product-repository.js"
 import { AnalyzeFbaCsvUseCase } from "./analyze-fba-csv.js"
-import type { FbaAnalysisItemBase, FbaGeminiRecommendation } from "./fba-types.js"
+import type {
+	FbaAnalysisItemBase,
+	FbaGeminiRecommendation,
+} from "./fba-types.js"
 
 class FakeProductRepository implements ProductRepository {
-	constructor(private products: Awaited<ReturnType<ProductRepository["getBySkus"]>>) {}
+	constructor(
+		private products: Awaited<ReturnType<ProductRepository["getBySkus"]>>,
+	) {}
 
 	async fetchProducts() {
 		return { items: [], total: 0, pageIndex: 0 }
@@ -170,7 +175,11 @@ describe("AnalyzeFbaCsvUseCase", () => {
 		])
 		const logger = { warn: vi.fn() }
 
-		const useCase = new AnalyzeFbaCsvUseCase(repo, new ThrowingGeminiClient(), logger)
+		const useCase = new AnalyzeFbaCsvUseCase(
+			repo,
+			new ThrowingGeminiClient(),
+			logger,
+		)
 		const result = await useCase.execute({ csvContent })
 
 		expect(result.items[0].analysis_source).toBe("fallback")

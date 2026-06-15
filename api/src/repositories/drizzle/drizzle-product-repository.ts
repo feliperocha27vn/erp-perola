@@ -2,16 +2,16 @@ import { and, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import { brands, products, sales, stocks, stores } from "../../db/schema.js"
 import type {
+	CreateProductInput,
 	FetchProductsReply,
 	FetchProductsRequest,
 	Product,
 	ProductBrand,
-	ProductTechnicalDetailsInput,
 	ProductRepository,
 	ProductStock,
-	SalesVelocityItem,
+	ProductTechnicalDetailsInput,
 	SalesDailyStore,
-	CreateProductInput,
+	SalesVelocityItem,
 	UpdateProductInput,
 } from "../product-repository.js"
 
@@ -42,9 +42,11 @@ function mapTechnicalDetailsInput(data?: ProductTechnicalDetailsInput) {
 		technical_analysis: data?.technical_analysis ?? null,
 		technical_movement: data?.technical_movement ?? null,
 		technical_case_and_crystal: data?.technical_case_and_crystal ?? null,
-		technical_specific_functionality: data?.technical_specific_functionality ?? null,
+		technical_specific_functionality:
+			data?.technical_specific_functionality ?? null,
 		technical_dial_and_luminosity: data?.technical_dial_and_luminosity ?? null,
-		technical_bracelet_construction: data?.technical_bracelet_construction ?? null,
+		technical_bracelet_construction:
+			data?.technical_bracelet_construction ?? null,
 		technical_table: data?.technical_table ?? null,
 	}
 }
@@ -82,21 +84,27 @@ async function attachRelations(rows: ProductRow[]): Promise<Product[]> {
 			: Promise.resolve([] as BrandRow[]),
 	])
 
-	const stocksByProductId = stockRows.reduce<Map<string, ProductStock[]>>((acc, stockRow) => {
-		const current = acc.get(stockRow.product_id) ?? []
-		current.push(stockRow)
-		acc.set(stockRow.product_id, current)
-		return acc
-	}, new Map())
+	const stocksByProductId = stockRows.reduce<Map<string, ProductStock[]>>(
+		(acc, stockRow) => {
+			const current = acc.get(stockRow.product_id) ?? []
+			current.push(stockRow)
+			acc.set(stockRow.product_id, current)
+			return acc
+		},
+		new Map(),
+	)
 
-	const brandsById = brandRows.reduce<Map<string, ProductBrand>>((acc, brandRow) => {
-		acc.set(brandRow.id, mapBrandRow(brandRow))
-		return acc
-	}, new Map())
+	const brandsById = brandRows.reduce<Map<string, ProductBrand>>(
+		(acc, brandRow) => {
+			acc.set(brandRow.id, mapBrandRow(brandRow))
+			return acc
+		},
+		new Map(),
+	)
 
 	return rows.map((row) => ({
 		...row,
-		brand: row.brand_id ? brandsById.get(row.brand_id) ?? null : null,
+		brand: row.brand_id ? (brandsById.get(row.brand_id) ?? null) : null,
 		stocks: stocksByProductId.get(row.id) ?? [],
 	}))
 }
@@ -145,7 +153,10 @@ export class DrizzleProductRepository implements ProductRepository {
 					.limit(limit)
 					.offset(offset)
 
-		const [productsPage, [{ count }]] = await Promise.all([productsPageQuery, countQuery])
+		const [productsPage, [{ count }]] = await Promise.all([
+			productsPageQuery,
+			countQuery,
+		])
 
 		if (productsPage.length === 0) {
 			return {
@@ -181,7 +192,10 @@ export class DrizzleProductRepository implements ProductRepository {
 			return []
 		}
 
-		const rows = await db.select().from(products).where(inArray(products.sku, skus))
+		const rows = await db
+			.select()
+			.from(products)
+			.where(inArray(products.sku, skus))
 		return attachRelations(rows)
 	}
 
@@ -261,7 +275,11 @@ export class DrizzleProductRepository implements ProductRepository {
 		return this.getProductById(updatedRow.id)
 	}
 
-	async fetchSalesVelocity({ pageIndex, withoutImage, search }: FetchProductsRequest): Promise<SalesVelocityItem[]> {
+	async fetchSalesVelocity({
+		pageIndex,
+		withoutImage,
+		search,
+	}: FetchProductsRequest): Promise<SalesVelocityItem[]> {
 		const limit = 20
 		const offset = pageIndex * limit
 		const normalizedSearch = search?.trim()
@@ -279,8 +297,19 @@ export class DrizzleProductRepository implements ProductRepository {
 		const whereClause = filters.length > 0 ? and(...filters) : undefined
 
 		const pageQuery = whereClause
-			? db.select({ id: products.id }).from(products).where(whereClause).orderBy(products.created_at).limit(limit).offset(offset)
-			: db.select({ id: products.id }).from(products).orderBy(products.created_at).limit(limit).offset(offset)
+			? db
+					.select({ id: products.id })
+					.from(products)
+					.where(whereClause)
+					.orderBy(products.created_at)
+					.limit(limit)
+					.offset(offset)
+			: db
+					.select({ id: products.id })
+					.from(products)
+					.orderBy(products.created_at)
+					.limit(limit)
+					.offset(offset)
 
 		const pageProducts = await pageQuery
 
@@ -323,10 +352,12 @@ export class DrizzleProductRepository implements ProductRepository {
 				units: sql<number>`sum(${sales.quantity})::int`,
 			})
 			.from(sales)
-			.where(and(
-				eq(sales.product_id, productId),
-				sql`${sales.sale_date} >= now() - interval '90 days'`,
-			))
+			.where(
+				and(
+					eq(sales.product_id, productId),
+					sql`${sales.sale_date} >= now() - interval '90 days'`,
+				),
+			)
 			.groupBy(sales.store_id, sql`date_trunc('day', ${sales.sale_date})::date`)
 			.orderBy(sql`date_trunc('day', ${sales.sale_date})::date`)
 
@@ -352,7 +383,10 @@ export class DrizzleProductRepository implements ProductRepository {
 
 		const todasMap = new Map<string, number>()
 		for (const row of rows) {
-			todasMap.set(row.sale_day, (todasMap.get(row.sale_day) ?? 0) + Number(row.units))
+			todasMap.set(
+				row.sale_day,
+				(todasMap.get(row.sale_day) ?? 0) + Number(row.units),
+			)
 		}
 
 		const storeMaps = new Map<string, Map<string, number>>()
@@ -364,7 +398,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		}
 
 		return [
-			{ store_id: null, store_name: 'Todas', periods: buildPeriods(todasMap) },
+			{ store_id: null, store_name: "Todas", periods: buildPeriods(todasMap) },
 			...allStores.map((store) => ({
 				store_id: store.id,
 				store_name: store.name,
@@ -373,7 +407,10 @@ export class DrizzleProductRepository implements ProductRepository {
 		]
 	}
 
-	async updateProductImage(id: string, url_image: string): Promise<Product | null> {
+	async updateProductImage(
+		id: string,
+		url_image: string,
+	): Promise<Product | null> {
 		const [updatedRow] = await db
 			.update(products)
 			.set({ url_image, updated_at: new Date() })

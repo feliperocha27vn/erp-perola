@@ -1,7 +1,9 @@
 import { writeFile } from "node:fs/promises"
 import { resolve } from "node:path"
-import { app } from "./app.js"
+import { buildApp } from "./app.js"
 import { env } from "./env.js"
+
+const app = await buildApp()
 
 app
 	.listen({

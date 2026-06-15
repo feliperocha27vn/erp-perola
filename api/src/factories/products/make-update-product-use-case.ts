@@ -5,7 +5,10 @@ import { UpdateProductUseCase } from "../../use-cases/products/update-product.js
 export function makeUpdateProductUseCase() {
 	const productRepository = new DrizzleProductRepository()
 	const brandRepository = new DrizzleBrandRepository()
-	const updateProductUseCase = new UpdateProductUseCase(productRepository, brandRepository)
+	const updateProductUseCase = new UpdateProductUseCase(
+		productRepository,
+		brandRepository,
+	)
 
 	return updateProductUseCase
 }

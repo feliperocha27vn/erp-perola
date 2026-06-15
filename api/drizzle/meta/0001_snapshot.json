@@ -1,99 +1,95 @@
 {
-  "id": "48512db2-cc3c-4aae-b877-35a8d98d4375",
-  "prevId": "eecd3786-3617-4039-a639-e5613253828b",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.products": {
-      "name": "products",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "sku": {
-          "name": "sku",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ean": {
-          "name": "ean",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "url_image": {
-          "name": "url_image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "marca": {
-          "name": "marca",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "stock": {
-          "name": "stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "products_sku_unique": {
-          "name": "products_sku_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "sku"
-          ]
-        },
-        "products_ean_unique": {
-          "name": "products_ean_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "ean"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "48512db2-cc3c-4aae-b877-35a8d98d4375",
+	"prevId": "eecd3786-3617-4039-a639-e5613253828b",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.products": {
+			"name": "products",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"sku": {
+					"name": "sku",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"ean": {
+					"name": "ean",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"url_image": {
+					"name": "url_image",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"marca": {
+					"name": "marca",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"stock": {
+					"name": "stock",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"default": 0
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"products_sku_unique": {
+					"name": "products_sku_unique",
+					"nullsNotDistinct": false,
+					"columns": ["sku"]
+				},
+				"products_ean_unique": {
+					"name": "products_ean_unique",
+					"nullsNotDistinct": false,
+					"columns": ["ean"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

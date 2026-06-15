@@ -1,8 +1,8 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
 import { BrandNameAlreadyExistsError } from "../../../errors/brand-name-already-exists-error.js"
 import { BrandNotFoundError } from "../../../errors/brand-not-found-error.js"
 import { makeUpdateBrandUseCase } from "../../../factories/brands/make-update-brand-use-case.js"
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
-import z from "zod"
 
 const brandSchema = z.object({
 	id: z.string().uuid(),

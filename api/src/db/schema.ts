@@ -1,7 +1,21 @@
 import { relations } from "drizzle-orm"
-import { boolean, index, integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import {
+	boolean,
+	index,
+	integer,
+	pgEnum,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core"
 
-export const salesChannelEnum = pgEnum("sales_channel", ["Amazon", "Mercado Livre", "Shopee", "Direto"])
+export const salesChannelEnum = pgEnum("sales_channel", [
+	"Amazon",
+	"Mercado Livre",
+	"Shopee",
+	"Direto",
+])
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -99,7 +113,9 @@ export const products = pgTable("products", {
 	sku: text("sku").notNull().unique(),
 	ean: text("ean").notNull().unique(),
 	sale_price_cents: integer("sale_price_cents"),
-	brand_id: uuid("brand_id").references(() => brands.id, { onDelete: "set null" }),
+	brand_id: uuid("brand_id").references(() => brands.id, {
+		onDelete: "set null",
+	}),
 	url_image: text("url_image"),
 	technical_title: text("technical_title"),
 	technical_subtitle: text("technical_subtitle"),
@@ -138,7 +154,9 @@ export const sales = pgTable("sales", {
 	sale_price: integer("sale_price").notNull(),
 	total_price: integer("total_price").notNull().default(0),
 	channel: salesChannelEnum("channel").notNull().default("Direto"),
-	store_id: uuid("store_id").references(() => stores.id, { onDelete: "set null" }),
+	store_id: uuid("store_id").references(() => stores.id, {
+		onDelete: "set null",
+	}),
 	sale_date: timestamp("sale_date").notNull(),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 	updated_at: timestamp("updated_at").notNull().defaultNow(),

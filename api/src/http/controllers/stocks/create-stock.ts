@@ -1,7 +1,7 @@
-import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
-import { makeCreateStockUseCase } from "../../../factories/stocks/make-create-stock-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
+import { makeCreateStockUseCase } from "../../../factories/stocks/make-create-stock-use-case.js"
 
 const stockSchema = z.object({
 	id: z.string().uuid(),

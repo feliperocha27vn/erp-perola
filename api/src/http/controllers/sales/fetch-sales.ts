@@ -1,8 +1,13 @@
-import { makeFetchSalesUseCase } from "../../../factories/sales/make-fetch-sales-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { makeFetchSalesUseCase } from "../../../factories/sales/make-fetch-sales-use-case.js"
 
-const saleChannelSchema = z.enum(["Amazon", "Mercado Livre", "Shopee", "Direto"])
+const saleChannelSchema = z.enum([
+	"Amazon",
+	"Mercado Livre",
+	"Shopee",
+	"Direto",
+])
 
 const storeSchema = z.object({
 	id: z.string().uuid(),
@@ -84,7 +89,9 @@ export const fetchSales: FastifyPluginAsyncZod = async (app) => {
 		async (req, reply) => {
 			const fetchSalesUseCase = makeFetchSalesUseCase()
 			const result = await fetchSalesUseCase.execute({
-				startDate: req.query.startDate ? new Date(req.query.startDate) : undefined,
+				startDate: req.query.startDate
+					? new Date(req.query.startDate)
+					: undefined,
 				endDate: req.query.endDate ? new Date(req.query.endDate) : undefined,
 				brandId: req.query.brandId,
 				storeId: req.query.storeId,

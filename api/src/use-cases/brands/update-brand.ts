@@ -19,7 +19,10 @@ interface UpdateBrandUseCaseResponse {
 export class UpdateBrandUseCase {
 	constructor(private brandRepository: BrandRepository) {}
 
-	async execute({ id, name }: UpdateBrandUseCaseRequest): Promise<UpdateBrandUseCaseResponse> {
+	async execute({
+		id,
+		name,
+	}: UpdateBrandUseCaseRequest): Promise<UpdateBrandUseCaseResponse> {
 		const currentBrand = await this.brandRepository.getById(id)
 
 		if (!currentBrand) {

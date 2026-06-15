@@ -6,7 +6,10 @@ export function makeAnalyzeFbaCsvUseCase() {
 	const productRepository = new DrizzleProductRepository()
 	const geminiClient = new FbaGeminiClient()
 
-	const analyzeFbaCsvUseCase = new AnalyzeFbaCsvUseCase(productRepository, geminiClient)
+	const analyzeFbaCsvUseCase = new AnalyzeFbaCsvUseCase(
+		productRepository,
+		geminiClient,
+	)
 
 	return analyzeFbaCsvUseCase
 }

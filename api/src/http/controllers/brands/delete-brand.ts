@@ -1,8 +1,8 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
 import { BrandInUseError } from "../../../errors/brand-in-use-error.js"
 import { BrandNotFoundError } from "../../../errors/brand-not-found-error.js"
 import { makeDeleteBrandUseCase } from "../../../factories/brands/make-delete-brand-use-case.js"
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
-import z from "zod"
 
 export const deleteBrand: FastifyPluginAsyncZod = async (app) => {
 	app.delete(

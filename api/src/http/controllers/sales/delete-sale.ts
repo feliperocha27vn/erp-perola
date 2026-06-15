@@ -1,7 +1,7 @@
-import { SaleNotFoundError } from "../../../errors/sale-not-found-error.js"
-import { makeDeleteSaleUseCase } from "../../../factories/sales/make-delete-sale-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { SaleNotFoundError } from "../../../errors/sale-not-found-error.js"
+import { makeDeleteSaleUseCase } from "../../../factories/sales/make-delete-sale-use-case.js"
 
 export const deleteSale: FastifyPluginAsyncZod = async (app) => {
 	app.delete(

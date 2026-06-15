@@ -1,7 +1,9 @@
 import type { SaleRepository } from "../../repositories/sale-repository.js"
 
 interface FetchCurrentMonthSalesMetricsUseCaseResponse {
-	items: Awaited<ReturnType<SaleRepository["fetchCurrentMonthSalesMetrics"]>>["items"]
+	items: Awaited<
+		ReturnType<SaleRepository["fetchCurrentMonthSalesMetrics"]>
+	>["items"]
 	daily_average_cents: number
 }
 

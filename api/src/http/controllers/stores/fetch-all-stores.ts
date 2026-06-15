@@ -1,6 +1,6 @@
-import { makeFetchAllStoresUseCase } from "../../../factories/stores/make-fetch-all-stores-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { makeFetchAllStoresUseCase } from "../../../factories/stores/make-fetch-all-stores-use-case.js"
 
 const storeSchema = z.object({
 	id: z.string().uuid(),

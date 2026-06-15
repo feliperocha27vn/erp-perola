@@ -1,7 +1,7 @@
-import { StockNotFoundError } from "../../../errors/stock-not-found-error.js"
-import { makeDeleteStockUseCase } from "../../../factories/stocks/make-delete-stock-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { StockNotFoundError } from "../../../errors/stock-not-found-error.js"
+import { makeDeleteStockUseCase } from "../../../factories/stocks/make-delete-stock-use-case.js"
 
 export const deleteStock: FastifyPluginAsyncZod = async (app) => {
 	app.delete(

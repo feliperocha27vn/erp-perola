@@ -1,9 +1,9 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
 import { BrandNotFoundError } from "../../../errors/brand-not-found-error.js"
 import { ProductAlreadyExistsError } from "../../../errors/product-already-exists-error.js"
 import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
 import { makeUpdateProductUseCase } from "../../../factories/products/make-update-product-use-case.js"
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
-import z from "zod"
 
 const stockSchema = z.object({
 	id: z.string().uuid(),
@@ -97,8 +97,7 @@ export const updateProduct: FastifyPluginAsyncZod = async (app) => {
 					technical_case_and_crystal: req.body.technical_case_and_crystal,
 					technical_specific_functionality:
 						req.body.technical_specific_functionality,
-					technical_dial_and_luminosity:
-						req.body.technical_dial_and_luminosity,
+					technical_dial_and_luminosity: req.body.technical_dial_and_luminosity,
 					technical_bracelet_construction:
 						req.body.technical_bracelet_construction,
 					technical_table: req.body.technical_table,

@@ -84,7 +84,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 			}
 		})
 
-		const totalMonthCents = items.reduce((sum, item) => sum + item.total_cents, 0)
+		const totalMonthCents = items.reduce(
+			(sum, item) => sum + item.total_cents,
+			0,
+		)
 		const daysWithSales = items.filter((item) => item.total_cents > 0).length
 		const daily_average_cents =
 			daysWithSales > 0 ? Math.round(totalMonthCents / daysWithSales) : 0
@@ -128,8 +131,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 			filters.storeId ? eq(sales.store_id, filters.storeId) : undefined,
 		].filter(Boolean)
 
-		const where = listConstraints.length > 0 ? and(...listConstraints) : undefined
-		const dateWhere = dateConstraints.length > 0 ? and(...dateConstraints) : undefined
+		const where =
+			listConstraints.length > 0 ? and(...listConstraints) : undefined
+		const dateWhere =
+			dateConstraints.length > 0 ? and(...dateConstraints) : undefined
 		const safeLimit = Math.min(Math.max(filters.limit, 1), 100)
 		const currentPage = Math.max(filters.page, 1)
 		const offset = (currentPage - 1) * safeLimit
@@ -166,7 +171,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 			.innerJoin(products, eq(products.id, sales.product_id))
 			.innerJoin(brands, eq(brands.id, products.brand_id))
 
-		const brandCountRows = await (dateWhere ? brandCountBase.where(dateWhere) : brandCountBase)
+		const brandCountRows = await (dateWhere
+			? brandCountBase.where(dateWhere)
+			: brandCountBase
+		)
 			.groupBy(brands.id, brands.name)
 			.orderBy(desc(sql`count(*)`), asc(brands.name))
 
@@ -177,7 +185,9 @@ export class DrizzleSaleRepository implements SaleRepository {
 		}))
 
 		return {
-			items: rows.map((row) => mapSale(row.sale, row.product, row.stock, row.store)),
+			items: rows.map((row) =>
+				mapSale(row.sale, row.product, row.stock, row.store),
+			),
 			totalCount,
 			totalPages,
 			currentPage,
@@ -246,7 +256,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 
 	async createInTransaction(data: CreateSaleInput): Promise<Sale> {
 		const saleId = await db.transaction(async (tx) => {
-			const [stockRow] = await tx.select().from(stocks).where(eq(stocks.id, data.stock_id))
+			const [stockRow] = await tx
+				.select()
+				.from(stocks)
+				.where(eq(stocks.id, data.stock_id))
 
 			if (!stockRow) {
 				throw new StockProductMismatchError()
@@ -303,7 +316,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 				throw new SaleNotFoundError()
 			}
 
-			const [stockRow] = await tx.select().from(stocks).where(eq(stocks.id, saleRow.stock_id))
+			const [stockRow] = await tx
+				.select()
+				.from(stocks)
+				.where(eq(stocks.id, saleRow.stock_id))
 
 			if (!stockRow) {
 				throw new StockProductMismatchError()
@@ -321,15 +337,24 @@ export class DrizzleSaleRepository implements SaleRepository {
 		})
 	}
 
-	async updateInTransaction(id: string, data: UpdateSaleInput): Promise<Sale | null> {
+	async updateInTransaction(
+		id: string,
+		data: UpdateSaleInput,
+	): Promise<Sale | null> {
 		await db.transaction(async (tx) => {
-			const [currentSale] = await tx.select().from(sales).where(eq(sales.id, id))
+			const [currentSale] = await tx
+				.select()
+				.from(sales)
+				.where(eq(sales.id, id))
 
 			if (!currentSale) {
 				throw new SaleNotFoundError()
 			}
 
-			const [stockRow] = await tx.select().from(stocks).where(eq(stocks.id, currentSale.stock_id))
+			const [stockRow] = await tx
+				.select()
+				.from(stocks)
+				.where(eq(stocks.id, currentSale.stock_id))
 
 			if (!stockRow) {
 				throw new StockProductMismatchError()
@@ -362,7 +387,8 @@ export class DrizzleSaleRepository implements SaleRepository {
 						nextQuantity * (data.sale_price ?? currentSale.sale_price),
 					channel: data.channel ?? currentSale.channel,
 					sale_date: data.sale_date ?? currentSale.sale_date,
-					store_id: data.store_id !== undefined ? data.store_id : currentSale.store_id,
+					store_id:
+						data.store_id !== undefined ? data.store_id : currentSale.store_id,
 					updated_at: new Date(),
 				})
 				.where(eq(sales.id, id))

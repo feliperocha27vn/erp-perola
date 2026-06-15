@@ -1,6 +1,6 @@
-import { InvalidFbaCsvError } from "../../../errors/invalid-fba-csv-error.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { InvalidFbaCsvError } from "../../../errors/invalid-fba-csv-error.js"
 
 const itemSchema = z.object({
 	sku: z.string(),
@@ -29,7 +29,8 @@ export const analyzeFbaCsv: FastifyPluginAsyncZod = async (app) => {
 		{
 			schema: {
 				operationId: "postFbaAnalyze",
-				description: "Analisa um CSV de 90 dias para recomendacao de envio ao Amazon FBA",
+				description:
+					"Analisa um CSV de 90 dias para recomendacao de envio ao Amazon FBA",
 				tags: ["fba"],
 				body: z.object({
 					csv_content: z.string().min(1),

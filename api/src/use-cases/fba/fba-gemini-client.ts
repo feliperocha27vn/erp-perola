@@ -1,8 +1,11 @@
 import { GoogleGenAI } from "@google/genai"
 import z from "zod"
-import { GeminiAnalysisError } from "../../errors/gemini-analysis-error.js"
 import { env } from "../../env.js"
-import type { FbaAnalysisItemBase, FbaGeminiRecommendation } from "./fba-types.js"
+import { GeminiAnalysisError } from "../../errors/gemini-analysis-error.js"
+import type {
+	FbaAnalysisItemBase,
+	FbaGeminiRecommendation,
+} from "./fba-types.js"
 
 const geminiRecommendationSchema = z.object({
 	sku: z.string(),
@@ -79,7 +82,11 @@ function buildFbaPrompt(items: FbaAnalysisItemBase[]) {
 						recommended_send_quantity: 1,
 						keep_in_physical_stock: 3,
 						confidence: "low",
-						decision_tags: ["low_sales_sample", "low_conversion", "preserve_stock"],
+						decision_tags: [
+							"low_sales_sample",
+							"low_conversion",
+							"preserve_stock",
+						],
 						reason:
 							"A amostra de vendas e pequena e a conversao esta fraca. O envio fica reduzido para preservar estoque fisico.",
 					},
@@ -134,12 +141,16 @@ function shouldRetryGeminiError(error: unknown) {
 
 export class FbaGeminiClient {
 	constructor(
-		private ai: GeminiLikeClient = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY }),
+		private ai: GeminiLikeClient = new GoogleGenAI({
+			apiKey: env.GEMINI_API_KEY,
+		}),
 		private apiKey = env.GEMINI_API_KEY,
 		private options: FbaGeminiClientOptions = {},
 	) {}
 
-	async recommend(items: FbaAnalysisItemBase[]): Promise<FbaGeminiRecommendation[]> {
+	async recommend(
+		items: FbaAnalysisItemBase[],
+	): Promise<FbaGeminiRecommendation[]> {
 		if (!this.apiKey) {
 			throw new GeminiAnalysisError("GEMINI_API_KEY nao configurada.")
 		}
@@ -172,8 +183,14 @@ export class FbaGeminiClient {
 											sku: { type: "string" },
 											recommended_send_quantity: { type: "integer" },
 											keep_in_physical_stock: { type: "integer" },
-											confidence: { type: "string", enum: ["high", "medium", "low"] },
-											decision_tags: { type: "array", items: { type: "string" } },
+											confidence: {
+												type: "string",
+												enum: ["high", "medium", "low"],
+											},
+											decision_tags: {
+												type: "array",
+												items: { type: "string" },
+											},
 											reason: { type: "string" },
 										},
 										required: [

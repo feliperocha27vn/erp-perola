@@ -1,6 +1,6 @@
-import { makeFetchAllBrandsUseCase } from "../../../factories/brands/make-fetch-all-brands-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { makeFetchAllBrandsUseCase } from "../../../factories/brands/make-fetch-all-brands-use-case.js"
 
 const brandSchema = z.object({
 	id: z.string().uuid(),

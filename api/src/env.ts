@@ -11,7 +11,10 @@ const envSchema = z.object({
 	CORS_ORIGINS: z.string().optional(),
 	GEMINI_API_KEY: z.string().optional(),
 	DATABASE_URL: z.string().optional(),
-	BETTER_AUTH_SECRET: z.string().min(1).default("dev-secret-change-in-production-min-32-chars"),
+	BETTER_AUTH_SECRET: z
+		.string()
+		.min(1)
+		.default("dev-secret-change-in-production-min-32-chars"),
 })
 
 type EnvInput = Record<string, string | undefined>

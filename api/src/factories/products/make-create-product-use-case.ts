@@ -5,7 +5,10 @@ import { CreateProductUseCase } from "../../use-cases/products/create-product.js
 export function makeCreateProductUseCase() {
 	const productRepository = new DrizzleProductRepository()
 	const brandRepository = new DrizzleBrandRepository()
-	const createProductUseCase = new CreateProductUseCase(productRepository, brandRepository)
+	const createProductUseCase = new CreateProductUseCase(
+		productRepository,
+		brandRepository,
+	)
 
 	return createProductUseCase
 }

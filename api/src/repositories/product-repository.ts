@@ -104,7 +104,9 @@ export interface UpdateProductInput extends ProductTechnicalDetailsInput {
 
 export interface ProductRepository {
 	fetchProducts(request: FetchProductsRequest): Promise<FetchProductsReply>
-	fetchSalesVelocity(request: FetchProductsRequest): Promise<SalesVelocityItem[]>
+	fetchSalesVelocity(
+		request: FetchProductsRequest,
+	): Promise<SalesVelocityItem[]>
 	fetchProductSalesDaily(productId: string): Promise<SalesDailyStore[]>
 	getProductById(id: string): Promise<Product | null>
 	getBySkus(skus: string[]): Promise<Product[]>

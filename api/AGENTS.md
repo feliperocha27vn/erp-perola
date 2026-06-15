@@ -72,12 +72,83 @@ app.withTypeProvider<ZodTypeProvider>().route({
 ## Scripts (sempre use `pnpm`)
 
 ```bash
-pnpm run dev     # servidor com hot reload via tsx watch
-pnpm run build   # compila TypeScript para dist/
-pnpm run start   # executa o build compilado
+pnpm run dev        # servidor com hot reload via tsx watch
+pnpm run build      # compila TypeScript para dist/
+pnpm run start      # executa o build compilado
+pnpm run test       # testes unitários (use-cases)
+pnpm run test:e2e   # testes E2E (controllers + HTTP real)
 ```
 
 **IMPORTANTE: Este projeto usa `pnpm`, nunca `npm` ou `yarn`.** Se vir `node_modules/` junto com `package-lock.json`, apague ambos e rode `pnpm install`.
+
+---
+
+## Testes
+
+### Unitários (`pnpm run test`)
+
+- Roda testes em `src/**/*.test.ts` e `src/**/*.spec.ts`, **exceto** `*.e2e.spec.ts`.
+- Foco em use cases com repositórios **in-memory**.
+- Configuração: `vitest.config.ts`.
+
+### E2E (`pnpm run test:e2e`)
+
+- Roda testes em `src/**/*.e2e.spec.ts`.
+- Usa servidor Fastify real (`buildApp()`) + banco PostgreSQL.
+- Configuração: `vitest.e2e.config.ts`.
+
+#### Setup do banco de testes
+
+```bash
+# 1. Subir PostgreSQL
+docker compose up -d postgres
+
+# 2. Criar banco de testes (nome padrão: analise_de_valores_test)
+docker compose exec postgres psql -U postgres -c "CREATE DATABASE analise_de_valores_test;"
+
+# 3. Rodar E2E
+pnpm run test:e2e
+```
+
+Variáveis de ambiente para testes (podem ser definidas em `.env`):
+- `DATABASE_URL`: apontar para o banco de testes
+- `BETTER_AUTH_SECRET`: mínimo 32 caracteres
+- `BETTER_AUTH_URL`: URL base da API (ex: `http://localhost:3333`)
+
+#### Helpers E2E
+
+Localizados em `src/tests/e2e/utils/`:
+- `makeTestApp()`: cria instância do Fastify para testes
+- `createAndAuthenticateUser(app)`: cria usuário e retorna cookie de sessão
+- `cleanDatabase()`: limpa todas as tabelas entre testes
+
+#### Padrão de teste E2E
+
+```ts
+import request from "supertest"
+import { beforeEach, describe, expect, it } from "vitest"
+import { makeTestApp } from "./utils/build-app.js"
+import { cleanDatabase } from "./utils/clean-database.js"
+import { createAndAuthenticateUser } from "./utils/create-and-authenticate-user.js"
+
+describe("Products (e2e)", () => {
+  beforeEach(async () => {
+    await cleanDatabase()
+  })
+
+  it("should create a product when authenticated", async () => {
+    const app = await makeTestApp()
+    const { cookie } = await createAndAuthenticateUser(app)
+
+    const response = await request(app.server)
+      .post("/products")
+      .set("Cookie", cookie)
+      .send({ sku: "SKU-001", ean: "EAN-001", brand_id: null })
+
+    expect(response.status).toBe(201)
+  })
+})
+```
 
 ---
 

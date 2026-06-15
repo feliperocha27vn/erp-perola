@@ -104,8 +104,12 @@ export function parseFbaBusinessReportCsv(content: string): ParseFbaCsvResult {
 			sessions_total: parseIntSafe(record["Sessões - Total"]),
 			page_views_total: parseIntSafe(record["Visualizações da página - Total"]),
 			units_sold_90d: parseIntSafe(record["Unidades pedidas"]),
-			conversion_rate: parsePercentageSafe(record["Porcentagem de sessão de unidade"]),
-			revenue_cents_90d: parseMoneyToCents(record["Vendas de produtos pedidos"]),
+			conversion_rate: parsePercentageSafe(
+				record["Porcentagem de sessão de unidade"],
+			),
+			revenue_cents_90d: parseMoneyToCents(
+				record["Vendas de produtos pedidos"],
+			),
 		})
 	}
 

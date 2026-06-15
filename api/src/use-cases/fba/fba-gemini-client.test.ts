@@ -12,15 +12,19 @@ describe("FbaGeminiClient", () => {
 						keep_in_physical_stock: 2,
 						confidence: "high",
 						decision_tags: ["high_conversion", "steady_sales"],
-						reason: "Boa conversao e vendas consistentes com estoque suficiente.",
+						reason:
+							"Boa conversao e vendas consistentes com estoque suficiente.",
 					},
 				],
 			}),
 		})
 
-		const client = new FbaGeminiClient({
-			models: { generateContent },
-		} as never, "test-key")
+		const client = new FbaGeminiClient(
+			{
+				models: { generateContent },
+			} as never,
+			"test-key",
+		)
 
 		const result = await client.recommend([
 			{
@@ -53,7 +57,9 @@ describe("FbaGeminiClient", () => {
 	})
 
 	it("retries transient Gemini failures before succeeding", async () => {
-		const transientError = Object.assign(new Error("temporary unavailable"), { status: 503 })
+		const transientError = Object.assign(new Error("temporary unavailable"), {
+			status: 503,
+		})
 		const sleep = vi.fn().mockResolvedValue(undefined)
 		const generateContent = vi
 			.fn()

@@ -437,35 +437,50 @@ export class DrizzleCustomerRepository implements CustomerRepository {
 
 ## Testes com In-Memory Repository
 
-Para testes, implemente um repositório em memória:
+Para testes, implemente um repositório em memória em `src/repositories/in-memory/`:
 
 ```ts
-// repositories/in-memory-product-repository.ts
-import type { Product, ProductRepository } from './product-repository.js'
+// repositories/in-memory/in-memory-product-repository.ts
+import type { Product, ProductRepository } from '../product-repository.js'
 
 export class InMemoryProductRepository implements ProductRepository {
-  private products: Product[] = [
-    {
-      id: '1',
-      sku: 'SKU001',
-      ean: 'EAN001',
-      marca: 'Brand A',
-      url_image: null,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  ]
+  public products: Product[] = []
 
-  async findAll(): Promise<Product[]> {
-    return this.products
+  async fetchProducts(request: FetchProductsRequest): Promise<FetchProductsReply> {
+    // ...
   }
 
-  async findById(id: string): Promise<Product | null> {
+  async getProductById(id: string): Promise<Product | null> {
     return this.products.find((p) => p.id === id) ?? null
   }
 
-  // ... implementar outros métodos
+  // ... implementar todos os métodos da interface
 }
+```
+
+Fakes existentes:
+- `in-memory-brand-repository.ts`
+- `in-memory-store-repository.ts`
+- `in-memory-stock-repository.ts`
+- `in-memory-product-repository.ts`
+- `in-memory-sale-repository.ts`
+
+Exemplo de teste unitário:
+
+```ts
+import { InMemoryProductRepository } from '@/repositories/in-memory/in-memory-product-repository'
+import { FetchAllProductsUseCase } from '@/use-cases/products/fetch-all-products'
+
+describe('FetchAllProductsUseCase', () => {
+  it('should fetch all products', async () => {
+    const repository = new InMemoryProductRepository()
+    const useCase = new FetchAllProductsUseCase(repository)
+
+    const { products } = await useCase.execute()
+
+    expect(products).toHaveLength(0)
+  })
+})
 ```
 
 ---

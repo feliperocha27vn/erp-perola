@@ -1,5 +1,5 @@
-import type { FastifyRequest, FastifyReply } from "fastify"
 import { fromNodeHeaders } from "better-auth/node"
+import type { FastifyReply, FastifyRequest } from "fastify"
 import { auth } from "../../auth.js"
 
 function isPublicPath(url: string): boolean {
@@ -14,10 +14,7 @@ function isPublicPath(url: string): boolean {
 	return false
 }
 
-export async function verifyAuth(
-	request: FastifyRequest,
-	reply: FastifyReply,
-) {
+export async function verifyAuth(request: FastifyRequest, reply: FastifyReply) {
 	if (isPublicPath(request.url)) return
 
 	const headers = fromNodeHeaders(request.headers)

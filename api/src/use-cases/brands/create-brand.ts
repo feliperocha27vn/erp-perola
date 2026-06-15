@@ -17,7 +17,9 @@ interface CreateBrandUseCaseResponse {
 export class CreateBrandUseCase {
 	constructor(private brandRepository: BrandRepository) {}
 
-	async execute({ name }: CreateBrandUseCaseRequest): Promise<CreateBrandUseCaseResponse> {
+	async execute({
+		name,
+	}: CreateBrandUseCaseRequest): Promise<CreateBrandUseCaseResponse> {
 		const existingBrand = await this.brandRepository.getByName(name)
 
 		if (existingBrand) {

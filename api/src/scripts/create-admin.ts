@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm"
 import { auth } from "../auth.js"
 import { db } from "../db/connection.js"
-import { user, account } from "../db/schema.js"
-import { eq } from "drizzle-orm"
+import { account, user } from "../db/schema.js"
 
 async function createAdmin() {
 	const args = process.argv.slice(2)
@@ -16,7 +16,9 @@ async function createAdmin() {
 	}
 
 	if (!email || !password) {
-		console.error("Uso: node dist/scripts/create-admin.js --email admin@example.com --password secretpassword [--name Admin]")
+		console.error(
+			"Uso: node dist/scripts/create-admin.js --email admin@example.com --password secretpassword [--name Admin]",
+		)
 		process.exit(1)
 	}
 

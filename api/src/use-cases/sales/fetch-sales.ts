@@ -20,8 +20,22 @@ interface FetchSalesUseCaseResponse {
 export class FetchSalesUseCase {
 	constructor(private saleRepository: SaleRepository) {}
 
-	async execute({ startDate, endDate, brandId, storeId, page, limit }: FetchSalesUseCaseRequest): Promise<FetchSalesUseCaseResponse> {
-		const result = await this.saleRepository.fetchSales({ startDate, endDate, brandId, storeId, page, limit })
+	async execute({
+		startDate,
+		endDate,
+		brandId,
+		storeId,
+		page,
+		limit,
+	}: FetchSalesUseCaseRequest): Promise<FetchSalesUseCaseResponse> {
+		const result = await this.saleRepository.fetchSales({
+			startDate,
+			endDate,
+			brandId,
+			storeId,
+			page,
+			limit,
+		})
 
 		return {
 			items: result.items,

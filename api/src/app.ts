@@ -28,99 +28,105 @@ import "./types.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const loggerConfig =
-	env.NODE_ENV === "production"
-		? { level: "info" }
-		: {
-				level: "info",
-				transport: {
-					target: "pino-pretty",
-					options: {
-						colorize: true,
-						translateTime: "HH:MM:ss",
-						ignore: "pid,hostname",
+export async function buildApp() {
+	const loggerConfig =
+		env.NODE_ENV === "production"
+			? { level: "info" }
+			: {
+					level: "info",
+					transport: {
+						target: "pino-pretty",
+						options: {
+							colorize: true,
+							translateTime: "HH:MM:ss",
+							ignore: "pid,hostname",
+						},
 					},
-				},
-			}
-
-export const app = fastify({
-	logger: loggerConfig,
-}).withTypeProvider<ZodTypeProvider>()
-
-app.setValidatorCompiler(validatorCompiler)
-app.setSerializerCompiler(serializerCompiler)
-
-const corsOrigins = env.CORS_ORIGINS
-	? env.CORS_ORIGINS.split(",")
-			.map((origin) => origin.trim())
-			.filter(Boolean)
-	: []
-
-await app.register(fastifyCors, {
-	origin:
-		corsOrigins.length > 0
-			? (origin, cb) => {
-					if (!origin || corsOrigins.includes(origin)) {
-						cb(null, true)
-						return
-					}
-
-					cb(new Error("Not allowed by CORS"), false)
 				}
-			: true,
-	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-	credentials: true,
-})
 
-app.decorate("db", db)
-app.decorate("analyzeFbaCsvUseCase", makeAnalyzeFbaCsvUseCase())
-app.decorate("auth", auth)
+	const app = fastify({
+		logger: loggerConfig,
+	}).withTypeProvider<ZodTypeProvider>()
 
-await app.register(fastifySwagger, {
-	openapi: {
-		info: {
-			title: "Análise de Valores API",
-			description: "API para busca e análise de valores de produtos",
-			version: "1.0.0",
+	app.setValidatorCompiler(validatorCompiler)
+	app.setSerializerCompiler(serializerCompiler)
+
+	const corsOrigins = env.CORS_ORIGINS
+		? env.CORS_ORIGINS.split(",")
+				.map((origin) => origin.trim())
+				.filter(Boolean)
+		: []
+
+	await app.register(fastifyCors, {
+		origin:
+			corsOrigins.length > 0
+				? (origin, cb) => {
+						if (!origin || corsOrigins.includes(origin)) {
+							cb(null, true)
+							return
+						}
+
+						cb(new Error("Not allowed by CORS"), false)
+					}
+				: true,
+		methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+		credentials: true,
+	})
+
+	app.decorate("db", db)
+	app.decorate("analyzeFbaCsvUseCase", makeAnalyzeFbaCsvUseCase())
+	app.decorate("auth", auth)
+
+	await app.register(fastifySwagger, {
+		openapi: {
+			info: {
+				title: "Análise de Valores API",
+				description: "API para busca e análise de valores de produtos",
+				version: "1.0.0",
+			},
 		},
-	},
-	transform: jsonSchemaTransform,
-})
-
-await app.register(scalarApiReference, {
-	routePrefix: "/docs",
-	configuration: {
-		title: "Análise de Valores API",
-	},
-})
-
-app.get("/health", async () => {
-	return { status: "ok", timestamp: new Date().toISOString() }
-})
-
-await app.register(authRoutes)
-
-app.addHook("onRequest", verifyAuth)
-
-await app.register(productsRoutes)
-await app.register(brandsRoutes)
-await app.register(storesRoutes)
-await app.register(dashboardRoutes)
-await app.register(salesRoutes)
-await app.register(stocksRoutes)
-await app.register(fbaRoutes)
-
-if (env.NODE_ENV === "production") {
-	const webDistPath = path.join(__dirname, "../web")
-
-	app.register(fastifyStatic, {
-		root: webDistPath,
-		prefix: "/",
-		maxAge: "30d",
-		immutable: true,
+		transform: jsonSchemaTransform,
 	})
 
-	app.setNotFoundHandler((_request, reply) => {
-		return reply.sendFile("index.html", { maxAge: 0, immutable: false })
+	await app.register(scalarApiReference, {
+		routePrefix: "/docs",
+		configuration: {
+			title: "Análise de Valores API",
+		},
 	})
+
+	app.get("/health", async () => {
+		return { status: "ok", timestamp: new Date().toISOString() }
+	})
+
+	await app.register(authRoutes)
+
+	app.addHook("onRequest", verifyAuth)
+
+	await app.register(productsRoutes)
+	await app.register(brandsRoutes)
+	await app.register(storesRoutes)
+	await app.register(dashboardRoutes)
+	await app.register(salesRoutes)
+	await app.register(stocksRoutes)
+	await app.register(fbaRoutes)
+
+	if (env.NODE_ENV === "production") {
+		const webDistPath = path.join(__dirname, "../web")
+
+		app.register(fastifyStatic, {
+			root: webDistPath,
+			prefix: "/",
+			maxAge: "30d",
+			immutable: true,
+		})
+
+		app.setNotFoundHandler((_request, reply) => {
+			return reply.sendFile("index.html", { maxAge: 0, immutable: false })
+		})
+	}
+
+	await app.ready()
+
+	return app
 }

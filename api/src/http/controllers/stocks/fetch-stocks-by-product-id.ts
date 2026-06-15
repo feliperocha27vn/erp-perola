@@ -1,7 +1,7 @@
-import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
-import { makeFetchStocksByProductIdUseCase } from "../../../factories/stocks/make-fetch-stocks-by-product-id-use-case.js"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
+import { ProductNotFoundError } from "../../../errors/product-not-found-error.js"
+import { makeFetchStocksByProductIdUseCase } from "../../../factories/stocks/make-fetch-stocks-by-product-id-use-case.js"
 
 const stockSchema = z.object({
 	id: z.string().uuid(),
@@ -32,7 +32,8 @@ export const fetchStocksByProductId: FastifyPluginAsyncZod = async (app) => {
 		},
 		async (req, reply) => {
 			try {
-				const fetchStocksByProductIdUseCase = makeFetchStocksByProductIdUseCase()
+				const fetchStocksByProductIdUseCase =
+					makeFetchStocksByProductIdUseCase()
 				const result = await fetchStocksByProductIdUseCase.execute({
 					productId: req.params.productId,
 				})

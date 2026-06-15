@@ -1,10 +1,15 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import z from "zod"
 import { InsufficientStockError } from "../../../errors/insufficient-stock-error.js"
 import { SaleNotFoundError } from "../../../errors/sale-not-found-error.js"
 import { makeUpdateSaleUseCase } from "../../../factories/sales/make-update-sale-use-case.js"
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
-import z from "zod"
 
-const saleChannelSchema = z.enum(["Amazon", "Mercado Livre", "Shopee", "Direto"])
+const saleChannelSchema = z.enum([
+	"Amazon",
+	"Mercado Livre",
+	"Shopee",
+	"Direto",
+])
 
 const storeSchema = z.object({
 	id: z.string().uuid(),
@@ -71,7 +76,10 @@ export const updateSale: FastifyPluginAsyncZod = async (app) => {
 						quantity: z.number().int().positive().optional(),
 						sale_price: z.number().int().nonnegative().optional(),
 						channel: saleChannelSchema.optional(),
-						sale_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+						sale_date: z
+							.string()
+							.regex(/^\d{4}-\d{2}-\d{2}$/)
+							.optional(),
 						store_id: z.string().uuid().nullable().optional(),
 					})
 					.refine((body) => Object.keys(body).length > 0),

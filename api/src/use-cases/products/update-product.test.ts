@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { ProductAlreadyExistsError } from "../../errors/product-already-exists-error.js"
-import type { Brand, BrandRepository } from "../../repositories/brand-repository.js"
+import type {
+	Brand,
+	BrandRepository,
+} from "../../repositories/brand-repository.js"
 import type {
 	CreateProductInput,
 	FetchProductsReply,
@@ -61,7 +64,9 @@ class FakeBrandRepository implements BrandRepository {
 class FakeProductRepository implements ProductRepository {
 	constructor(private products: Product[]) {}
 
-	async fetchProducts(_request: FetchProductsRequest): Promise<FetchProductsReply> {
+	async fetchProducts(
+		_request: FetchProductsRequest,
+	): Promise<FetchProductsReply> {
 		return {
 			items: this.products,
 			total: this.products.length,
@@ -86,7 +91,8 @@ class FakeProductRepository implements ProductRepository {
 	}
 
 	async countByBrandId(brandId: string): Promise<number> {
-		return this.products.filter((product) => product.brand_id === brandId).length
+		return this.products.filter((product) => product.brand_id === brandId)
+			.length
 	}
 
 	async create(_data: CreateProductInput): Promise<Product> {
@@ -121,7 +127,10 @@ class FakeProductRepository implements ProductRepository {
 		return current
 	}
 
-	async updateProductImage(_id: string, _url_image: string): Promise<Product | null> {
+	async updateProductImage(
+		_id: string,
+		_url_image: string,
+	): Promise<Product | null> {
 		return null
 	}
 

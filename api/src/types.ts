@@ -1,6 +1,6 @@
+import type { Auth } from "./auth.js"
 import type { db } from "./db/connection.js"
 import type { AnalyzeFbaCsvUseCase } from "./use-cases/fba/analyze-fba-csv.js"
-import type { Auth } from "./auth.js"
 
 declare module "fastify" {
 	interface FastifyInstance {

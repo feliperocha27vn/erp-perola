@@ -1,5 +1,8 @@
 import { SaleNotFoundError } from "../../errors/sale-not-found-error.js"
-import type { SaleChannel, SaleRepository } from "../../repositories/sale-repository.js"
+import type {
+	SaleChannel,
+	SaleRepository,
+} from "../../repositories/sale-repository.js"
 
 interface UpdateSaleUseCaseRequest {
 	id: string
@@ -17,7 +20,14 @@ interface UpdateSaleUseCaseResponse {
 export class UpdateSaleUseCase {
 	constructor(private saleRepository: SaleRepository) {}
 
-	async execute({ id, quantity, sale_price, channel, sale_date, store_id }: UpdateSaleUseCaseRequest): Promise<UpdateSaleUseCaseResponse> {
+	async execute({
+		id,
+		quantity,
+		sale_price,
+		channel,
+		sale_date,
+		store_id,
+	}: UpdateSaleUseCaseRequest): Promise<UpdateSaleUseCaseResponse> {
 		const currentSale = await this.saleRepository.getById(id)
 
 		if (!currentSale) {

@@ -21,15 +21,15 @@ function buildDefaultTechnicalDetails(
 	return {
 		technical_title: `${brandName} ${sku} - Relogio com foco tecnico em materiais e construcao`,
 		technical_subtitle:
-			'Relogio com especificacoes tecnicas consolidadas para catalogo e analise comparativa.',
+			"Relogio com especificacoes tecnicas consolidadas para catalogo e analise comparativa.",
 		technical_analysis:
-			'Descreva aqui a engenharia do relogio, materiais da caixa/bezel/cristal e os beneficios praticos de cada escolha tecnica.',
-		technical_movement: 'Calibre nao informado.',
-		technical_case_and_crystal: 'Material da caixa e cristal nao informados.',
+			"Descreva aqui a engenharia do relogio, materiais da caixa/bezel/cristal e os beneficios praticos de cada escolha tecnica.",
+		technical_movement: "Calibre nao informado.",
+		technical_case_and_crystal: "Material da caixa e cristal nao informados.",
 		technical_specific_functionality:
-			'Funcao tecnica principal ou certificacao nao informada.',
-		technical_dial_and_luminosity: 'Mostrador e lumen nao informados.',
-		technical_bracelet_construction: 'Pulseira e fecho nao informados.',
+			"Funcao tecnica principal ou certificacao nao informada.",
+		technical_dial_and_luminosity: "Mostrador e lumen nao informados.",
+		technical_bracelet_construction: "Pulseira e fecho nao informados.",
 		technical_table: `| Caracteristica | Detalhe |
 | :--- | :--- |
 | Referencia | ${sku} |
