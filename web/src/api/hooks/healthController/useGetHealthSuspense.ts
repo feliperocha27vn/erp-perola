@@ -11,21 +11,23 @@ import type {
 import type {
   QueryKey,
   QueryClient,
-  QueryObserverOptions,
-  UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import type { GetHealthQueryResponse } from "../../types/undefinedController/GetHealth.ts";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getHealth } from "../../clients/undefinedController/getHealth.ts";
+import type { GetHealthQueryResponse } from "../../types/healthController/GetHealth.ts";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { getHealth } from "../../clients/healthController/getHealth.ts";
 
-export const getHealthQueryKey = () => [{ url: "/health" }] as const;
+export const getHealthSuspenseQueryKey = () => [{ url: "/health" }] as const;
 
-export type GetHealthQueryKey = ReturnType<typeof getHealthQueryKey>;
+export type GetHealthSuspenseQueryKey = ReturnType<
+  typeof getHealthSuspenseQueryKey
+>;
 
-export function getHealthQueryOptions(
+export function getHealthSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getHealthQueryKey();
+  const queryKey = getHealthSuspenseQueryKey();
   return queryOptions<
     GetHealthQueryResponse,
     ResponseErrorConfig<Error>,
@@ -42,18 +44,16 @@ export function getHealthQueryOptions(
 /**
  * {@link /health}
  */
-export function useGetHealth<
+export function useGetHealthSuspense<
   TData = GetHealthQueryResponse,
-  TQueryData = GetHealthQueryResponse,
-  TQueryKey extends QueryKey = GetHealthQueryKey,
+  TQueryKey extends QueryKey = GetHealthSuspenseQueryKey,
 >(
   options: {
     query?: Partial<
-      QueryObserverOptions<
+      UseSuspenseQueryOptions<
         GetHealthQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
-        TQueryData,
         TQueryKey
       >
     > & { client?: QueryClient };
@@ -62,16 +62,16 @@ export function useGetHealth<
 ) {
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
-  const queryKey = resolvedOptions?.queryKey ?? getHealthQueryKey();
+  const queryKey = resolvedOptions?.queryKey ?? getHealthSuspenseQueryKey();
 
-  const query = useQuery(
+  const query = useSuspenseQuery(
     {
-      ...getHealthQueryOptions(config),
+      ...getHealthSuspenseQueryOptions(config),
       ...resolvedOptions,
       queryKey,
-    } as unknown as QueryObserverOptions,
+    } as unknown as UseSuspenseQueryOptions,
     queryClient,
-  ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
+  ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
     queryKey: TQueryKey;
   };
 

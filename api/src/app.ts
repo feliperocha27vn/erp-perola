@@ -88,7 +88,7 @@ export async function buildApp() {
 		},
 	})
 
-	app.get("/health", async () => {
+	app.get("/health", { schema: { tags: ["health"] } }, async () => {
 		return { status: "ok", timestamp: new Date().toISOString() }
 	})
 

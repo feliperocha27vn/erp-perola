@@ -8,6 +8,8 @@ export type { GetDashboardLastMonthSalesSuspenseQueryKey } from "./hooks/dashboa
 export type { GetDashboardMonthlySalesQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySales.ts";
 export type { GetDashboardMonthlySalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export type { PostFbaAnalyzeMutationKey } from "./hooks/fbaController/usePostFbaAnalyze.ts";
+export type { GetHealthQueryKey } from "./hooks/healthController/useGetHealth.ts";
+export type { GetHealthSuspenseQueryKey } from "./hooks/healthController/useGetHealthSuspense.ts";
 export type { GetProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export type { GetProductSalesDailySuspenseQueryKey } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
 export type { GetProductsQueryKey } from "./hooks/productsController/useGetProducts.ts";
@@ -29,14 +31,6 @@ export type { PatchStocksStockIdMutationKey } from "./hooks/stocksController/use
 export type { PostProductsProductIdStocksMutationKey } from "./hooks/stocksController/usePostProductsProductIdStocks.ts";
 export type { GetStoresQueryKey } from "./hooks/storesController/useGetStores.ts";
 export type { GetStoresSuspenseQueryKey } from "./hooks/storesController/useGetStoresSuspense.ts";
-export type { DeleteApiAuthMutationKey } from "./hooks/undefinedController/useDeleteApiAuth.ts";
-export type { GetApiAuthQueryKey } from "./hooks/undefinedController/useGetApiAuth.ts";
-export type { GetApiAuthSuspenseQueryKey } from "./hooks/undefinedController/useGetApiAuthSuspense.ts";
-export type { GetHealthQueryKey } from "./hooks/undefinedController/useGetHealth.ts";
-export type { GetHealthSuspenseQueryKey } from "./hooks/undefinedController/useGetHealthSuspense.ts";
-export type { PatchApiAuthMutationKey } from "./hooks/undefinedController/usePatchApiAuth.ts";
-export type { PostApiAuthMutationKey } from "./hooks/undefinedController/usePostApiAuth.ts";
-export type { PutApiAuthMutationKey } from "./hooks/undefinedController/usePutApiAuth.ts";
 export type {
   DeleteBrandsId204,
   DeleteBrandsId204EnumKey,
@@ -87,6 +81,11 @@ export type {
   PostFbaAnalyzeMutationResponse,
   SummaryAnalysisSourceEnumKey,
 } from "./types/fbaController/PostFbaAnalyze.ts";
+export type {
+  GetHealth200,
+  GetHealthQuery,
+  GetHealthQueryResponse,
+} from "./types/healthController/GetHealth.ts";
 export type {
   GetProductSalesDaily200,
   GetProductSalesDailyPathParams,
@@ -208,59 +207,6 @@ export type {
   GetStoresQuery,
   GetStoresQueryResponse,
 } from "./types/storesController/GetStores.ts";
-export type {
-  DeleteApiAuth200,
-  DeleteApiAuthMutation,
-  DeleteApiAuthMutationResponse,
-  DeleteApiAuthPathParams,
-} from "./types/undefinedController/DeleteApiAuth.ts";
-export type {
-  GetApiAuth200,
-  GetApiAuthPathParams,
-  GetApiAuthQuery,
-  GetApiAuthQueryResponse,
-} from "./types/undefinedController/GetApiAuth.ts";
-export type {
-  GetHealth200,
-  GetHealthQuery,
-  GetHealthQueryResponse,
-} from "./types/undefinedController/GetHealth.ts";
-export type {
-  HeadApiAuth200,
-  HeadApiAuthMutation,
-  HeadApiAuthMutationResponse,
-  HeadApiAuthPathParams,
-} from "./types/undefinedController/HeadApiAuth.ts";
-export type {
-  OptionsApiAuth200,
-  OptionsApiAuthMutation,
-  OptionsApiAuthMutationResponse,
-  OptionsApiAuthPathParams,
-} from "./types/undefinedController/OptionsApiAuth.ts";
-export type {
-  PatchApiAuth200,
-  PatchApiAuthMutation,
-  PatchApiAuthMutationResponse,
-  PatchApiAuthPathParams,
-} from "./types/undefinedController/PatchApiAuth.ts";
-export type {
-  PostApiAuth200,
-  PostApiAuthMutation,
-  PostApiAuthMutationResponse,
-  PostApiAuthPathParams,
-} from "./types/undefinedController/PostApiAuth.ts";
-export type {
-  PutApiAuth200,
-  PutApiAuthMutation,
-  PutApiAuthMutationResponse,
-  PutApiAuthPathParams,
-} from "./types/undefinedController/PutApiAuth.ts";
-export type {
-  TraceApiAuth200,
-  TraceApiAuthMutation,
-  TraceApiAuthMutationResponse,
-  TraceApiAuthPathParams,
-} from "./types/undefinedController/TraceApiAuth.ts";
 export { deleteBrandsId } from "./clients/brandsController/deleteBrandsId.ts";
 export { getBrands } from "./clients/brandsController/getBrands.ts";
 export { patchBrandsId } from "./clients/brandsController/patchBrandsId.ts";
@@ -268,6 +214,7 @@ export { postBrands } from "./clients/brandsController/postBrands.ts";
 export { getDashboardLastMonthSales } from "./clients/dashboardController/getDashboardLastMonthSales.ts";
 export { getDashboardMonthlySales } from "./clients/dashboardController/getDashboardMonthlySales.ts";
 export { postFbaAnalyze } from "./clients/fbaController/postFbaAnalyze.ts";
+export { getHealth } from "./clients/healthController/getHealth.ts";
 export { getProductSalesDaily } from "./clients/productsController/getProductSalesDaily.ts";
 export { getProducts } from "./clients/productsController/getProducts.ts";
 export { getProductsSalesVelocity } from "./clients/productsController/getProductsSalesVelocity.ts";
@@ -283,15 +230,6 @@ export { getProductsProductIdStocks } from "./clients/stocksController/getProduc
 export { patchStocksStockId } from "./clients/stocksController/patchStocksStockId.ts";
 export { postProductsProductIdStocks } from "./clients/stocksController/postProductsProductIdStocks.ts";
 export { getStores } from "./clients/storesController/getStores.ts";
-export { deleteApiAuth } from "./clients/undefinedController/deleteApiAuth.ts";
-export { getApiAuth } from "./clients/undefinedController/getApiAuth.ts";
-export { getHealth } from "./clients/undefinedController/getHealth.ts";
-export { headApiAuth } from "./clients/undefinedController/headApiAuth.ts";
-export { optionsApiAuth } from "./clients/undefinedController/optionsApiAuth.ts";
-export { patchApiAuth } from "./clients/undefinedController/patchApiAuth.ts";
-export { postApiAuth } from "./clients/undefinedController/postApiAuth.ts";
-export { putApiAuth } from "./clients/undefinedController/putApiAuth.ts";
-export { traceApiAuth } from "./clients/undefinedController/traceApiAuth.ts";
 export { deleteBrandsIdMutationKey } from "./hooks/brandsController/useDeleteBrandsId.ts";
 export { deleteBrandsIdMutationOptions } from "./hooks/brandsController/useDeleteBrandsId.ts";
 export { useDeleteBrandsId } from "./hooks/brandsController/useDeleteBrandsId.ts";
@@ -322,6 +260,12 @@ export { useGetDashboardMonthlySalesSuspense } from "./hooks/dashboardController
 export { postFbaAnalyzeMutationKey } from "./hooks/fbaController/usePostFbaAnalyze.ts";
 export { postFbaAnalyzeMutationOptions } from "./hooks/fbaController/usePostFbaAnalyze.ts";
 export { usePostFbaAnalyze } from "./hooks/fbaController/usePostFbaAnalyze.ts";
+export { getHealthQueryKey } from "./hooks/healthController/useGetHealth.ts";
+export { getHealthQueryOptions } from "./hooks/healthController/useGetHealth.ts";
+export { useGetHealth } from "./hooks/healthController/useGetHealth.ts";
+export { getHealthSuspenseQueryKey } from "./hooks/healthController/useGetHealthSuspense.ts";
+export { getHealthSuspenseQueryOptions } from "./hooks/healthController/useGetHealthSuspense.ts";
+export { useGetHealthSuspense } from "./hooks/healthController/useGetHealthSuspense.ts";
 export { getProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export { getProductSalesDailyQueryOptions } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export { useGetProductSalesDaily } from "./hooks/productsController/useGetProductSalesDaily.ts";
@@ -385,30 +329,6 @@ export { useGetStores } from "./hooks/storesController/useGetStores.ts";
 export { getStoresSuspenseQueryKey } from "./hooks/storesController/useGetStoresSuspense.ts";
 export { getStoresSuspenseQueryOptions } from "./hooks/storesController/useGetStoresSuspense.ts";
 export { useGetStoresSuspense } from "./hooks/storesController/useGetStoresSuspense.ts";
-export { deleteApiAuthMutationKey } from "./hooks/undefinedController/useDeleteApiAuth.ts";
-export { deleteApiAuthMutationOptions } from "./hooks/undefinedController/useDeleteApiAuth.ts";
-export { useDeleteApiAuth } from "./hooks/undefinedController/useDeleteApiAuth.ts";
-export { getApiAuthQueryKey } from "./hooks/undefinedController/useGetApiAuth.ts";
-export { getApiAuthQueryOptions } from "./hooks/undefinedController/useGetApiAuth.ts";
-export { useGetApiAuth } from "./hooks/undefinedController/useGetApiAuth.ts";
-export { getApiAuthSuspenseQueryKey } from "./hooks/undefinedController/useGetApiAuthSuspense.ts";
-export { getApiAuthSuspenseQueryOptions } from "./hooks/undefinedController/useGetApiAuthSuspense.ts";
-export { useGetApiAuthSuspense } from "./hooks/undefinedController/useGetApiAuthSuspense.ts";
-export { getHealthQueryKey } from "./hooks/undefinedController/useGetHealth.ts";
-export { getHealthQueryOptions } from "./hooks/undefinedController/useGetHealth.ts";
-export { useGetHealth } from "./hooks/undefinedController/useGetHealth.ts";
-export { getHealthSuspenseQueryKey } from "./hooks/undefinedController/useGetHealthSuspense.ts";
-export { getHealthSuspenseQueryOptions } from "./hooks/undefinedController/useGetHealthSuspense.ts";
-export { useGetHealthSuspense } from "./hooks/undefinedController/useGetHealthSuspense.ts";
-export { patchApiAuthMutationKey } from "./hooks/undefinedController/usePatchApiAuth.ts";
-export { patchApiAuthMutationOptions } from "./hooks/undefinedController/usePatchApiAuth.ts";
-export { usePatchApiAuth } from "./hooks/undefinedController/usePatchApiAuth.ts";
-export { postApiAuthMutationKey } from "./hooks/undefinedController/usePostApiAuth.ts";
-export { postApiAuthMutationOptions } from "./hooks/undefinedController/usePostApiAuth.ts";
-export { usePostApiAuth } from "./hooks/undefinedController/usePostApiAuth.ts";
-export { putApiAuthMutationKey } from "./hooks/undefinedController/usePutApiAuth.ts";
-export { putApiAuthMutationOptions } from "./hooks/undefinedController/usePutApiAuth.ts";
-export { usePutApiAuth } from "./hooks/undefinedController/usePutApiAuth.ts";
 export { itemsAnalysisSourceEnum } from "./types/fbaController/PostFbaAnalyze.ts";
 export { itemsConfidenceEnum } from "./types/fbaController/PostFbaAnalyze.ts";
 export { summaryAnalysisSourceEnum } from "./types/fbaController/PostFbaAnalyze.ts";

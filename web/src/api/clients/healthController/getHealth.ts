@@ -9,7 +9,7 @@ import type {
   RequestConfig,
   ResponseErrorConfig,
 } from "@/lib/kubb-axios-client";
-import type { GetHealthQueryResponse } from "../../types/undefinedController/GetHealth.ts";
+import type { GetHealthQueryResponse } from "../../types/healthController/GetHealth.ts";
 
 function getGetHealthUrl() {
   const res = { method: "GET", url: `/health` as const };

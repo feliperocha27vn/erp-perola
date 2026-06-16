@@ -3,7 +3,7 @@ import type { FastifyInstance } from "fastify"
 import { auth } from "../../../auth.js"
 
 export async function authRoutes(app: FastifyInstance) {
-	app.all("/api/auth/*", async (request, reply) => {
+	app.all("/api/auth/*", { schema: { hide: true } }, async (request, reply) => {
 		const url = new URL(request.url, `http://${request.headers.host}`)
 
 		const headers = fromNodeHeaders(request.headers)
