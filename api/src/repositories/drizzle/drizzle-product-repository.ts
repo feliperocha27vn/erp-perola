@@ -114,6 +114,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		pageIndex,
 		withoutImage,
 		search,
+		brandId,
 	}: FetchProductsRequest): Promise<FetchProductsReply> {
 		const limit = 20
 		const offset = pageIndex * limit
@@ -127,6 +128,7 @@ export class DrizzleProductRepository implements ProductRepository {
 						ilike(products.ean, `%${normalizedSearch}%`),
 					)
 				: undefined,
+			brandId ? eq(products.brand_id, brandId) : undefined,
 		].filter(Boolean)
 
 		const whereClause = filters.length > 0 ? and(...filters) : undefined

@@ -211,7 +211,7 @@ export function StockManagerModal({
 
   return (
     <Dialog open={open} onOpenChange={next => !next && handleClose()}>
-      <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl md:max-w-4xl max-h-[88vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Gerenciar Estoques</DialogTitle>
           <DialogDescription>
@@ -296,7 +296,7 @@ export function StockManagerModal({
                       </div>
 
                       {/* Desktop: layout original em 4 colunas */}
-                      <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
+                      <div className="hidden md:grid md:grid-cols-[1fr_1fr_auto_auto] md:gap-3 md:items-center">
                         <Input
                           value={editForm.title}
                           onChange={e =>
@@ -319,17 +319,17 @@ export function StockManagerModal({
                           }
                           placeholder="Quantidade"
                         />
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
                           <Switch.Root
                             checked={editForm.full}
                             onCheckedChange={(checked: boolean) =>
                               setEditForm(prev => ({ ...prev, full: checked }))
                             }
-                            className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                            className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors shrink-0"
                           >
                             <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
                           </Switch.Root>
-                          <span>{editForm.full ? 'Full' : 'Normal'}</span>
+                          <span className="whitespace-nowrap">{editForm.full ? 'Full' : 'Normal'}</span>
                         </div>
                         <div className="flex gap-2 justify-end">
                           <Button
@@ -414,14 +414,14 @@ export function StockManagerModal({
                       </div>
 
                       {/* Desktop: layout original em 4 colunas */}
-                      <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
-                        <div className="rounded-lg border border-border px-3 py-2 text-sm text-foreground">
+                      <div className="hidden md:grid md:grid-cols-[1fr_1fr_auto_auto] md:gap-3 md:items-center">
+                        <div className="rounded-lg border border-border px-3 py-2 text-sm text-foreground min-w-0 truncate">
                           {stock.title}
                         </div>
                         <div className="rounded-lg border border-border px-3 py-2 text-sm text-foreground">
                           {stock.qtde}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
                           <Switch.Root
                             checked={stock.full}
                             onCheckedChange={(checked: boolean) => {
@@ -435,11 +435,11 @@ export function StockManagerModal({
                               })
                             }}
                             disabled={updateMutation.isPending}
-                            className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                            className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors shrink-0"
                           >
                             <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
                           </Switch.Root>
-                          <span>{stock.full ? 'Full' : 'Normal'}</span>
+                          <span className="whitespace-nowrap">{stock.full ? 'Full' : 'Normal'}</span>
                         </div>
                         <div className="flex gap-2 justify-end">
                           <Button
@@ -533,7 +533,7 @@ export function StockManagerModal({
               </div>
 
               {/* Desktop: layout original em 4 colunas */}
-              <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
+              <div className="hidden md:grid md:grid-cols-[1fr_1fr_auto_auto] md:gap-3 md:items-center">
                 <Input
                   value={createForm.title}
                   onChange={e =>
@@ -550,17 +550,17 @@ export function StockManagerModal({
                   }
                   placeholder="Quantidade"
                 />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
                   <Switch.Root
                     checked={createForm.full}
                     onCheckedChange={(checked: boolean) =>
                       setCreateForm(prev => ({ ...prev, full: checked }))
                     }
-                    className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                    className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors shrink-0"
                   >
                     <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
                   </Switch.Root>
-                  <span>{createForm.full ? 'Full' : 'Normal'}</span>
+                  <span className="whitespace-nowrap">{createForm.full ? 'Full' : 'Normal'}</span>
                 </div>
                 <div className="flex gap-2 justify-end">
                   <Button

@@ -96,7 +96,7 @@ export function ProductsControls({
                   {brands.map(brand => (
                     <Select.Item
                       key={brand.id}
-                      value={brand.name}
+                      value={brand.id}
                       className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
                     >
                       <Select.ItemText>{brand.name}</Select.ItemText>

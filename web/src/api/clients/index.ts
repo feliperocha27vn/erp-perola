@@ -20,4 +20,12 @@ export { getProductsProductIdStocks } from "./stocksController/getProductsProduc
 export { patchStocksStockId } from "./stocksController/patchStocksStockId.ts";
 export { postProductsProductIdStocks } from "./stocksController/postProductsProductIdStocks.ts";
 export { getStores } from "./storesController/getStores.ts";
+export { deleteApiAuth } from "./undefinedController/deleteApiAuth.ts";
+export { getApiAuth } from "./undefinedController/getApiAuth.ts";
 export { getHealth } from "./undefinedController/getHealth.ts";
+export { headApiAuth } from "./undefinedController/headApiAuth.ts";
+export { optionsApiAuth } from "./undefinedController/optionsApiAuth.ts";
+export { patchApiAuth } from "./undefinedController/patchApiAuth.ts";
+export { postApiAuth } from "./undefinedController/postApiAuth.ts";
+export { putApiAuth } from "./undefinedController/putApiAuth.ts";
+export { traceApiAuth } from "./undefinedController/traceApiAuth.ts";

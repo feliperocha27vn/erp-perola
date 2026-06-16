@@ -39,6 +39,11 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 						.enum(["true", "false"])
 						.optional()
 						.describe("Filtrar apenas produtos sem imagem"),
+					brandId: z
+						.string()
+						.uuid()
+						.optional()
+						.describe("Filtrar por ID da marca"),
 				}),
 				response: {
 					200: z.object({
@@ -78,6 +83,7 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 				pageIndex: req.query.pageIndex,
 				search: req.query.search,
 				withoutImage: req.query.withoutImage === "true",
+				brandId: req.query.brandId,
 			})
 
 			return reply.send(result)

@@ -41,6 +41,7 @@ const uploadImagensSearchSchema = z.object({
   page: z.number().int().min(0).catch(0),
   filter: z.enum(['all', 'without']).catch('all'),
   search: z.string().optional(),
+  brand: z.string().uuid().optional(),
 })
 
 type UploadImagensSearch = z.infer<typeof uploadImagensSearchSchema>
@@ -72,10 +73,10 @@ function GerenciadorDeProdutos() {
     page,
     filter,
     search: searchQuery,
+    brand: brandQuery,
   } = useSearch({ from: Route.fullPath })
   const [editingId, setEditingId] = useState<string | null>(null)
   const [imageUrl, setImageUrl] = useState('')
-  const [brandFilter, setBrandFilter] = useState<BrandFilter>('ALL')
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isStockModalOpen, setIsStockModalOpen] = useState(false)
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
@@ -166,6 +167,7 @@ function GerenciadorDeProdutos() {
     pageIndex: String(page),
     search: normalizedSearch,
     withoutImage: filter === 'without' ? 'true' : undefined,
+    brandId: brandQuery,
   })
 
   const createProductMutation = usePostProducts({
@@ -363,11 +365,6 @@ function GerenciadorDeProdutos() {
   const items = Array.isArray(data?.items) ? data.items : []
   const brands = brandsData?.brands ?? []
 
-  const filteredProducts = items.filter(item => {
-    if (brandFilter !== 'ALL' && item.brand?.name !== brandFilter) return false
-    return true
-  })
-
   const productsWithoutImage = items.filter(p => !p.url_image).length
   const totalPages = Math.ceil((data?.total || 0) / 20)
 
@@ -383,7 +380,7 @@ function GerenciadorDeProdutos() {
           withoutImage={productsWithoutImage}
           page={page}
           totalPages={totalPages}
-          filteredCount={filteredProducts.length}
+          filteredCount={items.length}
         />
       )}
 
@@ -399,8 +396,13 @@ function GerenciadorDeProdutos() {
         onFilterChange={nextFilter =>
           updateSearchParams({ filter: nextFilter, page: 0 })
         }
-        brandFilter={brandFilter}
-        onBrandChange={value => setBrandFilter(value)}
+        brandFilter={brandQuery ?? 'ALL'}
+        onBrandChange={value =>
+          updateSearchParams({
+            brand: value === 'ALL' ? undefined : value,
+            page: 0,
+          })
+        }
       />
 
       <div className="flex justify-end mb-6">
@@ -415,7 +417,7 @@ function GerenciadorDeProdutos() {
       </div>
 
       <ProductsGrid
-        products={filteredProducts}
+        products={items}
         isLoading={isLoading}
         editingId={editingId}
         imageUrl={imageUrl}
@@ -459,7 +461,7 @@ function GerenciadorDeProdutos() {
         />
       ) : null}
 
-      {!isLoading && !error && filteredProducts.length === 0 ? (
+      {!isLoading && !error && items.length === 0 ? (
         <EmptyState
           icon={Package}
           title="Nenhum produto encontrado"

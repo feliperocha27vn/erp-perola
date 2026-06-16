@@ -4,6 +4,7 @@ interface FetchAllProductsUseCaseRequest {
 	pageIndex: number
 	withoutImage?: boolean
 	search?: string
+	brandId?: string
 }
 
 interface FetchAllProductsUseCaseReply {
@@ -52,11 +53,13 @@ export class FetchAllProductsUseCase {
 		pageIndex,
 		withoutImage,
 		search,
+		brandId,
 	}: FetchAllProductsUseCaseRequest): Promise<FetchAllProductsUseCaseReply> {
 		const result = await this.productRepository.fetchProducts({
 			pageIndex,
 			withoutImage,
 			search,
+			brandId,
 		})
 
 		return result

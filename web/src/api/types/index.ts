@@ -170,10 +170,58 @@ export type {
   GetStoresQueryResponse,
 } from "./storesController/GetStores.ts";
 export type {
+  DeleteApiAuth200,
+  DeleteApiAuthMutation,
+  DeleteApiAuthMutationResponse,
+  DeleteApiAuthPathParams,
+} from "./undefinedController/DeleteApiAuth.ts";
+export type {
+  GetApiAuth200,
+  GetApiAuthPathParams,
+  GetApiAuthQuery,
+  GetApiAuthQueryResponse,
+} from "./undefinedController/GetApiAuth.ts";
+export type {
   GetHealth200,
   GetHealthQuery,
   GetHealthQueryResponse,
 } from "./undefinedController/GetHealth.ts";
+export type {
+  HeadApiAuth200,
+  HeadApiAuthMutation,
+  HeadApiAuthMutationResponse,
+  HeadApiAuthPathParams,
+} from "./undefinedController/HeadApiAuth.ts";
+export type {
+  OptionsApiAuth200,
+  OptionsApiAuthMutation,
+  OptionsApiAuthMutationResponse,
+  OptionsApiAuthPathParams,
+} from "./undefinedController/OptionsApiAuth.ts";
+export type {
+  PatchApiAuth200,
+  PatchApiAuthMutation,
+  PatchApiAuthMutationResponse,
+  PatchApiAuthPathParams,
+} from "./undefinedController/PatchApiAuth.ts";
+export type {
+  PostApiAuth200,
+  PostApiAuthMutation,
+  PostApiAuthMutationResponse,
+  PostApiAuthPathParams,
+} from "./undefinedController/PostApiAuth.ts";
+export type {
+  PutApiAuth200,
+  PutApiAuthMutation,
+  PutApiAuthMutationResponse,
+  PutApiAuthPathParams,
+} from "./undefinedController/PutApiAuth.ts";
+export type {
+  TraceApiAuth200,
+  TraceApiAuthMutation,
+  TraceApiAuthMutationResponse,
+  TraceApiAuthPathParams,
+} from "./undefinedController/TraceApiAuth.ts";
 export { itemsAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";
 export { itemsConfidenceEnum } from "./fbaController/PostFbaAnalyze.ts";
 export { summaryAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";

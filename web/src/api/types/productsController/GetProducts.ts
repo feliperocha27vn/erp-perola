@@ -28,6 +28,11 @@ export type GetProductsQueryParams = {
    * @type string | undefined
    */
   withoutImage?: GetProductsQueryParamsWithoutImageEnumKey;
+  /**
+   * @description Filtrar por ID da marca
+   * @type string | undefined, uuid
+   */
+  brandId?: string;
 };
 
 /**

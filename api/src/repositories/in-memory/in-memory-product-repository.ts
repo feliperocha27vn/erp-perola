@@ -33,6 +33,10 @@ export class InMemoryProductRepository implements ProductRepository {
 			)
 		}
 
+		if (request.brandId) {
+			items = items.filter((product) => product.brand_id === request.brandId)
+		}
+
 		const total = items.length
 		const pageIndex = Math.max(0, request.pageIndex)
 		const offset = pageIndex * pageSize

@@ -53,6 +53,7 @@ export interface FetchProductsRequest {
 	pageIndex: number
 	withoutImage?: boolean
 	search?: string
+	brandId?: string
 }
 
 export interface SalesVelocityItem {
