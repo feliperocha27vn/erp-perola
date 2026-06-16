@@ -57,24 +57,40 @@ analise-de-valores-v2/
 
 ### Como disparar o deploy
 
-Após o `push` para `main`, o deploy pode ser feito de duas formas:
+Após o `push` para `main`, o deploy pode ser feito de três formas:
 
 1. **Automático**: o Coolify detecta o push via GitHub App e enfileira o deploy sozinho.
-2. **Manual**: se precisar forçar o deploy imediatamente, use a **API direta do Coolify**.
+2. **Manual via script** (recomendado): use `pnpm deploy:prod` na raiz do projeto.
+3. **Manual via API direta**: alternativa para casos avançados ou debug.
 
-> **Nota:** o MCP do Coolify (`coolify_coolify_application_management` com `action: deploy`) retorna `404` para essa aplicação (provavelmente porque é `dockercompose`). A forma mais confiável é chamar a API REST diretamente.
+> **Nota:** o MCP do Coolify (`coolify_coolify_application_management` com `action: deploy`) retorna `404` para essa aplicação (provavelmente porque é `dockercompose`). Use o script ou a API REST direta.
 
-#### Passo a passo do deploy manual via API
+#### Deploy manual via script (recomendado)
 
-1. Obtenha o token e a URL base no `opencode.json`:
+1. Copie `.env.example` na raiz para `.env` e preencha:
    - `COOLIFY_BASE_URL`: `https://coolify.relojoariaperola.com.br`
-   - `COOLIFY_API_TOKEN`: `<token>`
+   - `COOLIFY_API_TOKEN`: token obtido no `opencode.json`
+   - `COOLIFY_APP_UUID`: `so80wg8c80swgwgo8gwsw0s4`
 
-2. Identifique o UUID da aplicação. No momento, a aplicação de produção é:
-   - Nome: `feliperocha27vn/erp-perola:main-ao8cgs4cowck800s4c0s0w0o`
-   - UUID: `so80wg8c80swgwgo8gwsw0s4`
+2. Instale as dependências do script (apenas na primeira vez):
 
-3. Dispare o deploy:
+```bash
+pnpm install
+```
+
+3. Execute o deploy:
+
+```bash
+pnpm deploy:prod
+```
+
+O script dispara o deploy, faz polling do status a cada 10 segundos e exibe os logs automaticamente caso falhe. Ao final, também verifica se a aplicação está `running:healthy`.
+
+#### Deploy manual via API direta
+
+1. Obtenha o token e a URL base no `opencode.json`.
+
+2. Dispare o deploy:
 
 ```bash
 curl -X POST "https://coolify.relojoariaperola.com.br/api/v1/deploy" \
@@ -83,7 +99,7 @@ curl -X POST "https://coolify.relojoariaperola.com.br/api/v1/deploy" \
   -d '{"uuid":"so80wg8c80swgwgo8gwsw0s4","force":true}'
 ```
 
-4. Acompanhe o status pelo UUID do deployment retornado:
+3. Acompanhe o status pelo UUID do deployment retornado:
 
 ```bash
 curl -X GET "https://coolify.relojoariaperola.com.br/api/v1/deployments/<DEPLOYMENT_UUID>" \
@@ -91,7 +107,7 @@ curl -X GET "https://coolify.relojoariaperola.com.br/api/v1/deployments/<DEPLOYM
   -H "Content-Type: application/json"
 ```
 
-5. O deploy está pronto quando o campo `status` for `finished` e a aplicação estiver `running:healthy`.
+4. O deploy está pronto quando o campo `status` for `finished` e a aplicação estiver `running:healthy`.
 
 #### Verificação rápida da aplicação
 
