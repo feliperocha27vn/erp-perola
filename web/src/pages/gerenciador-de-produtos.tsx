@@ -27,7 +27,6 @@ import {
   type ProductSalePriceForm,
   ProductSalePriceModal,
 } from './-components/gerenciador-de-produtos/product-sale-price-modal'
-import type { BrandFilter } from './-components/gerenciador-de-produtos/products-controls'
 import { ProductsControls } from './-components/gerenciador-de-produtos/products-controls'
 import { ProductsGrid } from './-components/gerenciador-de-produtos/products-grid'
 import { ProductsPagination } from './-components/gerenciador-de-produtos/products-pagination'

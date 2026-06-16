@@ -9,7 +9,7 @@
 cd api && pnpm run build
 
 # 2. Build (type-check) do Web
-cd web && npx tsc --noEmit
+cd web && npx tsc -b --noEmit
 
 # 3. Só depois commit
 git add -A && git commit -m "..."
@@ -26,8 +26,8 @@ Se qualquer um dos builds falhar, **não commite** — corrija os erros primeiro
 ### Ordem completa de verificação
 
 1. `cd api && pnpm run build` — compila a API (gera `dist/` e valida types)
-2. `cd web && npx tsc --noEmit` — valida types do web sem gerar arquivos
-3. Se a API mudou endpoints/schemas: rode `cd web && pnpm generate:api` para regerar o cliente Kubb, depois `npx tsc --noEmit` novamente
+2. `cd web && npx tsc -b --noEmit` — valida types do web sem gerar arquivos (o `-b` é obrigatório porque o `tsconfig.json` usa project references)
+3. Se a API mudou endpoints/schemas: rode `cd web && pnpm generate:api` para regerar o cliente Kubb, depois `npx tsc -b --noEmit` novamente
 4. Só então commit e push
 
 ---
