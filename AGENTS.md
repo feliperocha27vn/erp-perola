@@ -54,3 +54,50 @@ analise-de-valores-v2/
 - Domínio: erp.relojoariaperola.com.br
 - Build no Docker executa os dois projetos em stages separados
 - Qualquer erro de TypeScript no web bloqueia o deploy completo
+
+### Como disparar o deploy
+
+Após o `push` para `main`, o deploy pode ser feito de duas formas:
+
+1. **Automático**: o Coolify detecta o push via GitHub App e enfileira o deploy sozinho.
+2. **Manual**: se precisar forçar o deploy imediatamente, use a **API direta do Coolify**.
+
+> **Nota:** o MCP do Coolify (`coolify_coolify_application_management` com `action: deploy`) retorna `404` para essa aplicação (provavelmente porque é `dockercompose`). A forma mais confiável é chamar a API REST diretamente.
+
+#### Passo a passo do deploy manual via API
+
+1. Obtenha o token e a URL base no `opencode.json`:
+   - `COOLIFY_BASE_URL`: `https://coolify.relojoariaperola.com.br`
+   - `COOLIFY_API_TOKEN`: `<token>`
+
+2. Identifique o UUID da aplicação. No momento, a aplicação de produção é:
+   - Nome: `feliperocha27vn/erp-perola:main-ao8cgs4cowck800s4c0s0w0o`
+   - UUID: `so80wg8c80swgwgo8gwsw0s4`
+
+3. Dispare o deploy:
+
+```bash
+curl -X POST "https://coolify.relojoariaperola.com.br/api/v1/deploy" \
+  -H "Authorization: Bearer <COOLIFY_API_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"uuid":"so80wg8c80swgwgo8gwsw0s4","force":true}'
+```
+
+4. Acompanhe o status pelo UUID do deployment retornado:
+
+```bash
+curl -X GET "https://coolify.relojoariaperola.com.br/api/v1/deployments/<DEPLOYMENT_UUID>" \
+  -H "Authorization: Bearer <COOLIFY_API_TOKEN>" \
+  -H "Content-Type: application/json"
+```
+
+5. O deploy está pronto quando o campo `status` for `finished` e a aplicação estiver `running:healthy`.
+
+#### Verificação rápida da aplicação
+
+```bash
+curl -X GET "https://coolify.relojoariaperola.com.br/api/v1/applications" \
+  -H "Authorization: Bearer <COOLIFY_API_TOKEN>"
+```
+
+Busque pelo UUID `so80wg8c80swgwgo8gwsw0s4` e confirme o campo `status`.
