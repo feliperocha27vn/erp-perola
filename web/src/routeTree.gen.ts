@@ -13,7 +13,6 @@ import { Route as VendasRouteImport } from './pages/vendas'
 import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
 import { Route as GerenciadorDeProdutosRouteImport } from './pages/gerenciador-de-produtos'
-import { Route as AnaliseFbaRouteImport } from './pages/analise-fba'
 import { Route as IndexRouteImport } from './pages/index'
 
 const VendasRoute = VendasRouteImport.update({
@@ -36,11 +35,6 @@ const GerenciadorDeProdutosRoute = GerenciadorDeProdutosRouteImport.update({
   path: '/gerenciador-de-produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnaliseFbaRoute = AnaliseFbaRouteImport.update({
-  id: '/analise-fba',
-  path: '/analise-fba',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,7 +43,6 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/analise-fba': typeof AnaliseFbaRoute
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
@@ -57,7 +50,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/analise-fba': typeof AnaliseFbaRoute
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
@@ -66,7 +58,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/analise-fba': typeof AnaliseFbaRoute
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
@@ -74,25 +65,12 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/analise-fba'
-    | '/gerenciador-de-produtos'
-    | '/login'
-    | '/marcas'
-    | '/vendas'
+  fullPaths: '/' | '/gerenciador-de-produtos' | '/login' | '/marcas' | '/vendas'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/analise-fba'
-    | '/gerenciador-de-produtos'
-    | '/login'
-    | '/marcas'
-    | '/vendas'
+  to: '/' | '/gerenciador-de-produtos' | '/login' | '/marcas' | '/vendas'
   id:
     | '__root__'
     | '/'
-    | '/analise-fba'
     | '/gerenciador-de-produtos'
     | '/login'
     | '/marcas'
@@ -101,7 +79,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AnaliseFbaRoute: typeof AnaliseFbaRoute
   GerenciadorDeProdutosRoute: typeof GerenciadorDeProdutosRoute
   LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
@@ -138,13 +115,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GerenciadorDeProdutosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/analise-fba': {
-      id: '/analise-fba'
-      path: '/analise-fba'
-      fullPath: '/analise-fba'
-      preLoaderRoute: typeof AnaliseFbaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -157,7 +127,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AnaliseFbaRoute: AnaliseFbaRoute,
   GerenciadorDeProdutosRoute: GerenciadorDeProdutosRoute,
   LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,

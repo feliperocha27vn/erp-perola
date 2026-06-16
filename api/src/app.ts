@@ -14,7 +14,6 @@ import {
 import { env } from "./env.js"
 import { authRoutes } from "./http/controllers/auth/routes.js"
 import { brandsRoutes } from "./http/controllers/brands/routes.js"
-import { fbaRoutes } from "./http/controllers/fba/routes.js"
 import { dashboardRoutes } from "./http/controllers/metrics/routes.js"
 import { productsRoutes } from "./http/controllers/products/routes.js"
 import { salesRoutes } from "./http/controllers/sales/routes.js"
@@ -102,7 +101,6 @@ export async function buildApp() {
 	await app.register(dashboardRoutes)
 	await app.register(salesRoutes)
 	await app.register(stocksRoutes)
-	await app.register(fbaRoutes)
 
 	if (env.NODE_ENV === "production") {
 		const webDistPath = path.join(__dirname, "../web")

@@ -7,7 +7,6 @@ export type { GetDashboardLastMonthSalesQueryKey } from "./dashboardController/u
 export type { GetDashboardLastMonthSalesSuspenseQueryKey } from "./dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
 export type { GetDashboardMonthlySalesQueryKey } from "./dashboardController/useGetDashboardMonthlySales.ts";
 export type { GetDashboardMonthlySalesSuspenseQueryKey } from "./dashboardController/useGetDashboardMonthlySalesSuspense.ts";
-export type { PostFbaAnalyzeMutationKey } from "./fbaController/usePostFbaAnalyze.ts";
 export type { GetHealthQueryKey } from "./healthController/useGetHealth.ts";
 export type { GetHealthSuspenseQueryKey } from "./healthController/useGetHealthSuspense.ts";
 export type { GetProductSalesDailyQueryKey } from "./productsController/useGetProductSalesDaily.ts";
@@ -58,9 +57,6 @@ export { useGetDashboardMonthlySales } from "./dashboardController/useGetDashboa
 export { getDashboardMonthlySalesSuspenseQueryKey } from "./dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export { getDashboardMonthlySalesSuspenseQueryOptions } from "./dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export { useGetDashboardMonthlySalesSuspense } from "./dashboardController/useGetDashboardMonthlySalesSuspense.ts";
-export { postFbaAnalyzeMutationKey } from "./fbaController/usePostFbaAnalyze.ts";
-export { postFbaAnalyzeMutationOptions } from "./fbaController/usePostFbaAnalyze.ts";
-export { usePostFbaAnalyze } from "./fbaController/usePostFbaAnalyze.ts";
 export { getHealthQueryKey } from "./healthController/useGetHealth.ts";
 export { getHealthQueryOptions } from "./healthController/useGetHealth.ts";
 export { useGetHealth } from "./healthController/useGetHealth.ts";

@@ -3,7 +3,6 @@ import {
   Building2,
   LayoutDashboard,
   Package,
-  PackageCheck,
   Receipt,
 } from 'lucide-react'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
@@ -103,27 +102,6 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Acessar Ferramenta
               <Package className="size-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
-
-          <Link
-            to="/analise-fba"
-            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
-          >
-            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
-              <PackageCheck className="size-8" />
-            </div>
-            <h4 className="text-xl font-display font-semibold mb-2">
-              Analise FBA
-            </h4>
-            <p className="text-muted-foreground leading-relaxed">
-              Envie o Business Report de 90 dias da Amazon e receba
-              recomendacoes de quantidade para envio ao FBA, com justificativa
-              por SKU.
-            </p>
-            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
-              Acessar Ferramenta
-              <PackageCheck className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 

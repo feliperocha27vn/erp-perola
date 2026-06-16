@@ -39,16 +39,6 @@ export type {
   GetDashboardMonthlySalesQueryResponse,
 } from "./dashboardController/GetDashboardMonthlySales.ts";
 export type {
-  ItemsAnalysisSourceEnumKey,
-  ItemsConfidenceEnumKey,
-  PostFbaAnalyze200,
-  PostFbaAnalyze400,
-  PostFbaAnalyzeMutation,
-  PostFbaAnalyzeMutationRequest,
-  PostFbaAnalyzeMutationResponse,
-  SummaryAnalysisSourceEnumKey,
-} from "./fbaController/PostFbaAnalyze.ts";
-export type {
   GetHealth200,
   GetHealthQuery,
   GetHealthQueryResponse,
@@ -174,9 +164,6 @@ export type {
   GetStoresQuery,
   GetStoresQueryResponse,
 } from "./storesController/GetStores.ts";
-export { itemsAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";
-export { itemsConfidenceEnum } from "./fbaController/PostFbaAnalyze.ts";
-export { summaryAnalysisSourceEnum } from "./fbaController/PostFbaAnalyze.ts";
 export { periodsPeriodEnum } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum2 } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum3 } from "./productsController/GetProductSalesDaily.ts";

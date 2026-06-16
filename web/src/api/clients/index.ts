@@ -4,7 +4,6 @@ export { patchBrandsId } from "./brandsController/patchBrandsId.ts";
 export { postBrands } from "./brandsController/postBrands.ts";
 export { getDashboardLastMonthSales } from "./dashboardController/getDashboardLastMonthSales.ts";
 export { getDashboardMonthlySales } from "./dashboardController/getDashboardMonthlySales.ts";
-export { postFbaAnalyze } from "./fbaController/postFbaAnalyze.ts";
 export { getHealth } from "./healthController/getHealth.ts";
 export { getProductSalesDaily } from "./productsController/getProductSalesDaily.ts";
 export { getProducts } from "./productsController/getProducts.ts";
