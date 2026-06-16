@@ -1,6 +1,5 @@
 import { Switch } from '@base-ui/react/switch'
-import { Modal } from '@mui/base/Modal'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Warehouse } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useDeleteStocksStockId } from '@/api/hooks/stocksController/useDeleteStocksStockId'
@@ -8,6 +7,13 @@ import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useG
 import { usePatchStocksStockId } from '@/api/hooks/stocksController/usePatchStocksStockId'
 import { usePostProductsProductIdStocks } from '@/api/hooks/stocksController/usePostProductsProductIdStocks'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { queryClient } from '@/lib/react-query'
 import type { ProductItem, ProductStockItem } from './types'
@@ -204,43 +210,93 @@ export function StockManagerModal({
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 px-4 py-6 overflow-y-auto">
-        <div className="glass-card w-full max-w-3xl rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-foreground">
-                Gerenciar Estoques
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {product?.sku} — EAN: {product?.ean}
-              </p>
-            </div>
-            <Button variant="outline" onClick={handleClose} type="button">
-              Fechar
-            </Button>
-          </div>
+    <Dialog open={open} onOpenChange={next => !next && handleClose()}>
+      <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Gerenciar Estoques</DialogTitle>
+          <DialogDescription>
+            {product?.sku} — EAN: {product?.ean}
+          </DialogDescription>
+        </DialogHeader>
 
-          <div className="space-y-3">
-            {isLoading ? (
-              <p className="text-sm text-muted-foreground">
-                Carregando estoques...
-              </p>
-            ) : stocks.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Nenhum estoque cadastrado.
-              </p>
-            ) : (
-              stocks.map(stock => {
-                const isEditing = editingStockId === stock.id
+        <div className="space-y-3">
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">
+              Carregando estoques...
+            </p>
+          ) : stocks.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhum estoque cadastrado.
+            </p>
+          ) : (
+            stocks.map(stock => {
+              const isEditing = editingStockId === stock.id
 
-                return (
-                  <div
-                    key={stock.id}
-                    className="rounded-xl border border-border bg-secondary/40 p-4 space-y-3"
-                  >
-                    {isEditing ? (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+              return (
+                <div
+                  key={stock.id}
+                  className="rounded-xl border border-border bg-secondary/40 p-4"
+                >
+                  {isEditing ? (
+                    <>
+                      {/* Mobile: campos empilhados em card */}
+                      <div className="space-y-3 md:hidden">
+                        <Input
+                          value={editForm.title}
+                          onChange={e =>
+                            setEditForm(prev => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          placeholder="Loja / Marketplace"
+                        />
+                        <Input
+                          type="number"
+                          min={0}
+                          value={editForm.qtde}
+                          onChange={e =>
+                            setEditForm(prev => ({
+                              ...prev,
+                              qtde: e.target.value,
+                            }))
+                          }
+                          placeholder="Quantidade"
+                        />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Switch.Root
+                            checked={editForm.full}
+                            onCheckedChange={(checked: boolean) =>
+                              setEditForm(prev => ({ ...prev, full: checked }))
+                            }
+                            className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                          >
+                            <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
+                          </Switch.Root>
+                          <span>{editForm.full ? 'Full' : 'Normal'}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            onClick={() => handleUpdate(stock.id)}
+                            disabled={updateMutation.isPending}
+                            type="button"
+                          >
+                            {updateMutation.isPending
+                              ? 'Salvando...'
+                              : 'Salvar'}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => setEditingStockId(null)}
+                            type="button"
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Desktop: layout original em 4 colunas */}
+                      <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
                         <Input
                           value={editForm.title}
                           onChange={e =>
@@ -294,8 +350,71 @@ export function StockManagerModal({
                           </Button>
                         </div>
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                    </>
+                  ) : (
+                    <>
+                      {/* Mobile: card vertical */}
+                      <div className="space-y-3 md:hidden">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Warehouse className="size-4 text-muted-foreground shrink-0" />
+                            <span className="font-semibold text-foreground truncate">
+                              {stock.title}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs shrink-0">
+                            <Switch.Root
+                              checked={stock.full}
+                              onCheckedChange={(checked: boolean) => {
+                                updateMutation.mutate({
+                                  stockId: stock.id,
+                                  data: {
+                                    title: stock.title,
+                                    qtde: stock.qtde,
+                                    full: checked,
+                                  },
+                                })
+                              }}
+                              disabled={updateMutation.isPending}
+                              className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                            >
+                              <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
+                            </Switch.Root>
+                            <span className="text-muted-foreground">
+                              {stock.full ? 'Full' : 'Normal'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm border-t border-border/60 pt-3">
+                          <span className="text-muted-foreground">
+                            Quantidade
+                          </span>
+                          <span className="font-semibold tabular-nums text-foreground">
+                            {stock.qtde}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <Button
+                            variant="outline"
+                            onClick={() => handleStartEditing(stock)}
+                            type="button"
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => handleDelete(stock.id)}
+                            disabled={deleteMutation.isPending}
+                            type="button"
+                          >
+                            <Trash2 className="size-4 mr-1" />
+                            Excluir
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Desktop: layout original em 4 colunas */}
+                      <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
                         <div className="rounded-lg border border-border px-3 py-2 text-sm text-foreground">
                           {stock.title}
                         </div>
@@ -341,29 +460,80 @@ export function StockManagerModal({
                           </Button>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )
-              })
-            )}
-          </div>
+                    </>
+                  )}
+                </div>
+              )
+            })
+          )}
+        </div>
 
-          <div className="pt-2 border-t border-border space-y-3">
-            <Button
-              onClick={() => {
-                setEditingStockId(null)
-                setIsCreating(true)
-              }}
-              type="button"
-              variant="outline"
-              className="rounded-xl"
-            >
-              <Plus className="size-4 mr-2" />
-              Adicionar Nova Loja
-            </Button>
+        <div className="pt-2 border-t border-border space-y-3">
+          <Button
+            onClick={() => {
+              setEditingStockId(null)
+              setIsCreating(true)
+            }}
+            type="button"
+            variant="outline"
+            className="rounded-xl"
+          >
+            <Plus className="size-4 mr-2" />
+            Adicionar Nova Loja
+          </Button>
 
-            {isCreating && (
-              <div className="rounded-xl border border-border bg-secondary/40 p-4 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+          {isCreating && (
+            <div className="rounded-xl border border-border bg-secondary/40 p-4">
+              {/* Mobile: campos empilhados */}
+              <div className="space-y-3 md:hidden">
+                <Input
+                  value={createForm.title}
+                  onChange={e =>
+                    setCreateForm(prev => ({ ...prev, title: e.target.value }))
+                  }
+                  placeholder="Loja / Marketplace"
+                />
+                <Input
+                  type="number"
+                  min={0}
+                  value={createForm.qtde}
+                  onChange={e =>
+                    setCreateForm(prev => ({ ...prev, qtde: e.target.value }))
+                  }
+                  placeholder="Quantidade"
+                />
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Switch.Root
+                    checked={createForm.full}
+                    onCheckedChange={(checked: boolean) =>
+                      setCreateForm(prev => ({ ...prev, full: checked }))
+                    }
+                    className="relative h-6 w-10 rounded-full bg-white/20 data-[checked]:bg-emerald-500 transition-colors"
+                  >
+                    <Switch.Thumb className="block h-5 w-5 translate-x-0.5 rounded-full bg-white transition-transform data-[checked]:translate-x-[1.2rem]" />
+                  </Switch.Root>
+                  <span>{createForm.full ? 'Full' : 'Normal'}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    onClick={handleCreate}
+                    disabled={createMutation.isPending}
+                    type="button"
+                  >
+                    {createMutation.isPending ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsCreating(false)}
+                    type="button"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+
+              {/* Desktop: layout original em 4 colunas */}
+              <div className="hidden md:grid md:grid-cols-4 md:gap-3 md:items-center">
                 <Input
                   value={createForm.title}
                   onChange={e =>
@@ -409,10 +579,10 @@ export function StockManagerModal({
                   </Button>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   )
 }

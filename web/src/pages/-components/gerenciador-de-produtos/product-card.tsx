@@ -75,7 +75,7 @@ function Header({
           <Button
             variant="ghost"
             size="icon"
-            className="size-8 text-muted-foreground"
+            className="text-muted-foreground"
             onClick={handleCopySku}
             title="Copiar SKU"
             aria-label="Copiar SKU"
@@ -89,7 +89,7 @@ function Header({
           <Button
             variant="ghost"
             size="icon"
-            className="size-8 text-muted-foreground"
+            className="text-muted-foreground"
             onClick={handleCopyEan}
             title="Copiar EAN"
             aria-label="Copiar EAN"
@@ -174,7 +174,7 @@ function Header({
             <Button
               variant="ghost"
               size="icon"
-              className="size-8 rounded-full text-muted-foreground"
+              className="rounded-full text-muted-foreground"
               aria-label="Abrir ações do produto"
               type="button"
             >

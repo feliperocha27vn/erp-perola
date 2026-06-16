@@ -1,4 +1,3 @@
-import { Modal } from '@mui/base/Modal'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -7,6 +6,13 @@ import { useGetBrands } from '@/api/hooks/brandsController/useGetBrands'
 import { usePatchBrandsId } from '@/api/hooks/brandsController/usePatchBrandsId'
 import { usePostBrands } from '@/api/hooks/brandsController/usePostBrands'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { queryClient } from '@/lib/react-query'
 import type { BrandItem } from './types'
@@ -14,38 +20,6 @@ import type { BrandItem } from './types'
 type BrandManagerModalProps = {
   open: boolean
   onClose: () => void
-}
-
-type BrandManagerRootProps = {
-  children: React.ReactNode
-}
-
-function BrandManagerRoot({ children }: BrandManagerRootProps) {
-  return (
-    <div className="glass-card w-full max-w-2xl rounded-2xl p-6 space-y-4">
-      {children}
-    </div>
-  )
-}
-
-type BrandManagerHeaderProps = {
-  onClose: () => void
-}
-
-function BrandManagerHeader({ onClose }: BrandManagerHeaderProps) {
-  return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h2 className="text-xl font-bold text-foreground">Gerenciar Marcas</h2>
-        <p className="text-sm text-muted-foreground">
-          Adicionar, editar e excluir marcas
-        </p>
-      </div>
-      <Button variant="outline" onClick={onClose} type="button">
-        Fechar
-      </Button>
-    </div>
-  )
 }
 
 type BrandManagerCreateProps = {
@@ -117,27 +91,35 @@ function BrandManagerList({
             className="rounded-xl border border-border bg-secondary/40 p-3"
           >
             {isEditing ? (
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <Input
                   value={editingName}
                   onChange={e => onChangeEditName(e.target.value)}
                   placeholder="Nome da marca"
                 />
-                <Button
-                  type="button"
-                  onClick={() => onSaveEdit(brand.id)}
-                  disabled={isUpdating}
-                >
-                  {isUpdating ? 'Salvando...' : 'Salvar'}
-                </Button>
-                <Button type="button" variant="outline" onClick={onCancelEdit}>
-                  Cancelar
-                </Button>
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
+                  <Button
+                    type="button"
+                    onClick={() => onSaveEdit(brand.id)}
+                    disabled={isUpdating}
+                  >
+                    {isUpdating ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onCancelEdit}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-foreground text-sm">{brand.name}</p>
-                <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-foreground text-sm truncate">
+                  {brand.name}
+                </p>
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
                   <Button
                     type="button"
                     variant="outline"
@@ -166,8 +148,6 @@ function BrandManagerList({
 }
 
 const BrandManager = {
-  Root: BrandManagerRoot,
-  Header: BrandManagerHeader,
   Create: BrandManagerCreate,
   List: BrandManagerList,
 }
@@ -250,48 +230,49 @@ export function BrandManagerModal({ open, onClose }: BrandManagerModalProps) {
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 px-4">
-        <BrandManager.Root>
-          <BrandManager.Header onClose={onClose} />
+    <Dialog open={open} onOpenChange={next => !next && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Gerenciar Marcas</DialogTitle>
+          <DialogDescription>
+            Adicionar, editar e excluir marcas
+          </DialogDescription>
+        </DialogHeader>
 
-          <BrandManager.Create
-            value={newBrandName}
-            isPending={createMutation.isPending}
-            onChange={setNewBrandName}
-            onCreate={handleCreate}
+        <BrandManager.Create
+          value={newBrandName}
+          isPending={createMutation.isPending}
+          onChange={setNewBrandName}
+          onCreate={handleCreate}
+        />
+
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground">Carregando marcas...</p>
+        ) : brands.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Nenhuma marca cadastrada.
+          </p>
+        ) : (
+          <BrandManager.List
+            brands={brands}
+            editingId={editingId}
+            editingName={editingName}
+            isUpdating={updateMutation.isPending}
+            isDeleting={deleteMutation.isPending}
+            onStartEdit={brand => {
+              setEditingId(brand.id)
+              setEditingName(brand.name)
+            }}
+            onChangeEditName={setEditingName}
+            onCancelEdit={() => {
+              setEditingId(null)
+              setEditingName('')
+            }}
+            onSaveEdit={handleSaveEdit}
+            onDelete={id => deleteMutation.mutate({ id })}
           />
-
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground">
-              Carregando marcas...
-            </p>
-          ) : brands.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Nenhuma marca cadastrada.
-            </p>
-          ) : (
-            <BrandManager.List
-              brands={brands}
-              editingId={editingId}
-              editingName={editingName}
-              isUpdating={updateMutation.isPending}
-              isDeleting={deleteMutation.isPending}
-              onStartEdit={brand => {
-                setEditingId(brand.id)
-                setEditingName(brand.name)
-              }}
-              onChangeEditName={setEditingName}
-              onCancelEdit={() => {
-                setEditingId(null)
-                setEditingName('')
-              }}
-              onSaveEdit={handleSaveEdit}
-              onDelete={id => deleteMutation.mutate({ id })}
-            />
-          )}
-        </BrandManager.Root>
-      </div>
-    </Modal>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }

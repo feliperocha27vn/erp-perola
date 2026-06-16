@@ -52,7 +52,7 @@ export function ProductsControls({
         />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Button
           onClick={() => onFilterChange('without')}
           variant={filter === 'without' ? 'default' : 'outline'}

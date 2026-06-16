@@ -1,7 +1,6 @@
-import { Dialog } from '@base-ui/react/dialog'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { useId, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import {
   Area,
   AreaChart,
@@ -11,9 +10,16 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useGetProductSalesDaily } from '@/api/hooks/productsController/useGetProductSalesDaily'
 import type { GetProductSalesDaily200 } from '@/api/types/productsController/GetProductSalesDaily'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type SalesDailyStore = GetProductSalesDaily200['stores'][number]
 type SalesDailyPeriod = SalesDailyStore['periods'][number]
@@ -73,6 +79,38 @@ function DailyChart({
     [period.days]
   )
 
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  // Recharts só desativa o tooltip via onMouseLeave (mouse), e onTouchEnd não
+  // dispara isso internamente — o tooltip fica "travado" após o toque. React
+  // deriva onMouseLeave de eventos nativos mouseout/mouseover (não escuta
+  // mouseleave diretamente), então despachamos um mouseout sintético com
+  // relatedTarget fora da árvore para fechar o tooltip ao soltar o dedo.
+  useEffect(() => {
+    const wrapperEl = wrapperRef.current
+    if (!wrapperEl) return
+
+    const closeTooltip = () => {
+      const rechartsWrapper = wrapperEl.querySelector<HTMLElement>(
+        '.recharts-wrapper'
+      )
+      rechartsWrapper?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+          relatedTarget: document.body,
+        } as MouseEventInit)
+      )
+    }
+
+    wrapperEl.addEventListener('touchend', closeTooltip, { passive: true })
+    wrapperEl.addEventListener('touchcancel', closeTooltip, { passive: true })
+
+    return () => {
+      wrapperEl.removeEventListener('touchend', closeTooltip)
+      wrapperEl.removeEventListener('touchcancel', closeTooltip)
+    }
+  }, [])
+
   if (chartData.length === 0) {
     return (
       <div className="flex h-[220px] items-center justify-center">
@@ -82,7 +120,7 @@ function DailyChart({
   }
 
   return (
-    <div className="h-[220px] w-full">
+    <div ref={wrapperRef} className="h-[220px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 8 }}>
           <defs>
@@ -142,7 +180,7 @@ function StoreView({ store }: { store: SalesDailyStore }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-widest text-muted-foreground">
             Unidades vendidas
@@ -193,58 +231,48 @@ export function ProductSalesDashboardModal({
     stores.find(s => s.store_id === currentStoreId) ?? stores[0]
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
-        <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-background border border-border shadow-2xl p-6 space-y-5 focus:outline-none max-h-[90vh] overflow-y-auto">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-display font-semibold">Dashboard de Vendas</h2>
-              <p className="text-sm text-muted-foreground">{productSku}</p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Dashboard de Vendas</DialogTitle>
+          <DialogDescription>{productSku}</DialogDescription>
+        </DialogHeader>
+
+        {isLoading ? (
+          <>
+            <Skeleton className="h-9 w-full rounded-xl" />
+            <SkeletonView />
+          </>
+        ) : (
+          <>
+            <div className="flex gap-1 rounded-xl border border-border p-1 overflow-x-auto">
+              {stores.map(store => (
+                <button
+                  key={store.store_id ?? 'todas'}
+                  type="button"
+                  onClick={() => setActiveStore(store.store_id)}
+                  className={`flex-shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                    (activeStore === null && store.store_id === null) ||
+                    activeStore === store.store_id
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {store.store_name}
+                </button>
+              ))}
             </div>
-            <Dialog.Close className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </Dialog.Close>
-          </div>
 
-          {isLoading ? (
-            <>
-              <Skeleton className="h-9 w-full rounded-xl" />
-              <SkeletonView />
-            </>
-          ) : (
-            <>
-              <div className="flex gap-1 rounded-xl border border-border p-1 overflow-x-auto">
-                {stores.map(store => (
-                  <button
-                    key={store.store_id ?? 'todas'}
-                    type="button"
-                    onClick={() => setActiveStore(store.store_id)}
-                    className={`flex-shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                      (activeStore === null && store.store_id === null) ||
-                      activeStore === store.store_id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {store.store_name}
-                  </button>
-                ))}
+            {currentStore ? (
+              <StoreView store={currentStore} />
+            ) : (
+              <div className="flex h-[280px] items-center justify-center">
+                <p className="text-sm text-muted-foreground">Sem dados para exibir.</p>
               </div>
-
-              {currentStore ? (
-                <StoreView store={currentStore} />
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-sm text-muted-foreground">Sem dados para exibir.</p>
-                </div>
-              )}
-            </>
-          )}
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+            )}
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }
