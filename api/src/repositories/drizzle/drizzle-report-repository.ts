@@ -1,4 +1,4 @@
-import { asc, isNull, eq, sql } from "drizzle-orm"
+import { and, asc, eq, isNull, sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import { products, stocks } from "../../db/schema.js"
 import type {
@@ -19,7 +19,10 @@ export class DrizzleReportRepository implements StockReportRepository {
 			.from(products)
 			.leftJoin(stocks, eq(stocks.product_id, products.id))
 			.where(
-				brandId === null ? isNull(products.brand_id) : eq(products.brand_id, brandId),
+				and(
+					isNull(products.deleted_at),
+					brandId === null ? isNull(products.brand_id) : eq(products.brand_id, brandId),
+				),
 			)
 			.orderBy(asc(products.sku), asc(stocks.title))
 
