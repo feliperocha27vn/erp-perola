@@ -35,6 +35,7 @@ class FakeBrandRepository implements BrandRepository {
 		const brand: Brand = {
 			id: crypto.randomUUID(),
 			name: data.name,
+			deleted_at: null,
 			created_at: new Date(),
 			updated_at: new Date(),
 		}
@@ -166,6 +167,7 @@ function makeProduct(id: string, sku: string, ean: string): Product {
 		technical_bracelet_construction: null,
 		technical_table: null,
 		stocks: [],
+		deleted_at: null,
 		created_at: new Date(),
 		updated_at: new Date(),
 	}

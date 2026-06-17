@@ -33,6 +33,7 @@ export interface Product {
 	technical_bracelet_construction: string | null
 	technical_table: string | null
 	stocks: ProductStock[]
+	deleted_at: Date | null
 	created_at: Date
 	updated_at: Date
 }

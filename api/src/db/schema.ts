@@ -104,6 +104,7 @@ export const stores = pgTable("stores", {
 export const brands = pgTable("brands", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	name: text("name").notNull().unique(),
+	deleted_at: timestamp("deleted_at"),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 	updated_at: timestamp("updated_at").notNull().defaultNow(),
 })

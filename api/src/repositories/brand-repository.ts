@@ -1,6 +1,7 @@
 export interface Brand {
 	id: string
 	name: string
+	deleted_at: Date | null
 	created_at: Date
 	updated_at: Date
 }

@@ -113,6 +113,7 @@ export class InMemoryProductRepository implements ProductRepository {
 				data.technical_details?.technical_bracelet_construction ?? null,
 			technical_table: data.technical_details?.technical_table ?? null,
 			stocks: [],
+			deleted_at: null,
 			created_at: new Date(),
 			updated_at: new Date(),
 		}
