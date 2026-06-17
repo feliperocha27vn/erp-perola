@@ -126,6 +126,7 @@ export const products = pgTable("products", {
 	technical_dial_and_luminosity: text("technical_dial_and_luminosity"),
 	technical_bracelet_construction: text("technical_bracelet_construction"),
 	technical_table: text("technical_table"),
+	deleted_at: timestamp("deleted_at"),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 	updated_at: timestamp("updated_at").notNull().defaultNow(),
 })

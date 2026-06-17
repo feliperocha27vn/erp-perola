@@ -17,7 +17,6 @@ import type {
 import type {
   GetReportsStockByBrandQueryResponse,
   GetReportsStockByBrandQueryParams,
-  GetReportsStockByBrand400,
 } from "../../types/reportsController/GetReportsStockByBrand.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getReportsStockByBrand } from "../../clients/reportsController/getReportsStockByBrand.ts";
@@ -37,7 +36,7 @@ export function getReportsStockByBrandQueryOptions(
   const queryKey = getReportsStockByBrandQueryKey(params);
   return queryOptions<
     GetReportsStockByBrandQueryResponse,
-    ResponseErrorConfig<GetReportsStockByBrand400>,
+    ResponseErrorConfig<Error>,
     GetReportsStockByBrandQueryResponse,
     typeof queryKey
   >({
@@ -65,7 +64,7 @@ export function useGetReportsStockByBrand<
     query?: Partial<
       QueryObserverOptions<
         GetReportsStockByBrandQueryResponse,
-        ResponseErrorConfig<GetReportsStockByBrand400>,
+        ResponseErrorConfig<Error>,
         TData,
         TQueryData,
         TQueryKey
@@ -86,7 +85,7 @@ export function useGetReportsStockByBrand<
       queryKey,
     } as unknown as QueryObserverOptions,
     queryClient,
-  ) as UseQueryResult<TData, ResponseErrorConfig<GetReportsStockByBrand400>> & {
+  ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
     queryKey: TQueryKey;
   };
 

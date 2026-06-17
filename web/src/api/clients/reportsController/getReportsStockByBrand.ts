@@ -12,7 +12,6 @@ import type {
 import type {
   GetReportsStockByBrandQueryResponse,
   GetReportsStockByBrandQueryParams,
-  GetReportsStockByBrand400,
 } from "../../types/reportsController/GetReportsStockByBrand.ts";
 
 function getGetReportsStockByBrandUrl() {
@@ -32,7 +31,7 @@ export async function getReportsStockByBrand(
 
   const res = await request<
     GetReportsStockByBrandQueryResponse,
-    ResponseErrorConfig<GetReportsStockByBrand400>,
+    ResponseErrorConfig<Error>,
     unknown
   >({
     method: "GET",

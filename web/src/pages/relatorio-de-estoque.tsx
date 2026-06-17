@@ -84,9 +84,13 @@ function RelatorioDeEstoquePage() {
           }}
         >
           <Select.Trigger className="flex h-11 w-full max-w-sm items-center justify-between rounded-xl border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-            <Select.Value
-              placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Selecione uma marca...'}
-            />
+            <Select.Value placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Selecione uma marca...'}>
+              {brandId === NO_BRAND_VALUE
+                ? 'Sem marca'
+                : brandId
+                  ? (brands.find(b => b.id === brandId)?.name ?? 'Selecione uma marca...')
+                  : 'Selecione uma marca...'}
+            </Select.Value>
             <Select.Icon className="text-muted-foreground">▾</Select.Icon>
           </Select.Trigger>
           <Select.Portal>

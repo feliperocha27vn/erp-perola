@@ -4,12 +4,21 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { useGetBrands } from '@/api/hooks/brandsController/useGetBrands'
+import { useDeleteProduct } from '@/api/hooks/productsController/useDeleteProduct'
 import { useGetProducts } from '@/api/hooks/productsController/useGetProducts'
 import { usePatchProductsId } from '@/api/hooks/productsController/usePatchProductsId'
 import { usePatchProductsIdImage } from '@/api/hooks/productsController/usePatchProductsIdImage'
 import { usePostProducts } from '@/api/hooks/productsController/usePostProducts'
 import type { PatchProductsIdImageMutationResponse } from '@/api/types/productsController/PatchProductsIdImage'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import { queryClient } from '@/lib/react-query'
@@ -88,6 +97,7 @@ function GerenciadorDeProdutos() {
   const [salePriceTarget, setSalePriceTarget] = useState<ProductItem | null>(
     null
   )
+  const [deleteTarget, setDeleteTarget] = useState<ProductItem | null>(null)
   const [createProductForm, setCreateProductForm] =
     useState<CreateProductFormValues>(emptyCreateProductForm())
 
@@ -184,6 +194,19 @@ function GerenciadorDeProdutos() {
   })
 
   const { data: brandsData, isLoading: isBrandsLoading } = useGetBrands()
+
+  const deleteProductMutation = useDeleteProduct({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Produto excluído com sucesso!')
+        setDeleteTarget(null)
+        queryClient.invalidateQueries({ queryKey: [{ url: '/products' }] })
+      },
+      onError: () => {
+        toast.error('Erro ao excluir produto. Tente novamente.')
+      },
+    },
+  })
 
   const updateProductMutation = usePatchProductsId({
     mutation: {
@@ -441,6 +464,7 @@ function GerenciadorDeProdutos() {
           setSalePriceTarget(product)
           setIsSalePriceModalOpen(true)
         }}
+        onDelete={product => setDeleteTarget(product)}
       />
 
       <ProductsPagination
@@ -471,6 +495,42 @@ function GerenciadorDeProdutos() {
           }
         />
       ) : null}
+
+      <Dialog
+        open={!!deleteTarget}
+        onOpenChange={open => { if (!open) setDeleteTarget(null) }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Excluir produto</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja excluir o produto{' '}
+              <strong>{deleteTarget?.sku}</strong>? Esta ação não pode ser
+              desfeita. Os estoques associados também serão removidos.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteTarget(null)}
+              disabled={deleteProductMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deleteTarget) {
+                  deleteProductMutation.mutate({ id: deleteTarget.id })
+                }
+              }}
+              disabled={deleteProductMutation.isPending}
+            >
+              {deleteProductMutation.isPending ? 'Excluindo...' : 'Excluir'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <StockManagerModal
         open={isStockModalOpen}

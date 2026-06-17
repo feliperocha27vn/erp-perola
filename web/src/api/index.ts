@@ -9,6 +9,7 @@ export type { GetDashboardMonthlySalesQueryKey } from "./hooks/dashboardControll
 export type { GetDashboardMonthlySalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export type { GetHealthQueryKey } from "./hooks/healthController/useGetHealth.ts";
 export type { GetHealthSuspenseQueryKey } from "./hooks/healthController/useGetHealthSuspense.ts";
+export type { DeleteProductMutationKey } from "./hooks/productsController/useDeleteProduct.ts";
 export type { GetProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export type { GetProductSalesDailySuspenseQueryKey } from "./hooks/productsController/useGetProductSalesDailySuspense.ts";
 export type { GetProductsQueryKey } from "./hooks/productsController/useGetProducts.ts";
@@ -78,6 +79,13 @@ export type {
   GetHealthQueryResponse,
 } from "./types/healthController/GetHealth.ts";
 export type {
+  DeleteProduct204,
+  DeleteProduct404,
+  DeleteProductMutation,
+  DeleteProductMutationResponse,
+  DeleteProductPathParams,
+} from "./types/productsController/DeleteProduct.ts";
+export type {
   GetProductSalesDaily200,
   GetProductSalesDailyPathParams,
   GetProductSalesDailyQuery,
@@ -128,10 +136,8 @@ export type {
 } from "./types/productsController/PostProducts.ts";
 export type {
   GetReportsStockByBrand200,
-  GetReportsStockByBrand400,
   GetReportsStockByBrandQuery,
   GetReportsStockByBrandQueryParams,
-  GetReportsStockByBrandQueryParamsNoBrandEnumKey,
   GetReportsStockByBrandQueryResponse,
 } from "./types/reportsController/GetReportsStockByBrand.ts";
 export type {
@@ -213,6 +219,7 @@ export { postBrands } from "./clients/brandsController/postBrands.ts";
 export { getDashboardLastMonthSales } from "./clients/dashboardController/getDashboardLastMonthSales.ts";
 export { getDashboardMonthlySales } from "./clients/dashboardController/getDashboardMonthlySales.ts";
 export { getHealth } from "./clients/healthController/getHealth.ts";
+export { deleteProduct } from "./clients/productsController/deleteProduct.ts";
 export { getProductSalesDaily } from "./clients/productsController/getProductSalesDaily.ts";
 export { getProducts } from "./clients/productsController/getProducts.ts";
 export { getProductsSalesVelocity } from "./clients/productsController/getProductsSalesVelocity.ts";
@@ -262,6 +269,9 @@ export { useGetHealth } from "./hooks/healthController/useGetHealth.ts";
 export { getHealthSuspenseQueryKey } from "./hooks/healthController/useGetHealthSuspense.ts";
 export { getHealthSuspenseQueryOptions } from "./hooks/healthController/useGetHealthSuspense.ts";
 export { useGetHealthSuspense } from "./hooks/healthController/useGetHealthSuspense.ts";
+export { deleteProductMutationKey } from "./hooks/productsController/useDeleteProduct.ts";
+export { deleteProductMutationOptions } from "./hooks/productsController/useDeleteProduct.ts";
+export { useDeleteProduct } from "./hooks/productsController/useDeleteProduct.ts";
 export { getProductSalesDailyQueryKey } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export { getProductSalesDailyQueryOptions } from "./hooks/productsController/useGetProductSalesDaily.ts";
 export { useGetProductSalesDaily } from "./hooks/productsController/useGetProductSalesDaily.ts";
@@ -337,7 +347,6 @@ export { periodsPeriodEnum3 } from "./types/productsController/GetProductSalesDa
 export { periodsPeriodEnum4 } from "./types/productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./types/productsController/GetProductsSalesVelocity.ts";
-export { getReportsStockByBrandQueryParamsNoBrandEnum } from "./types/reportsController/GetReportsStockByBrand.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./types/salesController/PatchSalesId.ts";

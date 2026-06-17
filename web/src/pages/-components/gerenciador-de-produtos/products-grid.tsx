@@ -16,6 +16,7 @@ type ProductsGridProps = {
   onOpenDetails: (product: ProductItem) => void
   onOpenIdentityEdit: (product: ProductItem) => void
   onOpenSalePrice: (product: ProductItem) => void
+  onDelete: (product: ProductItem) => void
 }
 
 export function ProductsGrid({
@@ -32,6 +33,7 @@ export function ProductsGrid({
   onOpenDetails,
   onOpenIdentityEdit,
   onOpenSalePrice,
+  onDelete,
 }: ProductsGridProps) {
   if (isLoading) {
     return (
@@ -60,6 +62,7 @@ export function ProductsGrid({
               onOpenDetails={onOpenDetails}
               onOpenIdentityEdit={onOpenIdentityEdit}
               onOpenSalePrice={onOpenSalePrice}
+              onDelete={onDelete}
             />
             <ProductCard.Image imageUrl={product.url_image} alt={product.sku} />
 

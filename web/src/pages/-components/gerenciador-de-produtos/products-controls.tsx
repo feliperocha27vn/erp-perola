@@ -78,9 +78,11 @@ export function ProductsControls({
           onValueChange={value => onBrandChange(value || 'ALL')}
         >
           <Select.Trigger className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-            <Select.Value
-              placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Todas'}
-            />
+            <Select.Value placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Todas'}>
+              {brandFilter === 'ALL'
+                ? 'Todas'
+                : (brands.find(b => b.id === brandFilter)?.name ?? 'Todas')}
+            </Select.Value>
             <Select.Icon className="text-muted-foreground">▾</Select.Icon>
           </Select.Trigger>
           <Select.Portal>

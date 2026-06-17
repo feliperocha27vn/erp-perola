@@ -117,4 +117,5 @@ export interface ProductRepository {
 	create(data: CreateProductInput): Promise<Product>
 	update(id: string, data: UpdateProductInput): Promise<Product | null>
 	updateProductImage(id: string, url_image: string): Promise<Product | null>
+	delete(id: string): Promise<boolean>
 }

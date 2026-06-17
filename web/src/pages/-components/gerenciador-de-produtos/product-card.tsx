@@ -1,4 +1,4 @@
-import { Check, Copy, MoreHorizontal, Warehouse, X, Zap } from 'lucide-react'
+import { Check, Copy, MoreHorizontal, Trash2, Warehouse, X, Zap } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -35,6 +35,7 @@ type HeaderProps = {
   onOpenDetails: (product: ProductItem) => void
   onOpenIdentityEdit: (product: ProductItem) => void
   onOpenSalePrice: (product: ProductItem) => void
+  onDelete: (product: ProductItem) => void
 }
 
 function Header({
@@ -44,6 +45,7 @@ function Header({
   onOpenDetails,
   onOpenIdentityEdit,
   onOpenSalePrice,
+  onDelete,
 }: HeaderProps) {
   const handleCopySku = async () => {
     try {
@@ -201,6 +203,14 @@ function Header({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem disabled>Editar marca</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={() => onDelete(product)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="size-4 mr-2" />
+              Excluir produto
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

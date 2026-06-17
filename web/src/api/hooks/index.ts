@@ -9,6 +9,7 @@ export type { GetDashboardMonthlySalesQueryKey } from "./dashboardController/use
 export type { GetDashboardMonthlySalesSuspenseQueryKey } from "./dashboardController/useGetDashboardMonthlySalesSuspense.ts";
 export type { GetHealthQueryKey } from "./healthController/useGetHealth.ts";
 export type { GetHealthSuspenseQueryKey } from "./healthController/useGetHealthSuspense.ts";
+export type { DeleteProductMutationKey } from "./productsController/useDeleteProduct.ts";
 export type { GetProductSalesDailyQueryKey } from "./productsController/useGetProductSalesDaily.ts";
 export type { GetProductSalesDailySuspenseQueryKey } from "./productsController/useGetProductSalesDailySuspense.ts";
 export type { GetProductsQueryKey } from "./productsController/useGetProducts.ts";
@@ -65,6 +66,9 @@ export { useGetHealth } from "./healthController/useGetHealth.ts";
 export { getHealthSuspenseQueryKey } from "./healthController/useGetHealthSuspense.ts";
 export { getHealthSuspenseQueryOptions } from "./healthController/useGetHealthSuspense.ts";
 export { useGetHealthSuspense } from "./healthController/useGetHealthSuspense.ts";
+export { deleteProductMutationKey } from "./productsController/useDeleteProduct.ts";
+export { deleteProductMutationOptions } from "./productsController/useDeleteProduct.ts";
+export { useDeleteProduct } from "./productsController/useDeleteProduct.ts";
 export { getProductSalesDailyQueryKey } from "./productsController/useGetProductSalesDaily.ts";
 export { getProductSalesDailyQueryOptions } from "./productsController/useGetProductSalesDaily.ts";
 export { useGetProductSalesDaily } from "./productsController/useGetProductSalesDaily.ts";

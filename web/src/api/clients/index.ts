@@ -5,6 +5,7 @@ export { postBrands } from "./brandsController/postBrands.ts";
 export { getDashboardLastMonthSales } from "./dashboardController/getDashboardLastMonthSales.ts";
 export { getDashboardMonthlySales } from "./dashboardController/getDashboardMonthlySales.ts";
 export { getHealth } from "./healthController/getHealth.ts";
+export { deleteProduct } from "./productsController/deleteProduct.ts";
 export { getProductSalesDaily } from "./productsController/getProductSalesDaily.ts";
 export { getProducts } from "./productsController/getProducts.ts";
 export { getProductsSalesVelocity } from "./productsController/getProductsSalesVelocity.ts";

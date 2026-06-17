@@ -179,4 +179,11 @@ export class InMemoryProductRepository implements ProductRepository {
 	): Promise<Product | null> {
 		return this.update(id, { url_image })
 	}
+
+	async delete(id: string): Promise<boolean> {
+		const index = this.products.findIndex((p) => p.id === id)
+		if (index === -1) return false
+		this.products.splice(index, 1)
+		return true
+	}
 }

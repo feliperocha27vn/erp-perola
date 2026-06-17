@@ -1,4 +1,4 @@
-import { and, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm"
+import { and, eq, ilike, inArray, isNull, or, sql, isNotNull } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import { brands, products, sales, stocks, stores } from "../../db/schema.js"
 import type {
@@ -31,6 +31,7 @@ type ProductRow = {
 	technical_dial_and_luminosity: string | null
 	technical_bracelet_construction: string | null
 	technical_table: string | null
+	deleted_at: Date | null
 	created_at: Date
 	updated_at: Date
 }
@@ -121,6 +122,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		const normalizedSearch = search?.trim()
 
 		const filters = [
+			isNull(products.deleted_at),
 			withoutImage ? isNull(products.url_image) : undefined,
 			normalizedSearch
 				? or(
@@ -131,29 +133,20 @@ export class DrizzleProductRepository implements ProductRepository {
 			brandId ? eq(products.brand_id, brandId) : undefined,
 		].filter(Boolean)
 
-		const whereClause = filters.length > 0 ? and(...filters) : undefined
+		const whereClause = and(...filters)
 
-		const countQuery = whereClause
-			? db
-					.select({ count: sql<number>`count(*)` })
-					.from(products)
-					.where(whereClause)
-			: db.select({ count: sql<number>`count(*)` }).from(products)
+		const countQuery = db
+			.select({ count: sql<number>`count(*)` })
+			.from(products)
+			.where(whereClause)
 
-		const productsPageQuery = whereClause
-			? db
-					.select()
-					.from(products)
-					.where(whereClause)
-					.orderBy(products.created_at, products.id)
-					.limit(limit)
-					.offset(offset)
-			: db
-					.select()
-					.from(products)
-					.orderBy(products.created_at, products.id)
-					.limit(limit)
-					.offset(offset)
+		const productsPageQuery = db
+			.select()
+			.from(products)
+			.where(whereClause)
+			.orderBy(products.created_at, products.id)
+			.limit(limit)
+			.offset(offset)
 
 		const [productsPage, [{ count }]] = await Promise.all([
 			productsPageQuery,
@@ -178,7 +171,10 @@ export class DrizzleProductRepository implements ProductRepository {
 	}
 
 	async getProductById(id: string): Promise<Product | null> {
-		const rows = await db.select().from(products).where(eq(products.id, id))
+		const rows = await db
+			.select()
+			.from(products)
+			.where(and(eq(products.id, id), isNull(products.deleted_at)))
 		const [product] = await attachRelations(rows)
 		return product ?? null
 	}
@@ -287,6 +283,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		const normalizedSearch = search?.trim()
 
 		const filters = [
+			isNull(products.deleted_at),
 			withoutImage ? isNull(products.url_image) : undefined,
 			normalizedSearch
 				? or(
@@ -296,22 +293,15 @@ export class DrizzleProductRepository implements ProductRepository {
 				: undefined,
 		].filter(Boolean)
 
-		const whereClause = filters.length > 0 ? and(...filters) : undefined
+		const whereClause = and(...filters)
 
-		const pageQuery = whereClause
-			? db
-					.select({ id: products.id })
-					.from(products)
-					.where(whereClause)
-					.orderBy(products.created_at, products.id)
-					.limit(limit)
-					.offset(offset)
-			: db
-					.select({ id: products.id })
-					.from(products)
-					.orderBy(products.created_at, products.id)
-					.limit(limit)
-					.offset(offset)
+		const pageQuery = db
+			.select({ id: products.id })
+			.from(products)
+			.where(whereClause)
+			.orderBy(products.created_at, products.id)
+			.limit(limit)
+			.offset(offset)
 
 		const pageProducts = await pageQuery
 
@@ -416,7 +406,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		const [updatedRow] = await db
 			.update(products)
 			.set({ url_image, updated_at: new Date() })
-			.where(eq(products.id, id))
+			.where(and(eq(products.id, id), isNull(products.deleted_at)))
 			.returning()
 
 		if (!updatedRow) {
@@ -424,5 +414,15 @@ export class DrizzleProductRepository implements ProductRepository {
 		}
 
 		return this.getProductById(updatedRow.id)
+	}
+
+	async delete(id: string): Promise<boolean> {
+		const [updated] = await db
+			.update(products)
+			.set({ deleted_at: new Date(), updated_at: new Date() })
+			.where(and(eq(products.id, id), isNull(products.deleted_at)))
+			.returning({ id: products.id })
+
+		return !!updated
 	}
 }

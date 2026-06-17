@@ -3,13 +3,6 @@
  * Do not edit manually.
  */
 
-export const getReportsStockByBrandQueryParamsNoBrandEnum = {
-  true: "true",
-} as const;
-
-export type GetReportsStockByBrandQueryParamsNoBrandEnumKey =
-  (typeof getReportsStockByBrandQueryParamsNoBrandEnum)[keyof typeof getReportsStockByBrandQueryParamsNoBrandEnum];
-
 export type GetReportsStockByBrandQueryParams = {
   /**
    * @type string | undefined, uuid
@@ -18,7 +11,7 @@ export type GetReportsStockByBrandQueryParams = {
   /**
    * @type string | undefined
    */
-  noBrand?: GetReportsStockByBrandQueryParamsNoBrandEnumKey;
+  noBrand?: string;
 };
 
 /**
@@ -34,45 +27,35 @@ export type GetReportsStockByBrand200 = {
      */
     productId: string;
     /**
-     * @minLength -9007199254740991
-     * @maxLength 9007199254740991
-     * @type integer
+     * @type string
      */
-    total: number;
+    sku: string;
     /**
      * @type array
      */
     stocks: {
+      /**
+       * @type string, uuid
+       */
+      id: string;
+      /**
+       * @type string
+       */
+      title: string;
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
       qtde: number;
-      /**
-       * @type string
-       */
-      title: string;
-      /**
-       * @type string, uuid
-       */
-      id: string;
     }[];
     /**
-     * @type string
+     * @minLength -9007199254740991
+     * @maxLength 9007199254740991
+     * @type integer
      */
-    sku: string;
+    total: number;
   }[];
-};
-
-/**
- * @description Default Response
- */
-export type GetReportsStockByBrand400 = {
-  /**
-   * @type string
-   */
-  error: string;
 };
 
 export type GetReportsStockByBrandQueryResponse = GetReportsStockByBrand200;
@@ -80,5 +63,5 @@ export type GetReportsStockByBrandQueryResponse = GetReportsStockByBrand200;
 export type GetReportsStockByBrandQuery = {
   Response: GetReportsStockByBrand200;
   QueryParams: GetReportsStockByBrandQueryParams;
-  Errors: GetReportsStockByBrand400;
+  Errors: any;
 };

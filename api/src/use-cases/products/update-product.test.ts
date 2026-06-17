@@ -141,6 +141,10 @@ class FakeProductRepository implements ProductRepository {
 	async fetchProductSalesDaily(): Promise<SalesDailyStore[]> {
 		return []
 	}
+
+	async delete(_id: string): Promise<boolean> {
+		return false
+	}
 }
 
 function makeProduct(id: string, sku: string, ean: string): Product {
