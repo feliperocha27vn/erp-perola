@@ -98,6 +98,8 @@ function GerenciadorDeProdutos() {
     null
   )
   const [deleteTarget, setDeleteTarget] = useState<ProductItem | null>(null)
+  const [brandEditTarget, setBrandEditTarget] = useState<ProductItem | null>(null)
+  const [selectedBrandId, setSelectedBrandId] = useState<string>('')
   const [createProductForm, setCreateProductForm] =
     useState<CreateProductFormValues>(emptyCreateProductForm())
 
@@ -343,6 +345,22 @@ function GerenciadorDeProdutos() {
     }
   }
 
+  const handleSaveBrand = async () => {
+    if (!brandEditTarget) return
+
+    try {
+      await updateProductMutation.mutateAsync({
+        id: brandEditTarget.id,
+        data: { brand_id: selectedBrandId || undefined },
+      })
+      toast.success('Marca atualizada com sucesso!')
+      setBrandEditTarget(null)
+      setSelectedBrandId('')
+    } catch {
+      toast.error('Erro ao atualizar marca.')
+    }
+  }
+
   const handleSaveSalePrice = async (payload: ProductSalePriceForm) => {
     if (!salePriceTarget) {
       return
@@ -464,6 +482,10 @@ function GerenciadorDeProdutos() {
           setSalePriceTarget(product)
           setIsSalePriceModalOpen(true)
         }}
+        onOpenBrandEdit={product => {
+          setBrandEditTarget(product)
+          setSelectedBrandId(product.brand?.id ?? '')
+        }}
         onDelete={product => setDeleteTarget(product)}
       />
 
@@ -495,6 +517,57 @@ function GerenciadorDeProdutos() {
           }
         />
       ) : null}
+
+      <Dialog
+        open={!!brandEditTarget}
+        onOpenChange={open => {
+          if (!open) {
+            setBrandEditTarget(null)
+            setSelectedBrandId('')
+          }
+        }}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Editar marca</DialogTitle>
+            <DialogDescription>
+              Produto <strong>{brandEditTarget?.sku}</strong> — selecione a marca correta.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <select
+              value={selectedBrandId}
+              onChange={e => setSelectedBrandId(e.target.value)}
+              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+            >
+              <option value="">Sem marca</option>
+              {brands.map(brand => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setBrandEditTarget(null)
+                setSelectedBrandId('')
+              }}
+              disabled={updateProductMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleSaveBrand}
+              disabled={updateProductMutation.isPending}
+            >
+              {updateProductMutation.isPending ? 'Salvando...' : 'Salvar'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={!!deleteTarget}

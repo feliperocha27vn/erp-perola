@@ -35,6 +35,7 @@ type HeaderProps = {
   onOpenDetails: (product: ProductItem) => void
   onOpenIdentityEdit: (product: ProductItem) => void
   onOpenSalePrice: (product: ProductItem) => void
+  onOpenBrandEdit: (product: ProductItem) => void
   onDelete: (product: ProductItem) => void
 }
 
@@ -45,6 +46,7 @@ function Header({
   onOpenDetails,
   onOpenIdentityEdit,
   onOpenSalePrice,
+  onOpenBrandEdit,
   onDelete,
 }: HeaderProps) {
   const handleCopySku = async () => {
@@ -202,7 +204,9 @@ function Header({
               Gerenciar estoques
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>Editar marca</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onOpenBrandEdit(product)}>
+              Editar marca
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => onDelete(product)}
