@@ -15,6 +15,7 @@
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
 		"seed": "tsx src/db/seed.ts",
+		"seed:dev": "tsx --env-file=.env src/scripts/dev-seed.ts",
 		"fill-images": "tsx src/db/fill-images.ts",
 		"lint": "biome lint .",
 		"format": "biome format --write .",

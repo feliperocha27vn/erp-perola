@@ -18,6 +18,8 @@ export type { GetProductsSuspenseQueryKey } from "./productsController/useGetPro
 export type { PatchProductsIdMutationKey } from "./productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./productsController/usePostProducts.ts";
+export type { GetReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
+export type { GetReportsStockByBrandSuspenseQueryKey } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
 export type { DeleteSalesIdMutationKey } from "./salesController/useDeleteSalesId.ts";
 export type { GetSalesQueryKey } from "./salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./salesController/useGetSalesSuspense.ts";
@@ -90,6 +92,12 @@ export { usePatchProductsIdImage } from "./productsController/usePatchProductsId
 export { postProductsMutationKey } from "./productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./productsController/usePostProducts.ts";
 export { usePostProducts } from "./productsController/usePostProducts.ts";
+export { getReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
+export { getReportsStockByBrandQueryOptions } from "./reportsController/useGetReportsStockByBrand.ts";
+export { useGetReportsStockByBrand } from "./reportsController/useGetReportsStockByBrand.ts";
+export { getReportsStockByBrandSuspenseQueryKey } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
+export { getReportsStockByBrandSuspenseQueryOptions } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
+export { useGetReportsStockByBrandSuspense } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
 export { deleteSalesIdMutationKey } from "./salesController/useDeleteSalesId.ts";
 export { deleteSalesIdMutationOptions } from "./salesController/useDeleteSalesId.ts";
 export { useDeleteSalesId } from "./salesController/useDeleteSalesId.ts";

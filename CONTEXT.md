@@ -23,3 +23,6 @@ A per-product modal opened from the Product card. Shows a LineChart of daily uni
 
 ## Sales Filter (Filtro de Vendas)
 A set of optional constraints applied server-side to the GET /sales query: date range (`startDate`, `endDate`), Brand (`brandId`), and Store (`storeId`). "Limpar filtros" resets all constraints at once. There is no "Sem marca" or "Sem loja" filter option — absence of a filter means show all sales.
+
+## Stock Report (Relatório de Estoque)
+A dedicated page (`/relatorio-de-estoque`) for viewing stock distribution per brand. The user selects a Brand (including a "Sem marca" option for products with no brand) and sees a table of all Products in that brand. Table columns are dynamic: one column per distinct Stock title found across the brand's products, plus a "Total" column (sum of all stock quantities for that product). Products with no stocks appear with `—` in all stock columns and Total = 0. No table is shown until a brand is selected. On mobile, the table scrolls horizontally. Inventory turnover calculation is out of scope for the initial version.

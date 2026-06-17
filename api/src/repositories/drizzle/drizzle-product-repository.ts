@@ -145,13 +145,13 @@ export class DrizzleProductRepository implements ProductRepository {
 					.select()
 					.from(products)
 					.where(whereClause)
-					.orderBy(products.created_at)
+					.orderBy(products.created_at, products.id)
 					.limit(limit)
 					.offset(offset)
 			: db
 					.select()
 					.from(products)
-					.orderBy(products.created_at)
+					.orderBy(products.created_at, products.id)
 					.limit(limit)
 					.offset(offset)
 
@@ -303,13 +303,13 @@ export class DrizzleProductRepository implements ProductRepository {
 					.select({ id: products.id })
 					.from(products)
 					.where(whereClause)
-					.orderBy(products.created_at)
+					.orderBy(products.created_at, products.id)
 					.limit(limit)
 					.offset(offset)
 			: db
 					.select({ id: products.id })
 					.from(products)
-					.orderBy(products.created_at)
+					.orderBy(products.created_at, products.id)
 					.limit(limit)
 					.offset(offset)
 

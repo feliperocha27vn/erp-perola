@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as VendasRouteImport } from './pages/vendas'
+import { Route as RelatorioDeEstoqueRouteImport } from './pages/relatorio-de-estoque'
 import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
 import { Route as GerenciadorDeProdutosRouteImport } from './pages/gerenciador-de-produtos'
@@ -18,6 +19,11 @@ import { Route as IndexRouteImport } from './pages/index'
 const VendasRoute = VendasRouteImport.update({
   id: '/vendas',
   path: '/vendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatorioDeEstoqueRoute = RelatorioDeEstoqueRouteImport.update({
+  id: '/relatorio-de-estoque',
+  path: '/relatorio-de-estoque',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarcasRoute = MarcasRouteImport.update({
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gerenciador-de-produtos' | '/login' | '/marcas' | '/vendas'
+  fullPaths:
+    | '/'
+    | '/gerenciador-de-produtos'
+    | '/login'
+    | '/marcas'
+    | '/relatorio-de-estoque'
+    | '/vendas'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gerenciador-de-produtos' | '/login' | '/marcas' | '/vendas'
+  to:
+    | '/'
+    | '/gerenciador-de-produtos'
+    | '/login'
+    | '/marcas'
+    | '/relatorio-de-estoque'
+    | '/vendas'
   id:
     | '__root__'
     | '/'
     | '/gerenciador-de-produtos'
     | '/login'
     | '/marcas'
+    | '/relatorio-de-estoque'
     | '/vendas'
   fileRoutesById: FileRoutesById
 }
@@ -82,6 +104,7 @@ export interface RootRouteChildren {
   GerenciadorDeProdutosRoute: typeof GerenciadorDeProdutosRoute
   LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
+  RelatorioDeEstoqueRoute: typeof RelatorioDeEstoqueRoute
   VendasRoute: typeof VendasRoute
 }
 
@@ -92,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/vendas'
       fullPath: '/vendas'
       preLoaderRoute: typeof VendasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorio-de-estoque': {
+      id: '/relatorio-de-estoque'
+      path: '/relatorio-de-estoque'
+      fullPath: '/relatorio-de-estoque'
+      preLoaderRoute: typeof RelatorioDeEstoqueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marcas': {
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   GerenciadorDeProdutosRoute: GerenciadorDeProdutosRoute,
   LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,
+  RelatorioDeEstoqueRoute: RelatorioDeEstoqueRoute,
   VendasRoute: VendasRoute,
 }
 export const routeTree = rootRouteImport

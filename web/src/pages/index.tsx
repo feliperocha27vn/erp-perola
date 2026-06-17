@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
+  BarChart3,
   Building2,
   LayoutDashboard,
   Package,
@@ -102,6 +103,25 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Acessar Ferramenta
               <Package className="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <Link
+            to="/relatorio-de-estoque"
+            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
+          >
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
+              <BarChart3 className="size-8" />
+            </div>
+            <h4 className="text-xl font-display font-semibold mb-2">
+              Relatório de Estoque
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Visualize a distribuição de estoque por marca, com colunas por local e totais por produto.
+            </p>
+            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
+              Ver Relatório
+              <BarChart3 className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 

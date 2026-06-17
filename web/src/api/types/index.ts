@@ -93,6 +93,14 @@ export type {
   PostProductsMutationResponse,
 } from "./productsController/PostProducts.ts";
 export type {
+  GetReportsStockByBrand200,
+  GetReportsStockByBrand400,
+  GetReportsStockByBrandQuery,
+  GetReportsStockByBrandQueryParams,
+  GetReportsStockByBrandQueryParamsNoBrandEnumKey,
+  GetReportsStockByBrandQueryResponse,
+} from "./reportsController/GetReportsStockByBrand.ts";
+export type {
   DeleteSalesId204,
   DeleteSalesId204EnumKey,
   DeleteSalesId404,
@@ -170,6 +178,7 @@ export { periodsPeriodEnum3 } from "./productsController/GetProductSalesDaily.ts
 export { periodsPeriodEnum4 } from "./productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./productsController/GetProductsSalesVelocity.ts";
+export { getReportsStockByBrandQueryParamsNoBrandEnum } from "./reportsController/GetReportsStockByBrand.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./salesController/PatchSalesId.ts";

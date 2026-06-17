@@ -18,6 +18,8 @@ export type { GetProductsSuspenseQueryKey } from "./hooks/productsController/use
 export type { PatchProductsIdMutationKey } from "./hooks/productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./hooks/productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
+export type { GetReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
+export type { GetReportsStockByBrandSuspenseQueryKey } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
 export type { DeleteSalesIdMutationKey } from "./hooks/salesController/useDeleteSalesId.ts";
 export type { GetSalesQueryKey } from "./hooks/salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./hooks/salesController/useGetSalesSuspense.ts";
@@ -125,6 +127,14 @@ export type {
   PostProductsMutationResponse,
 } from "./types/productsController/PostProducts.ts";
 export type {
+  GetReportsStockByBrand200,
+  GetReportsStockByBrand400,
+  GetReportsStockByBrandQuery,
+  GetReportsStockByBrandQueryParams,
+  GetReportsStockByBrandQueryParamsNoBrandEnumKey,
+  GetReportsStockByBrandQueryResponse,
+} from "./types/reportsController/GetReportsStockByBrand.ts";
+export type {
   DeleteSalesId204,
   DeleteSalesId204EnumKey,
   DeleteSalesId404,
@@ -209,6 +219,7 @@ export { getProductsSalesVelocity } from "./clients/productsController/getProduc
 export { patchProductsId } from "./clients/productsController/patchProductsId.ts";
 export { patchProductsIdImage } from "./clients/productsController/patchProductsIdImage.ts";
 export { postProducts } from "./clients/productsController/postProducts.ts";
+export { getReportsStockByBrand } from "./clients/reportsController/getReportsStockByBrand.ts";
 export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
 export { getSales } from "./clients/salesController/getSales.ts";
 export { patchSalesId } from "./clients/salesController/patchSalesId.ts";
@@ -278,6 +289,12 @@ export { usePatchProductsIdImage } from "./hooks/productsController/usePatchProd
 export { postProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./hooks/productsController/usePostProducts.ts";
 export { usePostProducts } from "./hooks/productsController/usePostProducts.ts";
+export { getReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
+export { getReportsStockByBrandQueryOptions } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
+export { useGetReportsStockByBrand } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
+export { getReportsStockByBrandSuspenseQueryKey } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
+export { getReportsStockByBrandSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
+export { useGetReportsStockByBrandSuspense } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
 export { deleteSalesIdMutationKey } from "./hooks/salesController/useDeleteSalesId.ts";
 export { deleteSalesIdMutationOptions } from "./hooks/salesController/useDeleteSalesId.ts";
 export { useDeleteSalesId } from "./hooks/salesController/useDeleteSalesId.ts";
@@ -320,6 +337,7 @@ export { periodsPeriodEnum3 } from "./types/productsController/GetProductSalesDa
 export { periodsPeriodEnum4 } from "./types/productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./types/productsController/GetProductsSalesVelocity.ts";
+export { getReportsStockByBrandQueryParamsNoBrandEnum } from "./types/reportsController/GetReportsStockByBrand.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./types/salesController/PatchSalesId.ts";
