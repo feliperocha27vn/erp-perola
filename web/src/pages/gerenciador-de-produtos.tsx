@@ -6,10 +6,7 @@ import { z } from 'zod'
 import { useGetBrands } from '@/api/hooks/brandsController/useGetBrands'
 import { useDeleteProduct } from '@/api/hooks/productsController/useDeleteProduct'
 import { useGetProducts } from '@/api/hooks/productsController/useGetProducts'
-import { usePatchProductsId } from '@/api/hooks/productsController/usePatchProductsId'
-import { usePatchProductsIdImage } from '@/api/hooks/productsController/usePatchProductsIdImage'
 import { usePostProducts } from '@/api/hooks/productsController/usePostProducts'
-import type { PatchProductsIdImageMutationResponse } from '@/api/types/productsController/PatchProductsIdImage'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,24 +21,12 @@ import { SectionErrorState } from '@/components/ui/section-error-state'
 import { queryClient } from '@/lib/react-query'
 import { BrandManagerModal } from './-components/gerenciador-de-produtos/brand-manager-modal'
 import { ProductsPageHeader } from './-components/gerenciador-de-produtos/page-header'
-import {
-  ProductDetailsModal,
-  type ProductTechnicalDetailsForm,
-} from './-components/gerenciador-de-produtos/product-details-modal'
-import {
-  type ProductIdentityForm,
-  ProductIdentityModal,
-} from './-components/gerenciador-de-produtos/product-identity-modal'
-import {
-  type ProductSalePriceForm,
-  ProductSalePriceModal,
-} from './-components/gerenciador-de-produtos/product-sale-price-modal'
 import { ProductsControls } from './-components/gerenciador-de-produtos/products-controls'
 import { ProductsGrid } from './-components/gerenciador-de-produtos/products-grid'
 import { ProductsPagination } from './-components/gerenciador-de-produtos/products-pagination'
 import { ProductsStats } from './-components/gerenciador-de-produtos/products-stats'
 import { ProductsStatsSkeleton } from './-components/gerenciador-de-produtos/products-stats-skeleton'
-import { StockManagerModal } from './-components/gerenciador-de-produtos/stock-manager-modal'
+import { ProductEditModal } from './-components/gerenciador-de-produtos/product-edit-modal'
 import type { ProductItem } from './-components/gerenciador-de-produtos/types'
 import { CreateProductDialog } from './-components/product-manager/create-product-dialog'
 
@@ -62,12 +47,7 @@ type CreateProductFormValues = {
 }
 
 function emptyCreateProductForm(): CreateProductFormValues {
-  return {
-    sku: '',
-    ean: '',
-    brand_id: '',
-    url_site: '',
-  }
+  return { sku: '', ean: '', brand_id: '', url_site: '' }
 }
 
 export const Route = createFileRoute('/gerenciador-de-produtos')({
@@ -83,26 +63,13 @@ function GerenciadorDeProdutos() {
     search: searchQuery,
     brand: brandQuery,
   } = useSearch({ from: Route.fullPath })
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [imageUrl, setImageUrl] = useState('')
+
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
-  const [isStockModalOpen, setIsStockModalOpen] = useState(false)
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
-  const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false)
-  const [isSalePriceModalOpen, setIsSalePriceModalOpen] = useState(false)
   const [isCreateProductOpen, setIsCreateProductOpen] = useState(false)
-  const [stockTarget, setStockTarget] = useState<ProductItem | null>(null)
-  const [detailsTarget, setDetailsTarget] = useState<ProductItem | null>(null)
-  const [identityTarget, setIdentityTarget] = useState<ProductItem | null>(null)
-  const [salePriceTarget, setSalePriceTarget] = useState<ProductItem | null>(
-    null
-  )
+  const [editTarget, setEditTarget] = useState<ProductItem | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<ProductItem | null>(null)
-  const [brandEditTarget, setBrandEditTarget] = useState<ProductItem | null>(null)
-  const [selectedBrandId, setSelectedBrandId] = useState<string>('')
   const [createProductForm, setCreateProductForm] =
     useState<CreateProductFormValues>(emptyCreateProductForm())
-
   const [localSearch, setLocalSearch] = useState(searchQuery || '')
 
   useEffect(() => {
@@ -122,55 +89,8 @@ function GerenciadorDeProdutos() {
         })
       }
     }, 300)
-
     return () => clearTimeout(timer)
   }, [localSearch, searchQuery, navigate])
-
-  const updateProductsImageCache = (
-    updatedProduct: PatchProductsIdImageMutationResponse['product']
-  ) => {
-    queryClient.setQueriesData({ queryKey: [{ url: '/products' }] }, old => {
-      if (!old || typeof old !== 'object' || !('items' in old)) {
-        return old
-      }
-
-      const current = old as {
-        items: Array<{ id: string; url_image: string | null }>
-      }
-
-      return {
-        ...current,
-        items: current.items.map(item =>
-          item.id === updatedProduct.id
-            ? { ...item, url_image: updatedProduct.url_image }
-            : item
-        ),
-      }
-    })
-  }
-
-  const updateImageMutation = usePatchProductsIdImage({
-    mutation: {
-      onSuccess: (data: PatchProductsIdImageMutationResponse) => {
-        updateProductsImageCache(data.product)
-        queryClient.invalidateQueries({
-          queryKey: [{ url: '/products' }],
-        })
-        queryClient.refetchQueries({
-          queryKey: [{ url: '/products' }],
-          type: 'active',
-        })
-        setEditingId(null)
-        setImageUrl('')
-        toast.success('Imagem atualizada com sucesso!')
-      },
-      onError: (error: unknown) => {
-        console.error('Erro ao salvar imagem:', error)
-        toast.error('Erro ao salvar imagem. Tente novamente.')
-        setEditingId(null)
-      },
-    },
-  })
 
   const normalizedSearch = searchQuery?.trim() || undefined
 
@@ -180,6 +100,9 @@ function GerenciadorDeProdutos() {
     withoutImage: filter === 'without' ? 'true' : undefined,
     brandId: brandQuery,
   })
+
+  const { data: brandsData, isLoading: isBrandsLoading } = useGetBrands()
+  const brands = brandsData?.brands ?? []
 
   const createProductMutation = usePostProducts({
     mutation: {
@@ -195,8 +118,6 @@ function GerenciadorDeProdutos() {
     },
   })
 
-  const { data: brandsData, isLoading: isBrandsLoading } = useGetBrands()
-
   const deleteProductMutation = useDeleteProduct({
     mutation: {
       onSuccess: () => {
@@ -210,23 +131,12 @@ function GerenciadorDeProdutos() {
     },
   })
 
-  const updateProductMutation = usePatchProductsId({
-    mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [{ url: '/products' }] })
-      },
-    },
-  })
-
   const updateSearchParams = (updates: Partial<UploadImagensSearch>) => {
-    navigate({
-      search: prev => ({ ...prev, ...updates }),
-    })
+    navigate({ search: prev => ({ ...prev, ...updates }) })
   }
 
   const applySearchNow = (value?: string) => {
-    const trimmedSearch = value?.trim() || undefined
-    updateSearchParams({ search: trimmedSearch, page: 0 })
+    updateSearchParams({ search: value?.trim() || undefined, page: 0 })
   }
 
   const handleCreateProduct = () => {
@@ -235,176 +145,16 @@ function GerenciadorDeProdutos() {
     const brandId = createProductForm.brand_id.trim()
     const urlSite = createProductForm.url_site.trim()
 
-    if (!sku) {
-      toast.error('Informe o SKU.')
-      return
-    }
-
-    if (!ean) {
-      toast.error('Informe o EAN.')
-      return
-    }
-
-    if (!brandId) {
-      toast.error('Selecione a marca.')
-      return
-    }
+    if (!sku) { toast.error('Informe o SKU.'); return }
+    if (!ean) { toast.error('Informe o EAN.'); return }
+    if (!brandId) { toast.error('Selecione a marca.'); return }
 
     createProductMutation.mutate({
-      data: {
-        sku,
-        ean,
-        brand_id: brandId,
-        url_image: urlSite || undefined,
-      },
+      data: { sku, ean, brand_id: brandId, url_image: urlSite || undefined },
     })
   }
 
-  const handleSaveImage = async (productId: string) => {
-    if (!imageUrl.trim()) {
-      toast.error('Por favor, insira uma URL válida')
-      return
-    }
-
-    if (!editingId || editingId !== productId) {
-      toast.error('Produto em edicao invalido. Tente novamente.')
-      return
-    }
-
-    try {
-      await updateImageMutation.mutateAsync({
-        id: productId,
-        data: { url_image: imageUrl },
-      })
-    } catch {}
-  }
-
-  const handleSaveDetails = async (details: ProductTechnicalDetailsForm) => {
-    if (!detailsTarget) {
-      return
-    }
-
-    try {
-      await updateProductMutation.mutateAsync({
-        id: detailsTarget.id,
-        data: {
-          technical_title: details.technical_title,
-          technical_subtitle: details.technical_subtitle,
-          technical_analysis: details.technical_analysis,
-          technical_movement: details.technical_movement,
-          technical_case_and_crystal: details.technical_case_and_crystal,
-          technical_specific_functionality:
-            details.technical_specific_functionality,
-          technical_dial_and_luminosity: details.technical_dial_and_luminosity,
-          technical_bracelet_construction:
-            details.technical_bracelet_construction,
-          technical_table: details.technical_table,
-        },
-      })
-
-      toast.success('Detalhes técnicos salvos com sucesso!')
-    } catch {
-      toast.error('Erro ao salvar detalhes técnicos.')
-    }
-  }
-
-  const handleSaveIdentity = async (identity: ProductIdentityForm) => {
-    if (!identityTarget) {
-      return
-    }
-
-    const sku = identity.sku.trim()
-    const ean = identity.ean.trim()
-
-    if (!sku) {
-      toast.error('Informe o SKU.')
-      return
-    }
-
-    if (!ean) {
-      toast.error('Informe o EAN.')
-      return
-    }
-
-    try {
-      await updateProductMutation.mutateAsync({
-        id: identityTarget.id,
-        data: {
-          sku,
-          ean,
-        },
-      })
-
-      toast.success('SKU e EAN atualizados com sucesso!')
-      setIsIdentityModalOpen(false)
-      setIdentityTarget(null)
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.error || 'Erro ao atualizar SKU e EAN.'
-      )
-    }
-  }
-
-  const handleSaveBrand = async () => {
-    if (!brandEditTarget) return
-
-    try {
-      await updateProductMutation.mutateAsync({
-        id: brandEditTarget.id,
-        data: { brand_id: selectedBrandId || undefined },
-      })
-      toast.success('Marca atualizada com sucesso!')
-      setBrandEditTarget(null)
-      setSelectedBrandId('')
-    } catch {
-      toast.error('Erro ao atualizar marca.')
-    }
-  }
-
-  const handleSaveSalePrice = async (payload: ProductSalePriceForm) => {
-    if (!salePriceTarget) {
-      return
-    }
-
-    if (
-      !Number.isInteger(payload.sale_price_cents) ||
-      payload.sale_price_cents <= 0
-    ) {
-      toast.error('Informe um preço de venda válido.')
-      return
-    }
-
-    try {
-      await updateProductMutation.mutateAsync({
-        id: salePriceTarget.id,
-        data: {
-          sale_price_cents: payload.sale_price_cents,
-        },
-      })
-
-      toast.success('Preço de venda atualizado com sucesso!')
-      setIsSalePriceModalOpen(false)
-      setSalePriceTarget(null)
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.error || 'Erro ao atualizar preço de venda.'
-      )
-    }
-  }
-
-  const startEditing = (productId: string, currentUrl: string | null) => {
-    setEditingId(productId)
-    setImageUrl(currentUrl || '')
-  }
-
-  const cancelEditing = () => {
-    setEditingId(null)
-    setImageUrl('')
-  }
-
   const items = Array.isArray(data?.items) ? data.items : []
-  const brands = brandsData?.brands ?? []
-
   const productsWithoutImage = items.filter(p => !p.url_image).length
   const totalPages = Math.ceil((data?.total || 0) / 20)
 
@@ -459,33 +209,7 @@ function GerenciadorDeProdutos() {
       <ProductsGrid
         products={items}
         isLoading={isLoading}
-        editingId={editingId}
-        imageUrl={imageUrl}
-        isSaving={updateImageMutation.isPending}
-        onStartEditing={startEditing}
-        onCancelEditing={cancelEditing}
-        onSaveImage={handleSaveImage}
-        onImageUrlChange={setImageUrl}
-        onOpenStock={product => {
-          setStockTarget(product)
-          setIsStockModalOpen(true)
-        }}
-        onOpenDetails={product => {
-          setDetailsTarget(product)
-          setIsDetailsModalOpen(true)
-        }}
-        onOpenIdentityEdit={product => {
-          setIdentityTarget(product)
-          setIsIdentityModalOpen(true)
-        }}
-        onOpenSalePrice={product => {
-          setSalePriceTarget(product)
-          setIsSalePriceModalOpen(true)
-        }}
-        onOpenBrandEdit={product => {
-          setBrandEditTarget(product)
-          setSelectedBrandId(product.brand?.id ?? '')
-        }}
+        onEdit={product => setEditTarget(product)}
         onDelete={product => setDeleteTarget(product)}
       />
 
@@ -518,56 +242,12 @@ function GerenciadorDeProdutos() {
         />
       ) : null}
 
-      <Dialog
-        open={!!brandEditTarget}
-        onOpenChange={open => {
-          if (!open) {
-            setBrandEditTarget(null)
-            setSelectedBrandId('')
-          }
-        }}
-      >
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Editar marca</DialogTitle>
-            <DialogDescription>
-              Produto <strong>{brandEditTarget?.sku}</strong> — selecione a marca correta.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-2">
-            <select
-              value={selectedBrandId}
-              onChange={e => setSelectedBrandId(e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-            >
-              <option value="">Sem marca</option>
-              {brands.map(brand => (
-                <option key={brand.id} value={brand.id}>
-                  {brand.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setBrandEditTarget(null)
-                setSelectedBrandId('')
-              }}
-              disabled={updateProductMutation.isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={handleSaveBrand}
-              disabled={updateProductMutation.isPending}
-            >
-              {updateProductMutation.isPending ? 'Salvando...' : 'Salvar'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ProductEditModal
+        open={!!editTarget}
+        product={editTarget}
+        brands={brands}
+        onClose={() => setEditTarget(null)}
+      />
 
       <Dialog
         open={!!deleteTarget}
@@ -605,45 +285,6 @@ function GerenciadorDeProdutos() {
         </DialogContent>
       </Dialog>
 
-      <StockManagerModal
-        open={isStockModalOpen}
-        product={stockTarget}
-        onClose={() => setIsStockModalOpen(false)}
-      />
-
-      <ProductDetailsModal
-        open={isDetailsModalOpen}
-        product={detailsTarget}
-        isSaving={updateProductMutation.isPending}
-        onSave={handleSaveDetails}
-        onClose={() => {
-          setIsDetailsModalOpen(false)
-          setDetailsTarget(null)
-        }}
-      />
-
-      <ProductIdentityModal
-        open={isIdentityModalOpen}
-        product={identityTarget}
-        isSaving={updateProductMutation.isPending}
-        onSave={handleSaveIdentity}
-        onClose={() => {
-          setIsIdentityModalOpen(false)
-          setIdentityTarget(null)
-        }}
-      />
-
-      <ProductSalePriceModal
-        open={isSalePriceModalOpen}
-        product={salePriceTarget}
-        isSaving={updateProductMutation.isPending}
-        onSave={handleSaveSalePrice}
-        onClose={() => {
-          setIsSalePriceModalOpen(false)
-          setSalePriceTarget(null)
-        }}
-      />
-
       <BrandManagerModal
         open={isBrandModalOpen}
         onClose={() => setIsBrandModalOpen(false)}
@@ -653,9 +294,7 @@ function GerenciadorDeProdutos() {
         open={isCreateProductOpen}
         onOpenChange={open => {
           setIsCreateProductOpen(open)
-          if (!open) {
-            setCreateProductForm(emptyCreateProductForm())
-          }
+          if (!open) setCreateProductForm(emptyCreateProductForm())
         }}
         values={createProductForm}
         brands={brands.map(brand => ({ id: brand.id, name: brand.name }))}

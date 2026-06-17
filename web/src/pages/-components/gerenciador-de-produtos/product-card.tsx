@@ -30,25 +30,11 @@ function Root({ children }: RootProps) {
 
 type HeaderProps = {
   product: ProductItem
-  onStartEditing: (productId: string, currentUrl: string | null) => void
-  onOpenStock: (product: ProductItem) => void
-  onOpenDetails: (product: ProductItem) => void
-  onOpenIdentityEdit: (product: ProductItem) => void
-  onOpenSalePrice: (product: ProductItem) => void
-  onOpenBrandEdit: (product: ProductItem) => void
+  onEdit: (product: ProductItem) => void
   onDelete: (product: ProductItem) => void
 }
 
-function Header({
-  product,
-  onStartEditing,
-  onOpenStock,
-  onOpenDetails,
-  onOpenIdentityEdit,
-  onOpenSalePrice,
-  onOpenBrandEdit,
-  onDelete,
-}: HeaderProps) {
+function Header({ product, onEdit, onDelete }: HeaderProps) {
   const handleCopySku = async () => {
     try {
       await navigator.clipboard.writeText(product.sku)
@@ -185,27 +171,9 @@ function Header({
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuItem
-              onSelect={() => onStartEditing(product.id, product.url_image)}
-            >
-              {product.url_image ? 'Editar imagem' : 'Adicionar imagem'}
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onOpenIdentityEdit(product)}>
-              Editar SKU/EAN
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onOpenSalePrice(product)}>
-              Preço de venda
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onOpenDetails(product)}>
-              Detalhes
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onOpenStock(product)}>
-              Gerenciar estoques
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => onOpenBrandEdit(product)}>
-              Editar marca
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onSelect={() => onEdit(product)}>
+              Editar produto
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
