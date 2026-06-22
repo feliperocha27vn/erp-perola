@@ -177,12 +177,30 @@ export const productsRelations = relations(products, ({ many, one }) => ({
 	sales: many(sales),
 }))
 
+export const stockEntries = pgTable("stock_entries", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	stock_id: uuid("stock_id")
+		.notNull()
+		.references(() => stocks.id, { onDelete: "cascade" }),
+	quantity: integer("quantity").notNull(),
+	notes: text("notes"),
+	created_at: timestamp("created_at").notNull().defaultNow(),
+})
+
 export const stocksRelations = relations(stocks, ({ many, one }) => ({
 	product: one(products, {
 		fields: [stocks.product_id],
 		references: [products.id],
 	}),
 	sales: many(sales),
+	entries: many(stockEntries),
+}))
+
+export const stockEntriesRelations = relations(stockEntries, ({ one }) => ({
+	stock: one(stocks, {
+		fields: [stockEntries.stock_id],
+		references: [stocks.id],
+	}),
 }))
 
 export const storesRelations = relations(stores, ({ many }) => ({

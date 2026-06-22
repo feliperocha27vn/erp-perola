@@ -142,6 +142,26 @@ export type {
   SaleChannelEnumKey,
 } from "./salesController/PostSales.ts";
 export type {
+  GetProductsProductIdStockEntries200,
+  GetProductsProductIdStockEntriesPathParams,
+  GetProductsProductIdStockEntriesQuery,
+  GetProductsProductIdStockEntriesQueryResponse,
+} from "./stockEntriesController/GetProductsProductIdStockEntries.ts";
+export type {
+  GetStockEntries200,
+  GetStockEntriesQuery,
+  GetStockEntriesQueryParams,
+  GetStockEntriesQueryResponse,
+} from "./stockEntriesController/GetStockEntries.ts";
+export type {
+  PostStocksStockIdEntries201,
+  PostStocksStockIdEntries404,
+  PostStocksStockIdEntriesMutation,
+  PostStocksStockIdEntriesMutationRequest,
+  PostStocksStockIdEntriesMutationResponse,
+  PostStocksStockIdEntriesPathParams,
+} from "./stockEntriesController/PostStocksStockIdEntries.ts";
+export type {
   DeleteStocksStockId204,
   DeleteStocksStockId204EnumKey,
   DeleteStocksStockId404,

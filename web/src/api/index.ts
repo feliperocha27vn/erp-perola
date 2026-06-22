@@ -26,6 +26,11 @@ export type { GetSalesQueryKey } from "./hooks/salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./hooks/salesController/useGetSalesSuspense.ts";
 export type { PatchSalesIdMutationKey } from "./hooks/salesController/usePatchSalesId.ts";
 export type { PostSalesMutationKey } from "./hooks/salesController/usePostSales.ts";
+export type { GetProductsProductIdStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
+export type { GetProductsProductIdStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
+export type { GetStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetStockEntries.ts";
+export type { GetStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetStockEntriesSuspense.ts";
+export type { PostStocksStockIdEntriesMutationKey } from "./hooks/stockEntriesController/usePostStocksStockIdEntries.ts";
 export type { DeleteStocksStockIdMutationKey } from "./hooks/stocksController/useDeleteStocksStockId.ts";
 export type { GetProductsProductIdStocksQueryKey } from "./hooks/stocksController/useGetProductsProductIdStocks.ts";
 export type { GetProductsProductIdStocksSuspenseQueryKey } from "./hooks/stocksController/useGetProductsProductIdStocksSuspense.ts";
@@ -177,6 +182,26 @@ export type {
   SaleChannelEnumKey,
 } from "./types/salesController/PostSales.ts";
 export type {
+  GetProductsProductIdStockEntries200,
+  GetProductsProductIdStockEntriesPathParams,
+  GetProductsProductIdStockEntriesQuery,
+  GetProductsProductIdStockEntriesQueryResponse,
+} from "./types/stockEntriesController/GetProductsProductIdStockEntries.ts";
+export type {
+  GetStockEntries200,
+  GetStockEntriesQuery,
+  GetStockEntriesQueryParams,
+  GetStockEntriesQueryResponse,
+} from "./types/stockEntriesController/GetStockEntries.ts";
+export type {
+  PostStocksStockIdEntries201,
+  PostStocksStockIdEntries404,
+  PostStocksStockIdEntriesMutation,
+  PostStocksStockIdEntriesMutationRequest,
+  PostStocksStockIdEntriesMutationResponse,
+  PostStocksStockIdEntriesPathParams,
+} from "./types/stockEntriesController/PostStocksStockIdEntries.ts";
+export type {
   DeleteStocksStockId204,
   DeleteStocksStockId204EnumKey,
   DeleteStocksStockId404,
@@ -231,6 +256,9 @@ export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
 export { getSales } from "./clients/salesController/getSales.ts";
 export { patchSalesId } from "./clients/salesController/patchSalesId.ts";
 export { postSales } from "./clients/salesController/postSales.ts";
+export { getProductsProductIdStockEntries } from "./clients/stockEntriesController/getProductsProductIdStockEntries.ts";
+export { getStockEntries } from "./clients/stockEntriesController/getStockEntries.ts";
+export { postStocksStockIdEntries } from "./clients/stockEntriesController/postStocksStockIdEntries.ts";
 export { deleteStocksStockId } from "./clients/stocksController/deleteStocksStockId.ts";
 export { getProductsProductIdStocks } from "./clients/stocksController/getProductsProductIdStocks.ts";
 export { patchStocksStockId } from "./clients/stocksController/patchStocksStockId.ts";
@@ -320,6 +348,21 @@ export { usePatchSalesId } from "./hooks/salesController/usePatchSalesId.ts";
 export { postSalesMutationKey } from "./hooks/salesController/usePostSales.ts";
 export { postSalesMutationOptions } from "./hooks/salesController/usePostSales.ts";
 export { usePostSales } from "./hooks/salesController/usePostSales.ts";
+export { getProductsProductIdStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
+export { getProductsProductIdStockEntriesQueryOptions } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
+export { useGetProductsProductIdStockEntries } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
+export { getProductsProductIdStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
+export { getProductsProductIdStockEntriesSuspenseQueryOptions } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
+export { useGetProductsProductIdStockEntriesSuspense } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
+export { getStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetStockEntries.ts";
+export { getStockEntriesQueryOptions } from "./hooks/stockEntriesController/useGetStockEntries.ts";
+export { useGetStockEntries } from "./hooks/stockEntriesController/useGetStockEntries.ts";
+export { getStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetStockEntriesSuspense.ts";
+export { getStockEntriesSuspenseQueryOptions } from "./hooks/stockEntriesController/useGetStockEntriesSuspense.ts";
+export { useGetStockEntriesSuspense } from "./hooks/stockEntriesController/useGetStockEntriesSuspense.ts";
+export { postStocksStockIdEntriesMutationKey } from "./hooks/stockEntriesController/usePostStocksStockIdEntries.ts";
+export { postStocksStockIdEntriesMutationOptions } from "./hooks/stockEntriesController/usePostStocksStockIdEntries.ts";
+export { usePostStocksStockIdEntries } from "./hooks/stockEntriesController/usePostStocksStockIdEntries.ts";
 export { deleteStocksStockIdMutationKey } from "./hooks/stocksController/useDeleteStocksStockId.ts";
 export { deleteStocksStockIdMutationOptions } from "./hooks/stocksController/useDeleteStocksStockId.ts";
 export { useDeleteStocksStockId } from "./hooks/stocksController/useDeleteStocksStockId.ts";

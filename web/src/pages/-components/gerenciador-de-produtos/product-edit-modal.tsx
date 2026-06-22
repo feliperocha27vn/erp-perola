@@ -1,7 +1,9 @@
 import { Switch } from '@base-ui/react/switch'
-import { Copy, Plus, Trash2, Warehouse } from 'lucide-react'
+import { Copy, History, PackagePlus, Plus, Trash2, Warehouse } from 'lucide-react'
 import { useEffect, useId, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { useGetProductsProductIdStockEntries } from '@/api/hooks/stockEntriesController/useGetProductsProductIdStockEntries'
+import { usePostStocksStockIdEntries } from '@/api/hooks/stockEntriesController/usePostStocksStockIdEntries'
 import { usePatchProductsId } from '@/api/hooks/productsController/usePatchProductsId'
 import { useDeleteStocksStockId } from '@/api/hooks/stocksController/useDeleteStocksStockId'
 import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useGetProductsProductIdStocks'
@@ -81,7 +83,7 @@ function buildTechnicalForm(p: ProductItem): TechnicalForm {
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
-type Tab = 'dados' | 'estoques' | 'detalhes'
+type Tab = 'dados' | 'estoques' | 'lancamentos' | 'detalhes'
 
 type ProductEditModalProps = {
   open: boolean
@@ -118,6 +120,10 @@ export function ProductEditModal({
   const [createForm, setCreateForm] = useState<EditableStock>({ title: '', qtde: '0', full: false })
   const [editForm, setEditForm] = useState<EditableStock>({ title: '', qtde: '0', full: false })
 
+  // ── Lançamentos tab state ──
+  const [launchingStockId, setLaunchingStockId] = useState<string | null>(null)
+  const [launchForm, setLaunchForm] = useState({ quantity: '', notes: '' })
+
   const productId = product?.id ?? ''
   const baseId = useId()
 
@@ -135,6 +141,8 @@ export function ProductEditModal({
     setJsonValue('')
     setIsCreating(false)
     setEditingStockId(null)
+    setLaunchingStockId(null)
+    setLaunchForm({ quantity: '', notes: '' })
   }, [open, product])
 
   // ── Mutations ──
@@ -159,6 +167,32 @@ export function ProductEditModal({
     query: { enabled: open && Boolean(productId) },
   })
   const stocks = useMemo(() => stocksData?.stocks ?? [], [stocksData?.stocks])
+
+  const { data: entriesData, isLoading: isEntriesLoading } = useGetProductsProductIdStockEntries(productId, {
+    query: { enabled: open && Boolean(productId) && activeTab === 'lancamentos' },
+  })
+  const entries = useMemo(() => entriesData?.entries ?? [], [entriesData?.entries])
+
+  const createEntryMutation = usePostStocksStockIdEntries({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Entrada lançada!')
+        queryClient.invalidateQueries({ queryKey: [{ url: '/products' }] })
+        if (productId) {
+          queryClient.invalidateQueries({
+            queryKey: [{ url: '/products/:productId/stocks', params: { productId } }],
+          })
+          queryClient.invalidateQueries({
+            queryKey: [{ url: '/products/:productId/stock-entries', params: { productId } }],
+          })
+          queryClient.invalidateQueries({ queryKey: [{ url: '/stock-entries' }] })
+        }
+        setLaunchingStockId(null)
+        setLaunchForm({ quantity: '', notes: '' })
+      },
+      onError: () => toast.error('Erro ao lançar entrada.'),
+    },
+  })
 
   const createStockMutation = usePostProductsProductIdStocks({
     mutation: {
@@ -270,6 +304,19 @@ export function ProductEditModal({
     }
   }
 
+  // ── Entry handlers ──
+  const handleCreateEntry = (stockId: string) => {
+    const qty = Number(launchForm.quantity)
+    if (!Number.isInteger(qty) || qty < 1) {
+      toast.error('Informe uma quantidade válida (mínimo 1).')
+      return
+    }
+    createEntryMutation.mutate({
+      stockId,
+      data: { quantity: qty, notes: launchForm.notes.trim() || null },
+    })
+  }
+
   // ── Stock handlers ──
   const handleCreateStock = () => {
     const title = createForm.title.trim()
@@ -298,6 +345,7 @@ export function ProductEditModal({
   const tabs: { key: Tab; label: string }[] = [
     { key: 'dados', label: 'Dados' },
     { key: 'estoques', label: 'Estoques' },
+    { key: 'lancamentos', label: 'Lançamentos' },
     { key: 'detalhes', label: 'Detalhes técnicos' },
   ]
 
@@ -503,9 +551,23 @@ export function ProductEditModal({
                             <span className="text-muted-foreground">Quantidade</span>
                             <span className="font-semibold tabular-nums">{stock.qtde}</span>
                           </div>
-                          <div className="grid grid-cols-2 gap-2 pt-1">
+                          <div className="grid grid-cols-3 gap-2 pt-1">
                             <Button variant="outline" onClick={() => handleStartEditingStock(stock)} type="button">
                               Editar
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setEditingStockId(null)
+                                setIsCreating(false)
+                                setLaunchingStockId(launchingStockId === stock.id ? null : stock.id)
+                                setLaunchForm({ quantity: '', notes: '' })
+                              }}
+                              type="button"
+                              className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                            >
+                              <PackagePlus className="size-4 mr-1" />
+                              Entrada
                             </Button>
                             <Button
                               variant="outline"
@@ -517,6 +579,37 @@ export function ProductEditModal({
                               Excluir
                             </Button>
                           </div>
+
+                          {launchingStockId === stock.id && (
+                            <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 space-y-2">
+                              <p className="text-xs font-medium text-emerald-700">Lançar entrada em {stock.title}</p>
+                              <Input
+                                type="number"
+                                min={1}
+                                placeholder="Quantidade"
+                                value={launchForm.quantity}
+                                onChange={e => setLaunchForm(p => ({ ...p, quantity: e.target.value }))}
+                              />
+                              <Input
+                                placeholder="Observação (opcional)"
+                                value={launchForm.notes}
+                                onChange={e => setLaunchForm(p => ({ ...p, notes: e.target.value }))}
+                              />
+                              <div className="grid grid-cols-2 gap-2">
+                                <Button
+                                  onClick={() => handleCreateEntry(stock.id)}
+                                  disabled={createEntryMutation.isPending}
+                                  type="button"
+                                  className="bg-emerald-600 hover:bg-emerald-700"
+                                >
+                                  {createEntryMutation.isPending ? 'Salvando...' : 'Confirmar'}
+                                </Button>
+                                <Button variant="outline" onClick={() => setLaunchingStockId(null)} type="button">
+                                  Cancelar
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -572,6 +665,42 @@ export function ProductEditModal({
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* ── Lançamentos ── */}
+          {activeTab === 'lancamentos' && (
+            <div className="space-y-3">
+              {isEntriesLoading ? (
+                <p className="text-sm text-muted-foreground">Carregando lançamentos...</p>
+              ) : entries.length === 0 ? (
+                <div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground">
+                  <History className="size-8 opacity-30" />
+                  <p className="text-sm">Nenhuma entrada registrada para este produto.</p>
+                  <p className="text-xs">Use o botão "Entrada" no tab Estoques para registrar.</p>
+                </div>
+              ) : (
+                entries.map((entry) => (
+                  <div key={entry.id} className="rounded-xl border border-border bg-secondary/30 p-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Warehouse className="size-4 text-muted-foreground shrink-0" />
+                        <span className="text-sm font-medium text-foreground truncate">{entry.stock_title}</span>
+                      </div>
+                      <span className="text-sm font-bold text-emerald-600 tabular-nums shrink-0">+{entry.quantity}</span>
+                    </div>
+                    {entry.notes && (
+                      <p className="mt-1.5 text-xs text-muted-foreground pl-6">{entry.notes}</p>
+                    )}
+                    <p className="mt-1.5 text-xs text-muted-foreground/60 pl-6">
+                      {new Date(entry.created_at).toLocaleString('pt-BR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           )}
 

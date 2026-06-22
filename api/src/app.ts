@@ -19,6 +19,7 @@ import { productsRoutes } from "./http/controllers/products/routes.js"
 import { salesRoutes } from "./http/controllers/sales/routes.js"
 import { stocksRoutes } from "./http/controllers/stocks/routes.js"
 import { reportsRoutes } from "./http/controllers/reports/routes.js"
+import { stockEntriesRoutes } from "./http/controllers/stock-entries/routes.js"
 import { storesRoutes } from "./http/controllers/stores/routes.js"
 import { verifyAuth } from "./http/middlewares/verify-auth.js"
 import "./types.js"
@@ -102,6 +103,7 @@ export async function buildApp() {
 	await app.register(dashboardRoutes)
 	await app.register(salesRoutes)
 	await app.register(stocksRoutes)
+	await app.register(stockEntriesRoutes)
 	await app.register(reportsRoutes)
 
 	if (env.NODE_ENV === "production") {
