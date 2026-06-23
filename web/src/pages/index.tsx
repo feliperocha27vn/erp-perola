@@ -88,7 +88,7 @@ function Dashboard() {
 
           <Link
             to="/gerenciador-de-produtos"
-            search={{ page: 0, filter: 'all' }}
+            search={{ page: 0, filter: 'all', sort: 'desc' }}
             className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
           >
             <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">

@@ -44,6 +44,10 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 						.uuid()
 						.optional()
 						.describe("Filtrar por ID da marca"),
+					sortOrder: z
+						.enum(["asc", "desc"])
+						.optional()
+						.describe("Ordenação por data de criação: asc (mais antigos) ou desc (mais recentes)"),
 				}),
 				response: {
 					200: z.object({
@@ -84,6 +88,7 @@ export const fetchAllProducts: FastifyPluginAsyncZod = async (app) => {
 				search: req.query.search,
 				withoutImage: req.query.withoutImage === "true",
 				brandId: req.query.brandId,
+				sortOrder: req.query.sortOrder,
 			})
 
 			return reply.send(result)

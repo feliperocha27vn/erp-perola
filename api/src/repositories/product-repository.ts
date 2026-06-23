@@ -55,6 +55,7 @@ export interface FetchProductsRequest {
 	withoutImage?: boolean
 	search?: string
 	brandId?: string
+	sortOrder?: 'asc' | 'desc'
 }
 
 export interface SalesVelocityItem {

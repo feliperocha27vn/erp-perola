@@ -7,6 +7,8 @@ type Filter = 'all' | 'without'
 
 export type BrandFilter = 'ALL' | string
 
+type SortOrder = 'asc' | 'desc'
+
 type ProductsControlsProps = {
   searchQuery?: string
   filter: Filter
@@ -19,6 +21,8 @@ type ProductsControlsProps = {
   onFilterChange: (filter: Filter) => void
   brandFilter: BrandFilter
   onBrandChange: (brand: BrandFilter) => void
+  sortOrder: SortOrder
+  onSortOrderChange: (sort: SortOrder) => void
 }
 
 export function ProductsControls({
@@ -33,6 +37,8 @@ export function ProductsControls({
   onFilterChange,
   brandFilter,
   onBrandChange,
+  sortOrder,
+  onSortOrderChange,
 }: ProductsControlsProps) {
   return (
     <div className="glass-card p-6 rounded-2xl space-y-4">
@@ -71,44 +77,81 @@ export function ProductsControls({
         </Button>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-xs text-muted-foreground">Filtrar por marca</p>
-        <Select.Root
-          value={brandFilter}
-          onValueChange={value => onBrandChange(value || 'ALL')}
-        >
-          <Select.Trigger className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-            <Select.Value placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Todas'}>
-              {brandFilter === 'ALL'
-                ? 'Todas'
-                : (brands.find(b => b.id === brandFilter)?.name ?? 'Todas')}
-            </Select.Value>
-            <Select.Icon className="text-muted-foreground">▾</Select.Icon>
-          </Select.Trigger>
-          <Select.Portal>
-            <Select.Positioner sideOffset={8} className="z-50 outline-none">
-              <Select.Popup className="min-w-[var(--anchor-width)] rounded-xl border border-border bg-popover p-1 shadow-md">
-                <Select.List className="max-h-64 overflow-auto">
-                  <Select.Item
-                    value="ALL"
-                    className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
-                  >
-                    <Select.ItemText>Todas</Select.ItemText>
-                  </Select.Item>
-                  {brands.map(brand => (
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex-1 space-y-2">
+          <p className="text-xs text-muted-foreground">Filtrar por marca</p>
+          <Select.Root
+            value={brandFilter}
+            onValueChange={value => onBrandChange(value || 'ALL')}
+          >
+            <Select.Trigger className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+              <Select.Value placeholder={isBrandsLoading ? 'Carregando marcas...' : 'Todas'}>
+                {brandFilter === 'ALL'
+                  ? 'Todas'
+                  : (brands.find(b => b.id === brandFilter)?.name ?? 'Todas')}
+              </Select.Value>
+              <Select.Icon className="text-muted-foreground">▾</Select.Icon>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Positioner sideOffset={8} className="z-50 outline-none">
+                <Select.Popup className="min-w-[var(--anchor-width)] rounded-xl border border-border bg-popover p-1 shadow-md">
+                  <Select.List className="max-h-64 overflow-auto">
                     <Select.Item
-                      key={brand.id}
-                      value={brand.id}
+                      value="ALL"
                       className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
                     >
-                      <Select.ItemText>{brand.name}</Select.ItemText>
+                      <Select.ItemText>Todas</Select.ItemText>
                     </Select.Item>
-                  ))}
-                </Select.List>
-              </Select.Popup>
-            </Select.Positioner>
-          </Select.Portal>
-        </Select.Root>
+                    {brands.map(brand => (
+                      <Select.Item
+                        key={brand.id}
+                        value={brand.id}
+                        className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
+                      >
+                        <Select.ItemText>{brand.name}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.List>
+                </Select.Popup>
+              </Select.Positioner>
+            </Select.Portal>
+          </Select.Root>
+        </div>
+
+        <div className="flex-1 space-y-2 sm:max-w-[200px]">
+          <p className="text-xs text-muted-foreground">Ordenar por</p>
+          <Select.Root
+            value={sortOrder}
+            onValueChange={value => onSortOrderChange((value as SortOrder) || 'desc')}
+          >
+            <Select.Trigger className="flex h-10 w-full items-center justify-between rounded-xl border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+              <Select.Value>
+                {sortOrder === 'desc' ? 'Mais recentes primeiro' : 'Mais antigos primeiro'}
+              </Select.Value>
+              <Select.Icon className="text-muted-foreground">▾</Select.Icon>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Positioner sideOffset={8} className="z-50 outline-none">
+                <Select.Popup className="min-w-[var(--anchor-width)] rounded-xl border border-border bg-popover p-1 shadow-md">
+                  <Select.List>
+                    <Select.Item
+                      value="desc"
+                      className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
+                    >
+                      <Select.ItemText>Mais recentes primeiro</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item
+                      value="asc"
+                      className="cursor-pointer rounded-md px-3 py-2 text-sm text-foreground data-[highlighted]:bg-secondary"
+                    >
+                      <Select.ItemText>Mais antigos primeiro</Select.ItemText>
+                    </Select.Item>
+                  </Select.List>
+                </Select.Popup>
+              </Select.Positioner>
+            </Select.Portal>
+          </Select.Root>
+        </div>
       </div>
     </div>
   )

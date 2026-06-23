@@ -64,6 +64,7 @@ export type {
   GetProducts200,
   GetProductsQuery,
   GetProductsQueryParams,
+  GetProductsQueryParamsSortOrderEnumKey,
   GetProductsQueryParamsWithoutImageEnumKey,
   GetProductsQueryResponse,
 } from "./productsController/GetProducts.ts";
@@ -201,6 +202,7 @@ export { periodsPeriodEnum } from "./productsController/GetProductSalesDaily.ts"
 export { periodsPeriodEnum2 } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum3 } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum4 } from "./productsController/GetProductSalesDaily.ts";
+export { getProductsQueryParamsSortOrderEnum } from "./productsController/GetProducts.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./productsController/GetProductsSalesVelocity.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";

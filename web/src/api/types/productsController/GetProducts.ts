@@ -11,6 +11,14 @@ export const getProductsQueryParamsWithoutImageEnum = {
 export type GetProductsQueryParamsWithoutImageEnumKey =
   (typeof getProductsQueryParamsWithoutImageEnum)[keyof typeof getProductsQueryParamsWithoutImageEnum];
 
+export const getProductsQueryParamsSortOrderEnum = {
+  asc: "asc",
+  desc: "desc",
+} as const;
+
+export type GetProductsQueryParamsSortOrderEnumKey =
+  (typeof getProductsQueryParamsSortOrderEnum)[keyof typeof getProductsQueryParamsSortOrderEnum];
+
 export type GetProductsQueryParams = {
   /**
    * @description Índice da página (zero-based)
@@ -33,6 +41,11 @@ export type GetProductsQueryParams = {
    * @type string | undefined, uuid
    */
   brandId?: string;
+  /**
+   * @description Ordenação por data de criação: asc (mais antigos) ou desc (mais recentes)
+   * @type string | undefined
+   */
+  sortOrder?: GetProductsQueryParamsSortOrderEnumKey;
 };
 
 /**

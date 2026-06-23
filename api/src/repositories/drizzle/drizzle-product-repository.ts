@@ -1,4 +1,4 @@
-import { and, eq, ilike, inArray, isNull, or, sql, isNotNull } from "drizzle-orm"
+import { and, asc, desc, eq, ilike, inArray, isNull, or, sql, isNotNull } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import { brands, products, sales, stocks, stores } from "../../db/schema.js"
 import type {
@@ -116,6 +116,7 @@ export class DrizzleProductRepository implements ProductRepository {
 		withoutImage,
 		search,
 		brandId,
+		sortOrder = 'desc',
 	}: FetchProductsRequest): Promise<FetchProductsReply> {
 		const limit = 20
 		const offset = pageIndex * limit
@@ -135,6 +136,8 @@ export class DrizzleProductRepository implements ProductRepository {
 
 		const whereClause = and(...filters)
 
+		const orderFn = sortOrder === 'asc' ? asc : desc
+
 		const countQuery = db
 			.select({ count: sql<number>`count(*)` })
 			.from(products)
@@ -144,7 +147,7 @@ export class DrizzleProductRepository implements ProductRepository {
 			.select()
 			.from(products)
 			.where(whereClause)
-			.orderBy(products.created_at, products.id)
+			.orderBy(orderFn(products.created_at), orderFn(products.id))
 			.limit(limit)
 			.offset(offset)
 

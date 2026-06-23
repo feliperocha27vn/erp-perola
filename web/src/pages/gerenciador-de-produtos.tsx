@@ -35,6 +35,7 @@ const uploadImagensSearchSchema = z.object({
   filter: z.enum(['all', 'without']).catch('all'),
   search: z.string().optional(),
   brand: z.string().uuid().optional(),
+  sort: z.enum(['asc', 'desc']).catch('desc'),
 })
 
 type UploadImagensSearch = z.infer<typeof uploadImagensSearchSchema>
@@ -62,6 +63,7 @@ function GerenciadorDeProdutos() {
     filter,
     search: searchQuery,
     brand: brandQuery,
+    sort: sortOrder,
   } = useSearch({ from: Route.fullPath })
 
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
@@ -99,6 +101,7 @@ function GerenciadorDeProdutos() {
     search: normalizedSearch,
     withoutImage: filter === 'without' ? 'true' : undefined,
     brandId: brandQuery,
+    sortOrder,
   })
 
   const { data: brandsData, isLoading: isBrandsLoading } = useGetBrands()
@@ -192,6 +195,10 @@ function GerenciadorDeProdutos() {
             brand: value === 'ALL' ? undefined : value,
             page: 0,
           })
+        }
+        sortOrder={sortOrder}
+        onSortOrderChange={value =>
+          updateSearchParams({ sort: value, page: 0 })
         }
       />
 
