@@ -4,12 +4,20 @@ import { ArrowLeft, Package, Plus, Save, Send, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
+import { usePostShipmentAccounts } from '@/api/hooks/shipmentAccountsController/usePostShipmentAccounts'
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
 import { usePostShipmentsByIdConfirm } from '@/api/hooks/shipmentsController/usePostShipmentsByIdConfirm'
 import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useGetProductsProductIdStocks'
 import { useGetProducts } from '@/api/hooks/productsController/useGetProducts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { queryClient } from '@/lib/react-query'
 
 const searchSchema = z.object({ shipmentId: z.string().optional() })
@@ -186,6 +194,24 @@ function EnviosNovoPage() {
   const accounts = accountsData?.accounts ?? []
 
   const [accountId, setAccountId] = useState('')
+  const [newAccountDialog, setNewAccountDialog] = useState(false)
+  const [newAccountName, setNewAccountName] = useState('')
+
+  const createAccountMutation = usePostShipmentAccounts({
+    mutation: {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: [{ url: '/shipment-accounts' }] })
+        setAccountId(data.account.id)
+        setNewAccountName('')
+        setNewAccountDialog(false)
+        toast.success(`Conta "${data.account.name}" criada.`)
+      },
+      onError: (err: any) => {
+        const msg = err?.response?.data?.error ?? 'Erro ao criar conta.'
+        toast.error(msg)
+      },
+    },
+  })
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [notes, setNotes] = useState('')
   const [items, setItems] = useState<ShipmentItemState[]>([emptyItem(nextKey++)])
@@ -277,22 +303,65 @@ function EnviosNovoPage() {
         </div>
       </div>
 
+      {/* Dialog criar conta */}
+      <Dialog open={newAccountDialog} onOpenChange={setNewAccountDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Nova conta FBA</DialogTitle>
+          </DialogHeader>
+          <Input
+            placeholder="Ex: Amazon BR Principal"
+            value={newAccountName}
+            onChange={(e) => setNewAccountName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && newAccountName.trim()) {
+                createAccountMutation.mutate({ data: { name: newAccountName.trim() } })
+              }
+            }}
+            autoFocus
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNewAccountDialog(false)}>
+              Cancelar
+            </Button>
+            <Button
+              disabled={!newAccountName.trim() || createAccountMutation.isPending}
+              onClick={() =>
+                createAccountMutation.mutate({ data: { name: newAccountName.trim() } })
+              }
+            >
+              Criar conta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Meta card */}
       <div className="flex flex-wrap items-end gap-6 rounded-xl border border-border bg-card p-6">
         <div className="flex flex-col gap-1.5 w-72">
           <label className="text-sm font-medium text-foreground">Conta de destino</label>
-          <select
-            value={accountId}
-            onChange={(e) => setAccountId(e.target.value)}
-            className="h-11 rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            <option value="">Selecionar conta…</option>
-            {accounts.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={accountId}
+              onChange={(e) => setAccountId(e.target.value)}
+              className="flex-1 h-11 rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">Selecionar conta…</option>
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              title="Criar nova conta"
+              onClick={() => setNewAccountDialog(true)}
+              className="flex items-center justify-center w-11 h-11 rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary transition-colors shrink-0"
+            >
+              <Plus size={16} />
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1.5 w-48">
