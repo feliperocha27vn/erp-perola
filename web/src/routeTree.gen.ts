@@ -15,7 +15,10 @@ import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
 import { Route as LancamentosDeEstoqueRouteImport } from './pages/lancamentos-de-estoque'
 import { Route as GerenciadorDeProdutosRouteImport } from './pages/gerenciador-de-produtos'
+import { Route as EnviosRouteImport } from './pages/envios'
 import { Route as IndexRouteImport } from './pages/index'
+import { Route as EnviosIndexRouteImport } from './pages/envios.index'
+import { Route as EnviosNovoRouteImport } from './pages/envios.novo'
 
 const VendasRoute = VendasRouteImport.update({
   id: '/vendas',
@@ -47,20 +50,38 @@ const GerenciadorDeProdutosRoute = GerenciadorDeProdutosRouteImport.update({
   path: '/gerenciador-de-produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnviosRoute = EnviosRouteImport.update({
+  id: '/envios',
+  path: '/envios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnviosIndexRoute = EnviosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EnviosRoute,
+} as any)
+const EnviosNovoRoute = EnviosNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => EnviosRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/envios': typeof EnviosRouteWithChildren
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
+  '/envios/novo': typeof EnviosNovoRoute
+  '/envios/': typeof EnviosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,27 +91,35 @@ export interface FileRoutesByTo {
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
+  '/envios/novo': typeof EnviosNovoRoute
+  '/envios': typeof EnviosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/envios': typeof EnviosRouteWithChildren
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/vendas': typeof VendasRoute
+  '/envios/novo': typeof EnviosNovoRoute
+  '/envios/': typeof EnviosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/envios'
     | '/gerenciador-de-produtos'
     | '/lancamentos-de-estoque'
     | '/login'
     | '/marcas'
     | '/relatorio-de-estoque'
     | '/vendas'
+    | '/envios/novo'
+    | '/envios/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,19 +129,25 @@ export interface FileRouteTypes {
     | '/marcas'
     | '/relatorio-de-estoque'
     | '/vendas'
+    | '/envios/novo'
+    | '/envios'
   id:
     | '__root__'
     | '/'
+    | '/envios'
     | '/gerenciador-de-produtos'
     | '/lancamentos-de-estoque'
     | '/login'
     | '/marcas'
     | '/relatorio-de-estoque'
     | '/vendas'
+    | '/envios/novo'
+    | '/envios/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EnviosRoute: typeof EnviosRouteWithChildren
   GerenciadorDeProdutosRoute: typeof GerenciadorDeProdutosRoute
   LancamentosDeEstoqueRoute: typeof LancamentosDeEstoqueRoute
   LoginRoute: typeof LoginRoute
@@ -165,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GerenciadorDeProdutosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/envios': {
+      id: '/envios'
+      path: '/envios'
+      fullPath: '/envios'
+      preLoaderRoute: typeof EnviosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,11 +214,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/envios/': {
+      id: '/envios/'
+      path: '/'
+      fullPath: '/envios/'
+      preLoaderRoute: typeof EnviosIndexRouteImport
+      parentRoute: typeof EnviosRoute
+    }
+    '/envios/novo': {
+      id: '/envios/novo'
+      path: '/novo'
+      fullPath: '/envios/novo'
+      preLoaderRoute: typeof EnviosNovoRouteImport
+      parentRoute: typeof EnviosRoute
+    }
   }
 }
 
+interface EnviosRouteChildren {
+  EnviosNovoRoute: typeof EnviosNovoRoute
+  EnviosIndexRoute: typeof EnviosIndexRoute
+}
+
+const EnviosRouteChildren: EnviosRouteChildren = {
+  EnviosNovoRoute: EnviosNovoRoute,
+  EnviosIndexRoute: EnviosIndexRoute,
+}
+
+const EnviosRouteWithChildren =
+  EnviosRoute._addFileChildren(EnviosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EnviosRoute: EnviosRouteWithChildren,
   GerenciadorDeProdutosRoute: GerenciadorDeProdutosRoute,
   LancamentosDeEstoqueRoute: LancamentosDeEstoqueRoute,
   LoginRoute: LoginRoute,

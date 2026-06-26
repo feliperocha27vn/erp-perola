@@ -4,6 +4,60 @@ Regras globais para o projeto `web`. Todos os agentes e desenvolvedores devem se
 
 ---
 
+## Design-First: Pencil obrigatório antes de implementar
+
+**Toda nova funcionalidade de frontend DEVE ser desenhada no Pencil antes da implementação.**
+
+Arquivo de design: `web/design/pencil-new.pen`
+
+### Fluxo obrigatório
+
+1. **Desenhar no Pencil** — crie a tela ou modal no arquivo `.pen` usando o Pencil MCP
+2. **Validar com screenshot** — use `get_screenshot` para confirmar que o design está correto
+3. **Só então implementar** — converta o design aprovado em componentes React
+
+### Tokens de design
+
+O arquivo `.pen` usa variáveis (`$primary`, `$bg`, `$fg`, etc.) que mapeiam para:
+
+| Token | Valor |
+|---|---|
+| `$primary` | `#1f5b72` (teal principal) |
+| `$bg` | `#f5f7f8` (fundo da página) |
+| `$surface` | `#ffffff` (cards/painéis) |
+| `$fg` | `#163746` (texto principal) |
+| `$fg-muted` | `#6b7280` (texto secundário) |
+| `$border` | `#e5e7eb` (bordas) |
+| `$muted` | `#f3f4f6` (fundos alternativos) |
+| `$destructive` | `#dc2626` (ações destrutivas) |
+| `$font-display` | Manrope (headings, weight 700-800) |
+| `$font-body` | Inter (corpo do texto) |
+| `$font-mono` | JetBrains Mono (SKUs, códigos) |
+
+### Telas já desenhadas (referência)
+
+- Login (`Eside`)
+- Dashboard / Painel de Controle (`c6MCpg`)
+- Gerenciador de Produtos (`qNSUS`)
+- Vendas (`n1ha0`)
+- Relatório de Estoque (`xOmVl`)
+- Lançamentos de Estoque (`YDFW7`)
+- Marcas (`eqg3N`)
+- Modal — Criar Venda (`kg2Vu`)
+- Modal — Excluir Venda (`We9G0`)
+- Modal — Criar Marca (`AXGXG`)
+- Modal — Editar Produto / Dados (`D1UO5L`)
+- Modal — Editar Produto / Estoques (`Qcdpo`)
+- Modal — Excluir Marca (`bXniD`)
+
+### O que NÃO fazer
+
+- Não implemente um componente novo sem antes ter o design aprovado no Pencil
+- Não invente cores, espaçamentos ou tipografia — use os tokens acima
+- Não crie um arquivo `.pen` separado — use sempre `pencil-new.pen`
+
+---
+
 ## Dependências Obrigatórias
 
 O projeto web requer as seguintes dependências principais:

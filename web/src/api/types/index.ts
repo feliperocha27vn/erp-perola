@@ -143,6 +143,83 @@ export type {
   SaleChannelEnumKey,
 } from "./salesController/PostSales.ts";
 export type {
+  DeleteShipmentAccountsById204,
+  DeleteShipmentAccountsById404,
+  DeleteShipmentAccountsByIdMutation,
+  DeleteShipmentAccountsByIdMutationResponse,
+  DeleteShipmentAccountsByIdPathParams,
+} from "./shipmentAccountsController/DeleteShipmentAccountsById.ts";
+export type {
+  GetShipmentAccounts200,
+  GetShipmentAccountsQuery,
+  GetShipmentAccountsQueryResponse,
+} from "./shipmentAccountsController/GetShipmentAccounts.ts";
+export type {
+  PostShipmentAccounts201,
+  PostShipmentAccounts409,
+  PostShipmentAccountsMutation,
+  PostShipmentAccountsMutationRequest,
+  PostShipmentAccountsMutationResponse,
+} from "./shipmentAccountsController/PostShipmentAccounts.ts";
+export type {
+  PutShipmentAccountsById200,
+  PutShipmentAccountsById404,
+  PutShipmentAccountsById409,
+  PutShipmentAccountsByIdMutation,
+  PutShipmentAccountsByIdMutationRequest,
+  PutShipmentAccountsByIdMutationResponse,
+  PutShipmentAccountsByIdPathParams,
+} from "./shipmentAccountsController/PutShipmentAccountsById.ts";
+export type {
+  DeleteShipmentsById204,
+  DeleteShipmentsById404,
+  DeleteShipmentsById409,
+  DeleteShipmentsByIdMutation,
+  DeleteShipmentsByIdMutationResponse,
+  DeleteShipmentsByIdPathParams,
+} from "./shipmentsController/DeleteShipmentsById.ts";
+export type {
+  GetShipments200,
+  GetShipmentsQuery,
+  GetShipmentsQueryResponse,
+  ShipmentsStatusEnumKey,
+} from "./shipmentsController/GetShipments.ts";
+export type {
+  GetShipmentsById200,
+  GetShipmentsById404,
+  GetShipmentsByIdPathParams,
+  GetShipmentsByIdQuery,
+  GetShipmentsByIdQueryResponse,
+  ShipmentStatusEnum2Key,
+} from "./shipmentsController/GetShipmentsById.ts";
+export type {
+  PostShipments201,
+  PostShipments404,
+  PostShipmentsMutation,
+  PostShipmentsMutationRequest,
+  PostShipmentsMutationResponse,
+  ShipmentStatusEnumKey,
+} from "./shipmentsController/PostShipments.ts";
+export type {
+  PostShipmentsByIdConfirm204,
+  PostShipmentsByIdConfirm404,
+  PostShipmentsByIdConfirm409,
+  PostShipmentsByIdConfirm422,
+  PostShipmentsByIdConfirmMutation,
+  PostShipmentsByIdConfirmMutationResponse,
+  PostShipmentsByIdConfirmPathParams,
+} from "./shipmentsController/PostShipmentsByIdConfirm.ts";
+export type {
+  PutShipmentsById200,
+  PutShipmentsById404,
+  PutShipmentsById409,
+  PutShipmentsByIdMutation,
+  PutShipmentsByIdMutationRequest,
+  PutShipmentsByIdMutationResponse,
+  PutShipmentsByIdPathParams,
+  ShipmentStatusEnum3Key,
+} from "./shipmentsController/PutShipmentsById.ts";
+export type {
   GetProductsProductIdStockEntries200,
   GetProductsProductIdStockEntriesPathParams,
   GetProductsProductIdStockEntriesQuery,
@@ -210,3 +287,7 @@ export { patchSalesIdMutationRequestChannelEnum } from "./salesController/PatchS
 export { saleChannelEnum2 } from "./salesController/PatchSalesId.ts";
 export { postSalesMutationRequestChannelEnum } from "./salesController/PostSales.ts";
 export { saleChannelEnum } from "./salesController/PostSales.ts";
+export { shipmentsStatusEnum } from "./shipmentsController/GetShipments.ts";
+export { shipmentStatusEnum2 } from "./shipmentsController/GetShipmentsById.ts";
+export { shipmentStatusEnum } from "./shipmentsController/PostShipments.ts";
+export { shipmentStatusEnum3 } from "./shipmentsController/PutShipmentsById.ts";

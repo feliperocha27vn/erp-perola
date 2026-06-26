@@ -26,6 +26,19 @@ export type { GetSalesQueryKey } from "./hooks/salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./hooks/salesController/useGetSalesSuspense.ts";
 export type { PatchSalesIdMutationKey } from "./hooks/salesController/usePatchSalesId.ts";
 export type { PostSalesMutationKey } from "./hooks/salesController/usePostSales.ts";
+export type { DeleteShipmentAccountsByIdMutationKey } from "./hooks/shipmentAccountsController/useDeleteShipmentAccountsById.ts";
+export type { GetShipmentAccountsQueryKey } from "./hooks/shipmentAccountsController/useGetShipmentAccounts.ts";
+export type { GetShipmentAccountsSuspenseQueryKey } from "./hooks/shipmentAccountsController/useGetShipmentAccountsSuspense.ts";
+export type { PostShipmentAccountsMutationKey } from "./hooks/shipmentAccountsController/usePostShipmentAccounts.ts";
+export type { PutShipmentAccountsByIdMutationKey } from "./hooks/shipmentAccountsController/usePutShipmentAccountsById.ts";
+export type { DeleteShipmentsByIdMutationKey } from "./hooks/shipmentsController/useDeleteShipmentsById.ts";
+export type { GetShipmentsQueryKey } from "./hooks/shipmentsController/useGetShipments.ts";
+export type { GetShipmentsByIdQueryKey } from "./hooks/shipmentsController/useGetShipmentsById.ts";
+export type { GetShipmentsByIdSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsByIdSuspense.ts";
+export type { GetShipmentsSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsSuspense.ts";
+export type { PostShipmentsMutationKey } from "./hooks/shipmentsController/usePostShipments.ts";
+export type { PostShipmentsByIdConfirmMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export type { PutShipmentsByIdMutationKey } from "./hooks/shipmentsController/usePutShipmentsById.ts";
 export type { GetProductsProductIdStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
 export type { GetProductsProductIdStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
 export type { GetStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetStockEntries.ts";
@@ -183,6 +196,83 @@ export type {
   SaleChannelEnumKey,
 } from "./types/salesController/PostSales.ts";
 export type {
+  DeleteShipmentAccountsById204,
+  DeleteShipmentAccountsById404,
+  DeleteShipmentAccountsByIdMutation,
+  DeleteShipmentAccountsByIdMutationResponse,
+  DeleteShipmentAccountsByIdPathParams,
+} from "./types/shipmentAccountsController/DeleteShipmentAccountsById.ts";
+export type {
+  GetShipmentAccounts200,
+  GetShipmentAccountsQuery,
+  GetShipmentAccountsQueryResponse,
+} from "./types/shipmentAccountsController/GetShipmentAccounts.ts";
+export type {
+  PostShipmentAccounts201,
+  PostShipmentAccounts409,
+  PostShipmentAccountsMutation,
+  PostShipmentAccountsMutationRequest,
+  PostShipmentAccountsMutationResponse,
+} from "./types/shipmentAccountsController/PostShipmentAccounts.ts";
+export type {
+  PutShipmentAccountsById200,
+  PutShipmentAccountsById404,
+  PutShipmentAccountsById409,
+  PutShipmentAccountsByIdMutation,
+  PutShipmentAccountsByIdMutationRequest,
+  PutShipmentAccountsByIdMutationResponse,
+  PutShipmentAccountsByIdPathParams,
+} from "./types/shipmentAccountsController/PutShipmentAccountsById.ts";
+export type {
+  DeleteShipmentsById204,
+  DeleteShipmentsById404,
+  DeleteShipmentsById409,
+  DeleteShipmentsByIdMutation,
+  DeleteShipmentsByIdMutationResponse,
+  DeleteShipmentsByIdPathParams,
+} from "./types/shipmentsController/DeleteShipmentsById.ts";
+export type {
+  GetShipments200,
+  GetShipmentsQuery,
+  GetShipmentsQueryResponse,
+  ShipmentsStatusEnumKey,
+} from "./types/shipmentsController/GetShipments.ts";
+export type {
+  GetShipmentsById200,
+  GetShipmentsById404,
+  GetShipmentsByIdPathParams,
+  GetShipmentsByIdQuery,
+  GetShipmentsByIdQueryResponse,
+  ShipmentStatusEnum2Key,
+} from "./types/shipmentsController/GetShipmentsById.ts";
+export type {
+  PostShipments201,
+  PostShipments404,
+  PostShipmentsMutation,
+  PostShipmentsMutationRequest,
+  PostShipmentsMutationResponse,
+  ShipmentStatusEnumKey,
+} from "./types/shipmentsController/PostShipments.ts";
+export type {
+  PostShipmentsByIdConfirm204,
+  PostShipmentsByIdConfirm404,
+  PostShipmentsByIdConfirm409,
+  PostShipmentsByIdConfirm422,
+  PostShipmentsByIdConfirmMutation,
+  PostShipmentsByIdConfirmMutationResponse,
+  PostShipmentsByIdConfirmPathParams,
+} from "./types/shipmentsController/PostShipmentsByIdConfirm.ts";
+export type {
+  PutShipmentsById200,
+  PutShipmentsById404,
+  PutShipmentsById409,
+  PutShipmentsByIdMutation,
+  PutShipmentsByIdMutationRequest,
+  PutShipmentsByIdMutationResponse,
+  PutShipmentsByIdPathParams,
+  ShipmentStatusEnum3Key,
+} from "./types/shipmentsController/PutShipmentsById.ts";
+export type {
   GetProductsProductIdStockEntries200,
   GetProductsProductIdStockEntriesPathParams,
   GetProductsProductIdStockEntriesQuery,
@@ -257,6 +347,16 @@ export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
 export { getSales } from "./clients/salesController/getSales.ts";
 export { patchSalesId } from "./clients/salesController/patchSalesId.ts";
 export { postSales } from "./clients/salesController/postSales.ts";
+export { deleteShipmentAccountsById } from "./clients/shipmentAccountsController/deleteShipmentAccountsById.ts";
+export { getShipmentAccounts } from "./clients/shipmentAccountsController/getShipmentAccounts.ts";
+export { postShipmentAccounts } from "./clients/shipmentAccountsController/postShipmentAccounts.ts";
+export { putShipmentAccountsById } from "./clients/shipmentAccountsController/putShipmentAccountsById.ts";
+export { deleteShipmentsById } from "./clients/shipmentsController/deleteShipmentsById.ts";
+export { getShipments } from "./clients/shipmentsController/getShipments.ts";
+export { getShipmentsById } from "./clients/shipmentsController/getShipmentsById.ts";
+export { postShipments } from "./clients/shipmentsController/postShipments.ts";
+export { postShipmentsByIdConfirm } from "./clients/shipmentsController/postShipmentsByIdConfirm.ts";
+export { putShipmentsById } from "./clients/shipmentsController/putShipmentsById.ts";
 export { getProductsProductIdStockEntries } from "./clients/stockEntriesController/getProductsProductIdStockEntries.ts";
 export { getStockEntries } from "./clients/stockEntriesController/getStockEntries.ts";
 export { postStocksStockIdEntries } from "./clients/stockEntriesController/postStocksStockIdEntries.ts";
@@ -349,6 +449,45 @@ export { usePatchSalesId } from "./hooks/salesController/usePatchSalesId.ts";
 export { postSalesMutationKey } from "./hooks/salesController/usePostSales.ts";
 export { postSalesMutationOptions } from "./hooks/salesController/usePostSales.ts";
 export { usePostSales } from "./hooks/salesController/usePostSales.ts";
+export { deleteShipmentAccountsByIdMutationKey } from "./hooks/shipmentAccountsController/useDeleteShipmentAccountsById.ts";
+export { deleteShipmentAccountsByIdMutationOptions } from "./hooks/shipmentAccountsController/useDeleteShipmentAccountsById.ts";
+export { useDeleteShipmentAccountsById } from "./hooks/shipmentAccountsController/useDeleteShipmentAccountsById.ts";
+export { getShipmentAccountsQueryKey } from "./hooks/shipmentAccountsController/useGetShipmentAccounts.ts";
+export { getShipmentAccountsQueryOptions } from "./hooks/shipmentAccountsController/useGetShipmentAccounts.ts";
+export { useGetShipmentAccounts } from "./hooks/shipmentAccountsController/useGetShipmentAccounts.ts";
+export { getShipmentAccountsSuspenseQueryKey } from "./hooks/shipmentAccountsController/useGetShipmentAccountsSuspense.ts";
+export { getShipmentAccountsSuspenseQueryOptions } from "./hooks/shipmentAccountsController/useGetShipmentAccountsSuspense.ts";
+export { useGetShipmentAccountsSuspense } from "./hooks/shipmentAccountsController/useGetShipmentAccountsSuspense.ts";
+export { postShipmentAccountsMutationKey } from "./hooks/shipmentAccountsController/usePostShipmentAccounts.ts";
+export { postShipmentAccountsMutationOptions } from "./hooks/shipmentAccountsController/usePostShipmentAccounts.ts";
+export { usePostShipmentAccounts } from "./hooks/shipmentAccountsController/usePostShipmentAccounts.ts";
+export { putShipmentAccountsByIdMutationKey } from "./hooks/shipmentAccountsController/usePutShipmentAccountsById.ts";
+export { putShipmentAccountsByIdMutationOptions } from "./hooks/shipmentAccountsController/usePutShipmentAccountsById.ts";
+export { usePutShipmentAccountsById } from "./hooks/shipmentAccountsController/usePutShipmentAccountsById.ts";
+export { deleteShipmentsByIdMutationKey } from "./hooks/shipmentsController/useDeleteShipmentsById.ts";
+export { deleteShipmentsByIdMutationOptions } from "./hooks/shipmentsController/useDeleteShipmentsById.ts";
+export { useDeleteShipmentsById } from "./hooks/shipmentsController/useDeleteShipmentsById.ts";
+export { getShipmentsQueryKey } from "./hooks/shipmentsController/useGetShipments.ts";
+export { getShipmentsQueryOptions } from "./hooks/shipmentsController/useGetShipments.ts";
+export { useGetShipments } from "./hooks/shipmentsController/useGetShipments.ts";
+export { getShipmentsByIdQueryKey } from "./hooks/shipmentsController/useGetShipmentsById.ts";
+export { getShipmentsByIdQueryOptions } from "./hooks/shipmentsController/useGetShipmentsById.ts";
+export { useGetShipmentsById } from "./hooks/shipmentsController/useGetShipmentsById.ts";
+export { getShipmentsByIdSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsByIdSuspense.ts";
+export { getShipmentsByIdSuspenseQueryOptions } from "./hooks/shipmentsController/useGetShipmentsByIdSuspense.ts";
+export { useGetShipmentsByIdSuspense } from "./hooks/shipmentsController/useGetShipmentsByIdSuspense.ts";
+export { getShipmentsSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsSuspense.ts";
+export { getShipmentsSuspenseQueryOptions } from "./hooks/shipmentsController/useGetShipmentsSuspense.ts";
+export { useGetShipmentsSuspense } from "./hooks/shipmentsController/useGetShipmentsSuspense.ts";
+export { postShipmentsMutationKey } from "./hooks/shipmentsController/usePostShipments.ts";
+export { postShipmentsMutationOptions } from "./hooks/shipmentsController/usePostShipments.ts";
+export { usePostShipments } from "./hooks/shipmentsController/usePostShipments.ts";
+export { postShipmentsByIdConfirmMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export { postShipmentsByIdConfirmMutationOptions } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export { usePostShipmentsByIdConfirm } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export { putShipmentsByIdMutationKey } from "./hooks/shipmentsController/usePutShipmentsById.ts";
+export { putShipmentsByIdMutationOptions } from "./hooks/shipmentsController/usePutShipmentsById.ts";
+export { usePutShipmentsById } from "./hooks/shipmentsController/usePutShipmentsById.ts";
 export { getProductsProductIdStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
 export { getProductsProductIdStockEntriesQueryOptions } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
 export { useGetProductsProductIdStockEntries } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
@@ -397,3 +536,7 @@ export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/
 export { saleChannelEnum2 } from "./types/salesController/PatchSalesId.ts";
 export { postSalesMutationRequestChannelEnum } from "./types/salesController/PostSales.ts";
 export { saleChannelEnum } from "./types/salesController/PostSales.ts";
+export { shipmentsStatusEnum } from "./types/shipmentsController/GetShipments.ts";
+export { shipmentStatusEnum2 } from "./types/shipmentsController/GetShipmentsById.ts";
+export { shipmentStatusEnum } from "./types/shipmentsController/PostShipments.ts";
+export { shipmentStatusEnum3 } from "./types/shipmentsController/PutShipmentsById.ts";
