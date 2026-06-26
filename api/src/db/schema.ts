@@ -17,6 +17,8 @@ export const salesChannelEnum = pgEnum("sales_channel", [
 	"Direto",
 ])
 
+export const shipmentStatusEnum = pgEnum("shipment_status", ["rascunho", "confirmado"])
+
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),
@@ -219,5 +221,73 @@ export const salesRelations = relations(sales, ({ one }) => ({
 	store: one(stores, {
 		fields: [sales.store_id],
 		references: [stores.id],
+	}),
+}))
+
+export const shipmentAccounts = pgTable("shipment_accounts", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	name: text("name").notNull().unique(),
+	created_at: timestamp("created_at").notNull().defaultNow(),
+	updated_at: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const shipments = pgTable("shipments", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	account_id: uuid("account_id")
+		.notNull()
+		.references(() => shipmentAccounts.id, { onDelete: "restrict" }),
+	date: timestamp("date").notNull(),
+	notes: text("notes"),
+	status: shipmentStatusEnum("status").notNull().default("rascunho"),
+	created_at: timestamp("created_at").notNull().defaultNow(),
+	updated_at: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const shipmentItems = pgTable("shipment_items", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	shipment_id: uuid("shipment_id")
+		.notNull()
+		.references(() => shipments.id, { onDelete: "cascade" }),
+	product_id: uuid("product_id")
+		.notNull()
+		.references(() => products.id, { onDelete: "restrict" }),
+	quantity: integer("quantity").notNull(),
+	source_stock_id: uuid("source_stock_id")
+		.notNull()
+		.references(() => stocks.id, { onDelete: "restrict" }),
+	destination_stock_id: uuid("destination_stock_id")
+		.notNull()
+		.references(() => stocks.id, { onDelete: "restrict" }),
+	created_at: timestamp("created_at").notNull().defaultNow(),
+})
+
+export const shipmentAccountsRelations = relations(shipmentAccounts, ({ many }) => ({
+	shipments: many(shipments),
+}))
+
+export const shipmentsRelations = relations(shipments, ({ one, many }) => ({
+	account: one(shipmentAccounts, {
+		fields: [shipments.account_id],
+		references: [shipmentAccounts.id],
+	}),
+	items: many(shipmentItems),
+}))
+
+export const shipmentItemsRelations = relations(shipmentItems, ({ one }) => ({
+	shipment: one(shipments, {
+		fields: [shipmentItems.shipment_id],
+		references: [shipments.id],
+	}),
+	product: one(products, {
+		fields: [shipmentItems.product_id],
+		references: [products.id],
+	}),
+	sourceStock: one(stocks, {
+		fields: [shipmentItems.source_stock_id],
+		references: [stocks.id],
+	}),
+	destinationStock: one(stocks, {
+		fields: [shipmentItems.destination_stock_id],
+		references: [stocks.id],
 	}),
 }))

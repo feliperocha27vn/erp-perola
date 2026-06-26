@@ -21,6 +21,8 @@ import { stocksRoutes } from "./http/controllers/stocks/routes.js"
 import { reportsRoutes } from "./http/controllers/reports/routes.js"
 import { stockEntriesRoutes } from "./http/controllers/stock-entries/routes.js"
 import { storesRoutes } from "./http/controllers/stores/routes.js"
+import { shipmentAccountsRoutes } from "./http/controllers/shipment-accounts/routes.js"
+import { shipmentsRoutes } from "./http/controllers/shipments/routes.js"
 import { verifyAuth } from "./http/middlewares/verify-auth.js"
 import "./types.js"
 
@@ -105,6 +107,8 @@ export async function buildApp() {
 	await app.register(stocksRoutes)
 	await app.register(stockEntriesRoutes)
 	await app.register(reportsRoutes)
+	await app.register(shipmentAccountsRoutes)
+	await app.register(shipmentsRoutes)
 
 	if (env.NODE_ENV === "production") {
 		const webDistPath = path.join(__dirname, "../web")

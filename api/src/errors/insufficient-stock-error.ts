@@ -1,6 +1,9 @@
 export class InsufficientStockError extends Error {
-	constructor() {
-		super("Estoque insuficiente para concluir a venda")
-		this.name = "InsufficientStockError"
+	constructor(sku?: string, available?: number, requested?: number) {
+		const detail =
+			sku !== undefined
+				? ` para o produto ${sku}: disponível ${available}, solicitado ${requested}`
+				: ""
+		super(`Estoque insuficiente${detail}.`)
 	}
 }
