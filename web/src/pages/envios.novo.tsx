@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
-import { ArrowLeft, Package, Plus, Save, Send, X } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { ArrowLeft, Check, ChevronsUpDown, Package, Plus, Save, Send, X } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
 import { usePostShipmentAccounts } from '@/api/hooks/shipmentAccountsController/usePostShipmentAccounts'
@@ -12,12 +12,22 @@ import { useGetProducts } from '@/api/hooks/productsController/useGetProducts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 import { queryClient } from '@/lib/react-query'
 
 const searchSchema = z.object({ shipmentId: z.string().optional() })
@@ -60,11 +70,18 @@ function ItemRow({
   onChange: (key: number, patch: Partial<ShipmentItemState>) => void
   onRemove: (key: number) => void
 }) {
-  const [showProductList, setShowProductList] = useState(false)
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
 
-  const { data: productsData } = useGetProducts(
-    { search: item.product_search, pageIndex: '0' },
-    { query: { enabled: item.product_search.length >= 2 } },
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 400)
+    return () => clearTimeout(t)
+  }, [searchInput])
+
+  const { data: productsData, isLoading: isProductsLoading } = useGetProducts(
+    { search: debouncedSearch || undefined, pageIndex: '0' },
+    { query: { enabled: popoverOpen } },
   )
   const products = productsData?.items ?? []
 
@@ -79,50 +96,70 @@ function ItemRow({
     <div className="flex items-center gap-2 h-[60px] px-6 border-b border-border last:border-b-0 even:bg-muted/30">
       <span className="w-8 text-xs text-muted-foreground font-mono tabular-nums">{index + 1}</span>
 
-      {/* SKU / Product search */}
-      <div className="flex-1 relative">
-        <Input
-          placeholder="Buscar SKU ou EAN…"
-          value={item.product_search || item.product_sku}
-          onChange={(e) => {
-            onChange(item.key, {
-              product_search: e.target.value,
-              product_id: '',
-              product_sku: '',
-              source_stock_id: '',
-              destination_stock_id: '',
-            })
-            setShowProductList(true)
-          }}
-          onFocus={() => item.product_search.length >= 2 && setShowProductList(true)}
-          onBlur={() => setTimeout(() => setShowProductList(false), 150)}
-          className="h-9 font-mono text-xs"
-        />
-        {showProductList && products.length > 0 && (
-          <div className="absolute top-10 left-0 z-50 w-full max-h-48 overflow-y-auto rounded-lg border border-border bg-popover shadow-lg">
-            {products.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="w-full text-left px-3 py-2 hover:bg-muted transition-colors"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  onChange(item.key, {
-                    product_id: p.id,
-                    product_sku: p.sku,
-                    product_search: '',
-                    source_stock_id: '',
-                    destination_stock_id: '',
-                  })
-                  setShowProductList(false)
-                }}
-              >
-                <p className="text-xs font-mono font-semibold text-foreground">{p.sku}</p>
-                <p className="text-xs text-muted-foreground truncate">{p.technical_title ?? '—'}</p>
-              </button>
-            ))}
-          </div>
-        )}
+      {/* SKU / Product combobox */}
+      <div className="flex-1">
+        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={popoverOpen}
+              className="w-full h-9 justify-between font-mono text-xs px-3"
+            >
+              <span className={cn(!item.product_sku && 'text-muted-foreground font-sans')}>
+                {item.product_sku || 'Buscar produto…'}
+              </span>
+              <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-0 border-border bg-popover" align="start">
+            <Command className="bg-transparent">
+              <CommandInput
+                placeholder="Buscar por SKU ou EAN…"
+                value={searchInput}
+                onValueChange={setSearchInput}
+              />
+              <CommandList className="max-h-60 overflow-y-auto">
+                <CommandEmpty>
+                  {isProductsLoading ? 'Buscando…' : 'Nenhum produto encontrado.'}
+                </CommandEmpty>
+                <CommandGroup>
+                  {products.map((p) => (
+                    <CommandItem
+                      key={p.id}
+                      value={p.id}
+                      keywords={[p.sku, p.ean, p.brand?.name ?? '']}
+                      onSelect={() => {
+                        onChange(item.key, {
+                          product_id: p.id,
+                          product_sku: p.sku,
+                          source_stock_id: '',
+                          destination_stock_id: '',
+                        })
+                        setSearchInput('')
+                        setPopoverOpen(false)
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4 shrink-0',
+                          item.product_id === p.id ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                      <div>
+                        <p className="font-mono text-xs font-semibold">{p.sku}</p>
+                        <p className="text-xs text-muted-foreground truncate max-w-56">
+                          {p.technical_title ?? p.ean}
+                        </p>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Quantity */}
@@ -297,7 +334,7 @@ function EnviosNovoPage() {
         </button>
         <div className="space-y-1">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            AMAZON FBA
+            ENVIOS
           </p>
           <h1 className="text-4xl font-display font-extrabold text-foreground">Novo Envio</h1>
         </div>

@@ -175,10 +175,10 @@ function Dashboard() {
               <Send className="size-8" />
             </div>
             <h4 className="text-xl font-display font-semibold mb-2">
-              Envios para FBA
+              Envios para centro de distribuição
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Crie e gerencie envios para centros de distribuição Amazon. Transfira estoque entre locais automaticamente.
+              Crie e gerencie envios para centros de distribuição. Transfira estoque entre locais automaticamente.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Acessar Envios

@@ -95,10 +95,10 @@ function EnviosPage() {
           </button>
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              AMAZON FBA
+              ENVIOS
             </p>
             <h1 className="text-4xl font-display font-extrabold text-foreground">
-              Envios para FBA
+              Envios para centro de distribuição
             </h1>
           </div>
         </div>
@@ -135,15 +135,9 @@ function EnviosPage() {
           </div>
         )}
 
-        {isError && (
-          <div className="px-6 py-12 text-center text-sm text-destructive">
-            Erro ao carregar envios.
-          </div>
-        )}
-
-        {!isLoading && !isError && shipments.length === 0 && (
+        {!isLoading && (shipments.length === 0 || isError) && (
           <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-            Nenhum envio encontrado.{' '}
+            Nenhum envio registrado ainda.{' '}
             <button
               type="button"
               className="underline text-primary"
@@ -163,7 +157,7 @@ function EnviosPage() {
           >
             <span className="flex-1 text-sm font-medium text-foreground">{s.account_name}</span>
             <span className="w-36 text-sm text-foreground">{formatDate(s.date)}</span>
-            <span className="w-20 font-mono text-sm text-foreground">{s.item_count}</span>
+            <span className="w-20 text-sm text-foreground">{s.item_count} SKUs</span>
             <span className="w-36">{statusBadge(s.status)}</span>
             <div className="w-48 flex items-center justify-end gap-2">
               {s.status === 'rascunho' && (
