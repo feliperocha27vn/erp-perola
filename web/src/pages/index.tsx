@@ -6,6 +6,7 @@ import {
   Package,
   PackagePlus,
   Receipt,
+  Send,
 } from 'lucide-react'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
 import { useGetDashboardMonthlySales } from '@/api/hooks/dashboardController/useGetDashboardMonthlySales'
@@ -163,6 +164,25 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Lançamentos
               <PackagePlus className="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <Link
+            to="/envios"
+            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
+          >
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
+              <Send className="size-8" />
+            </div>
+            <h4 className="text-xl font-display font-semibold mb-2">
+              Envios para FBA
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Crie e gerencie envios para centros de distribuição Amazon. Transfira estoque entre locais automaticamente.
+            </p>
+            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
+              Acessar Envios
+              <Send className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
         </div>
