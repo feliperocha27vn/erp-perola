@@ -12,6 +12,7 @@ export { getProductsSalesVelocity } from "./productsController/getProductsSalesV
 export { patchProductsId } from "./productsController/patchProductsId.ts";
 export { patchProductsIdImage } from "./productsController/patchProductsIdImage.ts";
 export { postProducts } from "./productsController/postProducts.ts";
+export { getReportsSales } from "./reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./reportsController/getReportsStockByBrand.ts";
 export { deleteSalesId } from "./salesController/deleteSalesId.ts";
 export { getSales } from "./salesController/getSales.ts";

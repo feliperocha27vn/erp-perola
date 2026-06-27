@@ -19,6 +19,8 @@ export type { GetProductsSuspenseQueryKey } from "./hooks/productsController/use
 export type { PatchProductsIdMutationKey } from "./hooks/productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./hooks/productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
+export type { GetReportsSalesQueryKey } from "./hooks/reportsController/useGetReportsSales.ts";
+export type { GetReportsSalesSuspenseQueryKey } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
 export type { GetReportsStockByBrandSuspenseQueryKey } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
 export type { DeleteSalesIdMutationKey } from "./hooks/salesController/useDeleteSalesId.ts";
@@ -153,6 +155,12 @@ export type {
   PostProductsMutationRequest,
   PostProductsMutationResponse,
 } from "./types/productsController/PostProducts.ts";
+export type {
+  GetReportsSales200,
+  GetReportsSalesQuery,
+  GetReportsSalesQueryParams,
+  GetReportsSalesQueryResponse,
+} from "./types/reportsController/GetReportsSales.ts";
 export type {
   GetReportsStockByBrand200,
   GetReportsStockByBrandQuery,
@@ -342,6 +350,7 @@ export { getProductsSalesVelocity } from "./clients/productsController/getProduc
 export { patchProductsId } from "./clients/productsController/patchProductsId.ts";
 export { patchProductsIdImage } from "./clients/productsController/patchProductsIdImage.ts";
 export { postProducts } from "./clients/productsController/postProducts.ts";
+export { getReportsSales } from "./clients/reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./clients/reportsController/getReportsStockByBrand.ts";
 export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
 export { getSales } from "./clients/salesController/getSales.ts";
@@ -428,6 +437,12 @@ export { usePatchProductsIdImage } from "./hooks/productsController/usePatchProd
 export { postProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./hooks/productsController/usePostProducts.ts";
 export { usePostProducts } from "./hooks/productsController/usePostProducts.ts";
+export { getReportsSalesQueryKey } from "./hooks/reportsController/useGetReportsSales.ts";
+export { getReportsSalesQueryOptions } from "./hooks/reportsController/useGetReportsSales.ts";
+export { useGetReportsSales } from "./hooks/reportsController/useGetReportsSales.ts";
+export { getReportsSalesSuspenseQueryKey } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
+export { getReportsSalesSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
+export { useGetReportsSalesSuspense } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
 export { getReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
 export { getReportsStockByBrandQueryOptions } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
 export { useGetReportsStockByBrand } from "./hooks/reportsController/useGetReportsStockByBrand.ts";

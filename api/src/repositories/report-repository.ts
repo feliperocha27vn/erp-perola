@@ -14,3 +14,18 @@ export interface StockReportRow {
 export interface StockReportRepository {
 	fetchStockReport(brandId: string | null): Promise<StockReportRow[]>
 }
+
+export interface SalesReportRow {
+	sale_date: Date
+	sku: string
+	store_name: string | null
+	channel: string
+	stock_title: string
+	quantity: number
+	sale_price: number
+	total_price: number
+}
+
+export interface SalesReportRepository {
+	fetchSalesReport(startDate: Date, endDate: Date): Promise<SalesReportRow[]>
+}

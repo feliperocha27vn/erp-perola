@@ -101,6 +101,12 @@ export type {
   PostProductsMutationResponse,
 } from "./productsController/PostProducts.ts";
 export type {
+  GetReportsSales200,
+  GetReportsSalesQuery,
+  GetReportsSalesQueryParams,
+  GetReportsSalesQueryResponse,
+} from "./reportsController/GetReportsSales.ts";
+export type {
   GetReportsStockByBrand200,
   GetReportsStockByBrandQuery,
   GetReportsStockByBrandQueryParams,

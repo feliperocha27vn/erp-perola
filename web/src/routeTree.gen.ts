@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as VendasRouteImport } from './pages/vendas'
+import { Route as RelatorioDeVendasRouteImport } from './pages/relatorio-de-vendas'
 import { Route as RelatorioDeEstoqueRouteImport } from './pages/relatorio-de-estoque'
 import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
@@ -23,6 +24,11 @@ import { Route as EnviosNovoRouteImport } from './pages/envios.novo'
 const VendasRoute = VendasRouteImport.update({
   id: '/vendas',
   path: '/vendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatorioDeVendasRoute = RelatorioDeVendasRouteImport.update({
+  id: '/relatorio-de-vendas',
+  path: '/relatorio-de-vendas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelatorioDeEstoqueRoute = RelatorioDeEstoqueRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
+  '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
   '/envios/novo': typeof EnviosNovoRoute
   '/envios/': typeof EnviosIndexRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
+  '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
   '/envios/novo': typeof EnviosNovoRoute
   '/envios': typeof EnviosIndexRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
+  '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
   '/envios/novo': typeof EnviosNovoRoute
   '/envios/': typeof EnviosIndexRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/marcas'
     | '/relatorio-de-estoque'
+    | '/relatorio-de-vendas'
     | '/vendas'
     | '/envios/novo'
     | '/envios/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/marcas'
     | '/relatorio-de-estoque'
+    | '/relatorio-de-vendas'
     | '/vendas'
     | '/envios/novo'
     | '/envios'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/marcas'
     | '/relatorio-de-estoque'
+    | '/relatorio-de-vendas'
     | '/vendas'
     | '/envios/novo'
     | '/envios/'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
   RelatorioDeEstoqueRoute: typeof RelatorioDeEstoqueRoute
+  RelatorioDeVendasRoute: typeof RelatorioDeVendasRoute
   VendasRoute: typeof VendasRoute
 }
 
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorio-de-estoque'
       fullPath: '/relatorio-de-estoque'
       preLoaderRoute: typeof RelatorioDeEstoqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorio-de-vendas': {
+      id: '/relatorio-de-vendas'
+      path: '/relatorio-de-vendas'
+      fullPath: '/relatorio-de-vendas'
+      preLoaderRoute: typeof RelatorioDeVendasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marcas': {
@@ -252,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,
   RelatorioDeEstoqueRoute: RelatorioDeEstoqueRoute,
+  RelatorioDeVendasRoute: RelatorioDeVendasRoute,
   VendasRoute: VendasRoute,
 }
 export const routeTree = rootRouteImport

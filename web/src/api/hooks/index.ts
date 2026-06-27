@@ -19,6 +19,8 @@ export type { GetProductsSuspenseQueryKey } from "./productsController/useGetPro
 export type { PatchProductsIdMutationKey } from "./productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./productsController/usePostProducts.ts";
+export type { GetReportsSalesQueryKey } from "./reportsController/useGetReportsSales.ts";
+export type { GetReportsSalesSuspenseQueryKey } from "./reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
 export type { GetReportsStockByBrandSuspenseQueryKey } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
 export type { DeleteSalesIdMutationKey } from "./salesController/useDeleteSalesId.ts";
@@ -114,6 +116,12 @@ export { usePatchProductsIdImage } from "./productsController/usePatchProductsId
 export { postProductsMutationKey } from "./productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./productsController/usePostProducts.ts";
 export { usePostProducts } from "./productsController/usePostProducts.ts";
+export { getReportsSalesQueryKey } from "./reportsController/useGetReportsSales.ts";
+export { getReportsSalesQueryOptions } from "./reportsController/useGetReportsSales.ts";
+export { useGetReportsSales } from "./reportsController/useGetReportsSales.ts";
+export { getReportsSalesSuspenseQueryKey } from "./reportsController/useGetReportsSalesSuspense.ts";
+export { getReportsSalesSuspenseQueryOptions } from "./reportsController/useGetReportsSalesSuspense.ts";
+export { useGetReportsSalesSuspense } from "./reportsController/useGetReportsSalesSuspense.ts";
 export { getReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
 export { getReportsStockByBrandQueryOptions } from "./reportsController/useGetReportsStockByBrand.ts";
 export { useGetReportsStockByBrand } from "./reportsController/useGetReportsStockByBrand.ts";

@@ -7,6 +7,7 @@ import {
   PackagePlus,
   Receipt,
   Send,
+  TrendingUp,
 } from 'lucide-react'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
 import { useGetDashboardMonthlySales } from '@/api/hooks/dashboardController/useGetDashboardMonthlySales'
@@ -164,6 +165,25 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Lançamentos
               <PackagePlus className="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <Link
+            to="/relatorio-de-vendas"
+            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
+          >
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
+              <TrendingUp className="size-8" />
+            </div>
+            <h4 className="text-xl font-display font-semibold mb-2">
+              Relatório de Vendas
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Gere relatórios de vendas por período com SKU, loja, canal, depósito e valor. Exporte em CSV ou compartilhe o link.
+            </p>
+            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
+              Ver Relatório
+              <TrendingUp className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 

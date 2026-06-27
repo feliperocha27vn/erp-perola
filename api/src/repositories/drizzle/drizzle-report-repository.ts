@@ -1,12 +1,15 @@
-import { and, asc, eq, isNull, sql } from "drizzle-orm"
+import { and, asc, eq, gte, isNull, lte } from "drizzle-orm"
 import { db } from "../../db/connection.js"
-import { products, stocks } from "../../db/schema.js"
+import { products, sales, stocks, stores } from "../../db/schema.js"
 import type {
+	SalesReportRepository,
+	SalesReportRow,
 	StockReportRepository,
 	StockReportRow,
 } from "../report-repository.js"
 
-export class DrizzleReportRepository implements StockReportRepository {
+export class DrizzleReportRepository
+	implements StockReportRepository, SalesReportRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
 		const rows = await db
 			.select({
@@ -51,5 +54,36 @@ export class DrizzleReportRepository implements StockReportRepository {
 		}
 
 		return Array.from(productMap.values())
+	}
+
+	async fetchSalesReport(startDate: Date, endDate: Date): Promise<SalesReportRow[]> {
+		const rows = await db
+			.select({
+				sale_date: sales.sale_date,
+				sku: products.sku,
+				store_name: stores.name,
+				channel: sales.channel,
+				stock_title: stocks.title,
+				quantity: sales.quantity,
+				sale_price: sales.sale_price,
+				total_price: sales.total_price,
+			})
+			.from(sales)
+			.innerJoin(products, eq(products.id, sales.product_id))
+			.innerJoin(stocks, eq(stocks.id, sales.stock_id))
+			.leftJoin(stores, eq(stores.id, sales.store_id))
+			.where(and(gte(sales.sale_date, startDate), lte(sales.sale_date, endDate)))
+			.orderBy(asc(sales.sale_date), asc(products.sku))
+
+		return rows.map((row) => ({
+			sale_date: row.sale_date,
+			sku: row.sku,
+			store_name: row.store_name ?? null,
+			channel: row.channel,
+			stock_title: row.stock_title,
+			quantity: row.quantity,
+			sale_price: row.sale_price,
+			total_price: row.total_price,
+		}))
 	}
 }
