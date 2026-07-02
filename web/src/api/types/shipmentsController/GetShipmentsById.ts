@@ -67,6 +67,10 @@ export type GetShipmentsById200 = {
        */
       product_id: string;
       /**
+       * @type string
+       */
+      sku: string;
+      /**
        * @type number
        */
       quantity: number;
@@ -75,9 +79,17 @@ export type GetShipmentsById200 = {
        */
       source_stock_id: string;
       /**
+       * @type string
+       */
+      source_stock_title: string;
+      /**
        * @type string, uuid
        */
       destination_stock_id: string;
+      /**
+       * @type string
+       */
+      destination_stock_title: string;
       /**
        * @type string, date-time
        */

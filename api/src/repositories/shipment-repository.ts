@@ -15,6 +15,19 @@ export interface ShipmentItemRow {
 	created_at: Date
 }
 
+export interface ShipmentItemDetail {
+	id: string
+	shipment_id: string
+	product_id: string
+	sku: string
+	quantity: number
+	source_stock_id: string
+	source_stock_title: string
+	destination_stock_id: string
+	destination_stock_title: string
+	created_at: Date
+}
+
 export interface ShipmentRow {
 	id: string
 	account_id: string
@@ -35,6 +48,11 @@ export interface ShipmentWithItems extends ShipmentRow {
 	items: ShipmentItemRow[]
 }
 
+export interface ShipmentWithItemDetails extends ShipmentRow {
+	account_name: string
+	items: ShipmentItemDetail[]
+}
+
 export interface CreateShipmentInput {
 	account_id: string
 	date: Date
@@ -51,9 +69,9 @@ export interface UpdateShipmentInput {
 
 export interface ShipmentRepository {
 	list(): Promise<ShipmentWithDetails[]>
-	getById(id: string): Promise<ShipmentWithItems | null>
+	getById(id: string): Promise<ShipmentWithItemDetails | null>
 	create(data: CreateShipmentInput): Promise<ShipmentWithItems>
-	update(id: string, data: UpdateShipmentInput): Promise<ShipmentWithItems | null>
+	update(id: string, data: UpdateShipmentInput): Promise<ShipmentWithItemDetails | null>
 	updateStatus(id: string, status: "rascunho" | "confirmado"): Promise<ShipmentRow | null>
 	delete(id: string): Promise<void>
 }

@@ -7,9 +7,12 @@ const itemSchema = z.object({
 	id: z.string().uuid(),
 	shipment_id: z.string().uuid(),
 	product_id: z.string().uuid(),
+	sku: z.string(),
 	quantity: z.number(),
 	source_stock_id: z.string().uuid(),
+	source_stock_title: z.string(),
 	destination_stock_id: z.string().uuid(),
+	destination_stock_title: z.string(),
 	created_at: z.date(),
 })
 

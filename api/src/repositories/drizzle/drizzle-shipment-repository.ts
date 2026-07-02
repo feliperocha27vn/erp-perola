@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm"
+import { alias } from "drizzle-orm/pg-core"
 import { db } from "../../db/connection.js"
-import { shipmentAccounts, shipmentItems, shipments } from "../../db/schema.js"
+import { products, shipmentAccounts, shipmentItems, shipments, stocks } from "../../db/schema.js"
 import type {
 	CreateShipmentInput,
 	ShipmentRepository,
@@ -53,9 +54,26 @@ export class DrizzleShipmentRepository implements ShipmentRepository {
 
 		if (!row) return null
 
+		const srcStocks = alias(stocks, "src_stocks")
+		const dstStocks = alias(stocks, "dst_stocks")
+
 		const items = await db
-			.select()
+			.select({
+				id: shipmentItems.id,
+				shipment_id: shipmentItems.shipment_id,
+				product_id: shipmentItems.product_id,
+				sku: products.sku,
+				quantity: shipmentItems.quantity,
+				source_stock_id: shipmentItems.source_stock_id,
+				source_stock_title: srcStocks.title,
+				destination_stock_id: shipmentItems.destination_stock_id,
+				destination_stock_title: dstStocks.title,
+				created_at: shipmentItems.created_at,
+			})
 			.from(shipmentItems)
+			.innerJoin(products, eq(products.id, shipmentItems.product_id))
+			.innerJoin(srcStocks, eq(srcStocks.id, shipmentItems.source_stock_id))
+			.innerJoin(dstStocks, eq(dstStocks.id, shipmentItems.destination_stock_id))
 			.where(eq(shipmentItems.shipment_id, id))
 
 		return { ...row, items }

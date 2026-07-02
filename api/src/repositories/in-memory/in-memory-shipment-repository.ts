@@ -1,9 +1,11 @@
 import type {
 	CreateShipmentInput,
+	ShipmentItemDetail,
 	ShipmentItemRow,
 	ShipmentRepository,
 	ShipmentRow,
 	ShipmentWithDetails,
+	ShipmentWithItemDetails,
 	ShipmentWithItems,
 	UpdateShipmentInput,
 } from "../shipment-repository.js"
@@ -23,13 +25,21 @@ export class InMemoryShipmentRepository implements ShipmentRepository {
 			}))
 	}
 
-	async getById(id: string): Promise<ShipmentWithItems | null> {
+	async getById(id: string): Promise<ShipmentWithItemDetails | null> {
 		const shipment = this.shipments.find((s) => s.id === id)
 		if (!shipment) return null
+		const items: ShipmentItemDetail[] = this.items
+			.filter((i) => i.shipment_id === id)
+			.map((i) => ({
+				...i,
+				sku: "",
+				source_stock_title: "",
+				destination_stock_title: "",
+			}))
 		return {
 			...shipment,
 			account_name: this.accountNames.get(shipment.account_id) ?? "",
-			items: this.items.filter((i) => i.shipment_id === id),
+			items,
 		}
 	}
 
@@ -66,7 +76,7 @@ export class InMemoryShipmentRepository implements ShipmentRepository {
 		}
 	}
 
-	async update(id: string, data: UpdateShipmentInput): Promise<ShipmentWithItems | null> {
+	async update(id: string, data: UpdateShipmentInput): Promise<ShipmentWithItemDetails | null> {
 		const index = this.shipments.findIndex((s) => s.id === id)
 		if (index === -1) return null
 
@@ -93,12 +103,7 @@ export class InMemoryShipmentRepository implements ShipmentRepository {
 			}
 		}
 
-		const shipment = this.shipments[index]
-		return {
-			...shipment,
-			account_name: this.accountNames.get(shipment.account_id) ?? "",
-			items: this.items.filter((i) => i.shipment_id === id),
-		}
+		return this.getById(id)
 	}
 
 	async updateStatus(id: string, status: "rascunho" | "confirmado"): Promise<ShipmentRow | null> {

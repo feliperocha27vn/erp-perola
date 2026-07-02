@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
-import { ArrowLeft, Check, ChevronsUpDown, Package, Plus, Save, Send, X } from 'lucide-react'
+import { ArrowLeft, Check, ChevronsUpDown, Package, PackageCheck, Plus, Save, Send, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
 import { usePostShipmentAccounts } from '@/api/hooks/shipmentAccountsController/usePostShipmentAccounts'
+import { useGetShipmentsById } from '@/api/hooks/shipmentsController/useGetShipmentsById'
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
 import { usePostShipmentsByIdConfirm } from '@/api/hooks/shipmentsController/usePostShipmentsByIdConfirm'
 import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useGetProductsProductIdStocks'
@@ -223,9 +224,158 @@ function ItemRow({
   )
 }
 
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('pt-BR')
+}
+
+function ShipmentDetailView({ shipmentId }: { shipmentId: string }) {
+  const navigate = useNavigate()
+  const { data, isLoading, isError } = useGetShipmentsById(shipmentId)
+  const confirmMutation = usePostShipmentsByIdConfirm({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Envio confirmado! Estoque atualizado.')
+        queryClient.invalidateQueries({ queryKey: [{ url: '/shipments' }] })
+        navigate({ to: '/envios' })
+      },
+      onError: (err: any) => {
+        const msg = err?.response?.data?.error ?? 'Erro ao confirmar envio.'
+        toast.error(msg)
+      },
+    },
+  })
+
+  const shipment = data?.shipment
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/envios' })}
+            className="flex items-center justify-center w-9 h-9 rounded-full border border-border bg-card text-foreground hover:bg-muted transition-colors"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              ENVIOS
+            </p>
+            <h1 className="text-4xl font-display font-extrabold text-foreground">
+              Detalhes do Envio
+            </h1>
+          </div>
+        </div>
+        {shipment?.status === 'rascunho' && (
+          <Button
+            className="gap-2"
+            disabled={confirmMutation.isPending}
+            onClick={() => confirmMutation.mutate({ id: shipmentId })}
+          >
+            <Send size={16} />
+            Confirmar envio
+          </Button>
+        )}
+      </div>
+
+      {isLoading && (
+        <div className="rounded-xl border border-border bg-card p-6 animate-pulse space-y-3">
+          <div className="h-5 bg-muted rounded w-48" />
+          <div className="h-5 bg-muted rounded w-32" />
+        </div>
+      )}
+
+      {isError && (
+        <div className="rounded-xl border border-border bg-card p-6 text-center text-destructive">
+          Erro ao carregar envio. Tente novamente.
+        </div>
+      )}
+
+      {shipment && (
+        <>
+          <div className="flex flex-wrap gap-6 rounded-xl border border-border bg-card p-6">
+            <div className="flex flex-col gap-1">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Conta</p>
+              <p className="text-sm font-medium text-foreground">{shipment.account_name}</p>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Data</p>
+              <p className="text-sm font-medium text-foreground">{formatDate(shipment.date)}</p>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Status</p>
+              {shipment.status === 'confirmado' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 w-fit">
+                  <PackageCheck size={11} />
+                  Confirmado
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 w-fit">
+                  <Send size={11} />
+                  Rascunho
+                </span>
+              )}
+            </div>
+            {shipment.notes && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Observação</p>
+                <p className="text-sm text-foreground">{shipment.notes}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center gap-2.5 px-6 py-5 border-b border-border">
+              <Package size={18} className="text-primary" />
+              <div>
+                <p className="text-sm font-semibold text-foreground">Itens do envio</p>
+                <p className="text-xs text-muted-foreground">{shipment.items.length} produto{shipment.items.length !== 1 ? 's' : ''}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center h-11 px-6 bg-muted border-b border-border gap-2">
+              <span className="w-8 text-xs font-bold uppercase tracking-wider text-muted-foreground">#</span>
+              <span className="flex-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">SKU</span>
+              <span className="w-20 text-xs font-bold uppercase tracking-wider text-muted-foreground">QTDE</span>
+              <span className="w-52 text-xs font-bold uppercase tracking-wider text-muted-foreground">ORIGEM</span>
+              <span className="w-48 text-xs font-bold uppercase tracking-wider text-muted-foreground">DESTINO</span>
+            </div>
+
+            {shipment.items.length === 0 && (
+              <div className="px-6 py-8 text-center text-sm text-muted-foreground">
+                Nenhum item neste envio.
+              </div>
+            )}
+
+            {shipment.items.map((item, idx) => (
+              <div
+                key={item.id}
+                className={`flex items-center gap-2 h-[52px] px-6 border-b border-border last:border-b-0 ${idx % 2 === 0 ? '' : 'bg-muted/30'}`}
+              >
+                <span className="w-8 text-xs text-muted-foreground font-mono tabular-nums">{idx + 1}</span>
+                <span className="flex-1 font-mono text-sm font-semibold text-foreground">{item.sku}</span>
+                <span className="w-20 text-sm text-center font-mono tabular-nums text-foreground">{item.quantity}</span>
+                <span className="w-52 text-sm text-foreground truncate">{item.source_stock_title}</span>
+                <span className="w-48 text-sm text-foreground truncate">{item.destination_stock_title}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 let nextKey = 1
 
 function EnviosNovoPage() {
+  const { shipmentId } = Route.useSearch()
+  if (shipmentId) return <ShipmentDetailView shipmentId={shipmentId} />
+  return <EnviosNovoForm />
+}
+
+function EnviosNovoForm() {
   const navigate = useNavigate()
   const { data: accountsData } = useGetShipmentAccounts()
   const accounts = accountsData?.accounts ?? []
