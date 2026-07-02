@@ -101,6 +101,13 @@ export type {
   PostProductsMutationResponse,
 } from "./productsController/PostProducts.ts";
 export type {
+  GetReportsAbc200,
+  GetReportsAbcQuery,
+  GetReportsAbcQueryParams,
+  GetReportsAbcQueryResponse,
+  ItemsClassEnumKey,
+} from "./reportsController/GetReportsAbc.ts";
+export type {
   GetReportsSales200,
   GetReportsSalesQuery,
   GetReportsSalesQueryParams,
@@ -288,6 +295,7 @@ export { periodsPeriodEnum4 } from "./productsController/GetProductSalesDaily.ts
 export { getProductsQueryParamsSortOrderEnum } from "./productsController/GetProducts.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./productsController/GetProductsSalesVelocity.ts";
+export { itemsClassEnum } from "./reportsController/GetReportsAbc.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./salesController/PatchSalesId.ts";

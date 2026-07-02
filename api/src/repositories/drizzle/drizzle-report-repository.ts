@@ -1,7 +1,9 @@
-import { and, asc, eq, gte, isNull, lte } from "drizzle-orm"
+import { and, asc, desc, eq, gte, isNull, lte, sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import { products, sales, stocks, stores } from "../../db/schema.js"
 import type {
+	AbcReportRawRow,
+	AbcReportRepository,
 	SalesReportRepository,
 	SalesReportRow,
 	StockReportRepository,
@@ -9,7 +11,7 @@ import type {
 } from "../report-repository.js"
 
 export class DrizzleReportRepository
-	implements StockReportRepository, SalesReportRepository {
+	implements StockReportRepository, SalesReportRepository, AbcReportRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
 		const rows = await db
 			.select({
@@ -84,6 +86,27 @@ export class DrizzleReportRepository
 			quantity: row.quantity,
 			sale_price: row.sale_price,
 			total_price: row.total_price,
+		}))
+	}
+
+	async fetchAbcReport(startDate: Date, endDate: Date): Promise<AbcReportRawRow[]> {
+		const rows = await db
+			.select({
+				store_name: stores.name,
+				sku: products.sku,
+				total_revenue: sql<number>`sum(${sales.total_price})`.mapWith(Number),
+			})
+			.from(sales)
+			.innerJoin(products, eq(products.id, sales.product_id))
+			.leftJoin(stores, eq(stores.id, sales.store_id))
+			.where(and(gte(sales.sale_date, startDate), lte(sales.sale_date, endDate)))
+			.groupBy(stores.name, products.sku)
+			.orderBy(asc(stores.name), desc(sql`sum(${sales.total_price})`))
+
+		return rows.map((row) => ({
+			store_name: row.store_name ?? null,
+			sku: row.sku,
+			total_revenue: row.total_revenue,
 		}))
 	}
 }

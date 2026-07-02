@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as VendasRouteImport } from './pages/vendas'
 import { Route as RelatorioDeVendasRouteImport } from './pages/relatorio-de-vendas'
+import { Route as RelatorioAbcRouteImport } from './pages/relatorio-abc'
 import { Route as RelatorioDeEstoqueRouteImport } from './pages/relatorio-de-estoque'
 import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
@@ -29,6 +30,11 @@ const VendasRoute = VendasRouteImport.update({
 const RelatorioDeVendasRoute = RelatorioDeVendasRouteImport.update({
   id: '/relatorio-de-vendas',
   path: '/relatorio-de-vendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatorioAbcRoute = RelatorioAbcRouteImport.update({
+  id: '/relatorio-abc',
+  path: '/relatorio-abc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelatorioDeEstoqueRoute = RelatorioDeEstoqueRouteImport.update({
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-abc': typeof RelatorioAbcRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-abc': typeof RelatorioAbcRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
   '/login': typeof LoginRoute
   '/marcas': typeof MarcasRoute
+  '/relatorio-abc': typeof RelatorioAbcRoute
   '/relatorio-de-estoque': typeof RelatorioDeEstoqueRoute
   '/relatorio-de-vendas': typeof RelatorioDeVendasRoute
   '/vendas': typeof VendasRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/lancamentos-de-estoque'
     | '/login'
     | '/marcas'
+    | '/relatorio-abc'
     | '/relatorio-de-estoque'
     | '/relatorio-de-vendas'
     | '/vendas'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/lancamentos-de-estoque'
     | '/login'
     | '/marcas'
+    | '/relatorio-abc'
     | '/relatorio-de-estoque'
     | '/relatorio-de-vendas'
     | '/vendas'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/lancamentos-de-estoque'
     | '/login'
     | '/marcas'
+    | '/relatorio-abc'
     | '/relatorio-de-estoque'
     | '/relatorio-de-vendas'
     | '/vendas'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   LancamentosDeEstoqueRoute: typeof LancamentosDeEstoqueRoute
   LoginRoute: typeof LoginRoute
   MarcasRoute: typeof MarcasRoute
+  RelatorioAbcRoute: typeof RelatorioAbcRoute
   RelatorioDeEstoqueRoute: typeof RelatorioDeEstoqueRoute
   RelatorioDeVendasRoute: typeof RelatorioDeVendasRoute
   VendasRoute: typeof VendasRoute
@@ -176,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/vendas'
       fullPath: '/vendas'
       preLoaderRoute: typeof VendasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorio-abc': {
+      id: '/relatorio-abc'
+      path: '/relatorio-abc'
+      fullPath: '/relatorio-abc'
+      preLoaderRoute: typeof RelatorioAbcRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relatorio-de-estoque': {
@@ -271,6 +291,7 @@ const rootRouteChildren: RootRouteChildren = {
   LancamentosDeEstoqueRoute: LancamentosDeEstoqueRoute,
   LoginRoute: LoginRoute,
   MarcasRoute: MarcasRoute,
+  RelatorioAbcRoute: RelatorioAbcRoute,
   RelatorioDeEstoqueRoute: RelatorioDeEstoqueRoute,
   RelatorioDeVendasRoute: RelatorioDeVendasRoute,
   VendasRoute: VendasRoute,

@@ -19,6 +19,8 @@ export type { GetProductsSuspenseQueryKey } from "./productsController/useGetPro
 export type { PatchProductsIdMutationKey } from "./productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./productsController/usePostProducts.ts";
+export type { GetReportsAbcQueryKey } from "./reportsController/useGetReportsAbc.ts";
+export type { GetReportsAbcSuspenseQueryKey } from "./reportsController/useGetReportsAbcSuspense.ts";
 export type { GetReportsSalesQueryKey } from "./reportsController/useGetReportsSales.ts";
 export type { GetReportsSalesSuspenseQueryKey } from "./reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
@@ -116,6 +118,12 @@ export { usePatchProductsIdImage } from "./productsController/usePatchProductsId
 export { postProductsMutationKey } from "./productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./productsController/usePostProducts.ts";
 export { usePostProducts } from "./productsController/usePostProducts.ts";
+export { getReportsAbcQueryKey } from "./reportsController/useGetReportsAbc.ts";
+export { getReportsAbcQueryOptions } from "./reportsController/useGetReportsAbc.ts";
+export { useGetReportsAbc } from "./reportsController/useGetReportsAbc.ts";
+export { getReportsAbcSuspenseQueryKey } from "./reportsController/useGetReportsAbcSuspense.ts";
+export { getReportsAbcSuspenseQueryOptions } from "./reportsController/useGetReportsAbcSuspense.ts";
+export { useGetReportsAbcSuspense } from "./reportsController/useGetReportsAbcSuspense.ts";
 export { getReportsSalesQueryKey } from "./reportsController/useGetReportsSales.ts";
 export { getReportsSalesQueryOptions } from "./reportsController/useGetReportsSales.ts";
 export { useGetReportsSales } from "./reportsController/useGetReportsSales.ts";

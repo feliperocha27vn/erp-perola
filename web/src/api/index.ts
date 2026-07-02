@@ -19,6 +19,8 @@ export type { GetProductsSuspenseQueryKey } from "./hooks/productsController/use
 export type { PatchProductsIdMutationKey } from "./hooks/productsController/usePatchProductsId.ts";
 export type { PatchProductsIdImageMutationKey } from "./hooks/productsController/usePatchProductsIdImage.ts";
 export type { PostProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
+export type { GetReportsAbcQueryKey } from "./hooks/reportsController/useGetReportsAbc.ts";
+export type { GetReportsAbcSuspenseQueryKey } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
 export type { GetReportsSalesQueryKey } from "./hooks/reportsController/useGetReportsSales.ts";
 export type { GetReportsSalesSuspenseQueryKey } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
@@ -155,6 +157,13 @@ export type {
   PostProductsMutationRequest,
   PostProductsMutationResponse,
 } from "./types/productsController/PostProducts.ts";
+export type {
+  GetReportsAbc200,
+  GetReportsAbcQuery,
+  GetReportsAbcQueryParams,
+  GetReportsAbcQueryResponse,
+  ItemsClassEnumKey,
+} from "./types/reportsController/GetReportsAbc.ts";
 export type {
   GetReportsSales200,
   GetReportsSalesQuery,
@@ -350,6 +359,7 @@ export { getProductsSalesVelocity } from "./clients/productsController/getProduc
 export { patchProductsId } from "./clients/productsController/patchProductsId.ts";
 export { patchProductsIdImage } from "./clients/productsController/patchProductsIdImage.ts";
 export { postProducts } from "./clients/productsController/postProducts.ts";
+export { getReportsAbc } from "./clients/reportsController/getReportsAbc.ts";
 export { getReportsSales } from "./clients/reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./clients/reportsController/getReportsStockByBrand.ts";
 export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
@@ -437,6 +447,12 @@ export { usePatchProductsIdImage } from "./hooks/productsController/usePatchProd
 export { postProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
 export { postProductsMutationOptions } from "./hooks/productsController/usePostProducts.ts";
 export { usePostProducts } from "./hooks/productsController/usePostProducts.ts";
+export { getReportsAbcQueryKey } from "./hooks/reportsController/useGetReportsAbc.ts";
+export { getReportsAbcQueryOptions } from "./hooks/reportsController/useGetReportsAbc.ts";
+export { useGetReportsAbc } from "./hooks/reportsController/useGetReportsAbc.ts";
+export { getReportsAbcSuspenseQueryKey } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
+export { getReportsAbcSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
+export { useGetReportsAbcSuspense } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
 export { getReportsSalesQueryKey } from "./hooks/reportsController/useGetReportsSales.ts";
 export { getReportsSalesQueryOptions } from "./hooks/reportsController/useGetReportsSales.ts";
 export { useGetReportsSales } from "./hooks/reportsController/useGetReportsSales.ts";
@@ -546,6 +562,7 @@ export { periodsPeriodEnum4 } from "./types/productsController/GetProductSalesDa
 export { getProductsQueryParamsSortOrderEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./types/productsController/GetProductsSalesVelocity.ts";
+export { itemsClassEnum } from "./types/reportsController/GetReportsAbc.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./types/salesController/PatchSalesId.ts";

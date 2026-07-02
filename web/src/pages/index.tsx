@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   PackagePlus,
+  PieChart,
   Receipt,
   Send,
   TrendingUp,
@@ -184,6 +185,25 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Relatório
               <TrendingUp className="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <Link
+            to="/relatorio-abc"
+            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
+          >
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
+              <PieChart className="size-8" />
+            </div>
+            <h4 className="text-xl font-display font-semibold mb-2">
+              Curva ABC
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Classifique os SKUs por faturamento em cada loja (A/B/C). Identifique os produtos mais estratégicos.
+            </p>
+            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
+              Ver Curva ABC
+              <PieChart className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 

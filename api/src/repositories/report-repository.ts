@@ -29,3 +29,13 @@ export interface SalesReportRow {
 export interface SalesReportRepository {
 	fetchSalesReport(startDate: Date, endDate: Date): Promise<SalesReportRow[]>
 }
+
+export interface AbcReportRawRow {
+	store_name: string | null
+	sku: string
+	total_revenue: number
+}
+
+export interface AbcReportRepository {
+	fetchAbcReport(startDate: Date, endDate: Date): Promise<AbcReportRawRow[]>
+}
