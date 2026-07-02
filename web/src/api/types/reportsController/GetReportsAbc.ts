@@ -58,6 +58,14 @@ export type GetReportsAbc200 = {
       /**
        * @type number
        */
+      qty_sales: number;
+      /**
+       * @type number
+       */
+      qty_units: number;
+      /**
+       * @type number
+       */
       percentage: number;
       /**
        * @type number

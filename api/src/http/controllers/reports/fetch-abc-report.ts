@@ -6,6 +6,8 @@ const abcItemSchema = z.object({
 	rank: z.number(),
 	sku: z.string(),
 	total_revenue: z.number(),
+	qty_sales: z.number(),
+	qty_units: z.number(),
 	percentage: z.number(),
 	cumulative_percentage: z.number(),
 	class: z.enum(["A", "B", "C"]),

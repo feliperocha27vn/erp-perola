@@ -9,6 +9,8 @@ export interface AbcItem {
 	rank: number
 	sku: string
 	total_revenue: number
+	qty_sales: number
+	qty_units: number
 	percentage: number
 	cumulative_percentage: number
 	class: "A" | "B" | "C"
@@ -33,7 +35,8 @@ export class FetchAbcReportUseCase {
 	async execute({ startDate, endDate }: FetchAbcReportUseCaseRequest): Promise<FetchAbcReportUseCaseResponse> {
 		const rows = await this.repo.fetchAbcReport(startDate, endDate)
 
-		const storeMap = new Map<string, { total: number; skus: Map<string, number> }>()
+		type SkuData = { revenue: number; qty_sales: number; qty_units: number }
+		const storeMap = new Map<string, { total: number; skus: Map<string, SkuData> }>()
 
 		for (const row of rows) {
 			const key = row.store_name ?? "Sem loja"
@@ -42,16 +45,21 @@ export class FetchAbcReportUseCase {
 			}
 			const store = storeMap.get(key)!
 			store.total += row.total_revenue
-			store.skus.set(row.sku, (store.skus.get(row.sku) ?? 0) + row.total_revenue)
+			const existing = store.skus.get(row.sku)
+			store.skus.set(row.sku, {
+				revenue: (existing?.revenue ?? 0) + row.total_revenue,
+				qty_sales: (existing?.qty_sales ?? 0) + row.qty_sales,
+				qty_units: (existing?.qty_units ?? 0) + row.qty_units,
+			})
 		}
 
 		const stores: AbcStore[] = []
 
 		for (const [store_name, { total, skus }] of storeMap) {
-			const sorted = Array.from(skus.entries()).sort((a, b) => b[1] - a[1])
+			const sorted = Array.from(skus.entries()).sort((a, b) => b[1].revenue - a[1].revenue)
 
 			let cumulative = 0
-			const items: AbcItem[] = sorted.map(([sku, revenue], idx) => {
+			const items: AbcItem[] = sorted.map(([sku, { revenue, qty_sales, qty_units }], idx) => {
 				const percentage = total > 0 ? (revenue / total) * 100 : 0
 				const prevCumulative = cumulative
 				cumulative += percentage
@@ -67,6 +75,8 @@ export class FetchAbcReportUseCase {
 					rank: idx + 1,
 					sku,
 					total_revenue: revenue,
+					qty_sales,
+					qty_units,
 					percentage: Math.round(percentage * 100) / 100,
 					cumulative_percentage: Math.round(cumulative * 100) / 100,
 					class: cls,

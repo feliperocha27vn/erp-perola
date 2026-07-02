@@ -95,6 +95,8 @@ export class DrizzleReportRepository
 				store_name: stores.name,
 				sku: products.sku,
 				total_revenue: sql<number>`sum(${sales.total_price})`.mapWith(Number),
+				qty_sales: sql<number>`count(*)`.mapWith(Number),
+				qty_units: sql<number>`sum(${sales.quantity})`.mapWith(Number),
 			})
 			.from(sales)
 			.innerJoin(products, eq(products.id, sales.product_id))
@@ -107,6 +109,8 @@ export class DrizzleReportRepository
 			store_name: row.store_name ?? null,
 			sku: row.sku,
 			total_revenue: row.total_revenue,
+			qty_sales: row.qty_sales,
+			qty_units: row.qty_units,
 		}))
 	}
 }

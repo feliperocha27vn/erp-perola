@@ -67,13 +67,15 @@ function RelatorioAbcPage() {
   function handleExportCsv() {
     if (stores.length === 0) return
 
-    const header = ['Loja', 'Rank', 'SKU', 'Faturamento (R$)', '% do Total', '% Acumulado', 'Classe']
+    const header = ['Loja', 'Rank', 'SKU', 'Faturamento (R$)', 'Qtd. Vendas', 'Unidades', '% do Total', '% Acumulado', 'Classe']
     const rows = stores.flatMap((store) =>
       store.items.map((item) => [
         store.store_name,
         item.rank,
         item.sku,
         (item.total_revenue / 100).toFixed(2).replace('.', ','),
+        item.qty_sales,
+        item.qty_units,
         item.percentage.toFixed(2).replace('.', ','),
         item.cumulative_percentage.toFixed(2).replace('.', ','),
         item.class,
@@ -247,6 +249,8 @@ function RelatorioAbcPage() {
                   <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap w-14">#</th>
                   <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap">SKU</th>
                   <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">Faturamento</th>
+                  <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">Qtd. Vendas</th>
+                  <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">Unidades</th>
                   <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">% Total</th>
                   <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">% Acum.</th>
                   <th className="text-center font-semibold text-foreground px-4 py-3 whitespace-nowrap w-20">Classe</th>
@@ -268,6 +272,12 @@ function RelatorioAbcPage() {
                     </td>
                     <td className="px-4 py-2.5 text-right tabular-nums text-foreground whitespace-nowrap">
                       {formatCents(item.total_revenue)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
+                      {item.qty_sales.toLocaleString('pt-BR')}
+                    </td>
+                    <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
+                      {item.qty_units.toLocaleString('pt-BR')}
                     </td>
                     <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
                       {item.percentage.toFixed(1)}%

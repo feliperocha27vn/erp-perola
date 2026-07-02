@@ -34,6 +34,8 @@ export interface AbcReportRawRow {
 	store_name: string | null
 	sku: string
 	total_revenue: number
+	qty_sales: number
+	qty_units: number
 }
 
 export interface AbcReportRepository {
