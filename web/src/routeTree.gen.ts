@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as VendasRouteImport } from './pages/vendas'
 import { Route as RelatorioDeVendasRouteImport } from './pages/relatorio-de-vendas'
-import { Route as RelatorioAbcRouteImport } from './pages/relatorio-abc'
 import { Route as RelatorioDeEstoqueRouteImport } from './pages/relatorio-de-estoque'
+import { Route as RelatorioAbcRouteImport } from './pages/relatorio-abc'
 import { Route as MarcasRouteImport } from './pages/marcas'
 import { Route as LoginRouteImport } from './pages/login'
 import { Route as LancamentosDeEstoqueRouteImport } from './pages/lancamentos-de-estoque'
@@ -32,14 +32,14 @@ const RelatorioDeVendasRoute = RelatorioDeVendasRouteImport.update({
   path: '/relatorio-de-vendas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RelatorioAbcRoute = RelatorioAbcRouteImport.update({
-  id: '/relatorio-abc',
-  path: '/relatorio-abc',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RelatorioDeEstoqueRoute = RelatorioDeEstoqueRouteImport.update({
   id: '/relatorio-de-estoque',
   path: '/relatorio-de-estoque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatorioAbcRoute = RelatorioAbcRouteImport.update({
+  id: '/relatorio-abc',
+  path: '/relatorio-abc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarcasRoute = MarcasRouteImport.update({
@@ -191,11 +191,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/relatorio-abc': {
-      id: '/relatorio-abc'
-      path: '/relatorio-abc'
-      fullPath: '/relatorio-abc'
-      preLoaderRoute: typeof RelatorioAbcRouteImport
+    '/relatorio-de-vendas': {
+      id: '/relatorio-de-vendas'
+      path: '/relatorio-de-vendas'
+      fullPath: '/relatorio-de-vendas'
+      preLoaderRoute: typeof RelatorioDeVendasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relatorio-de-estoque': {
@@ -205,11 +205,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RelatorioDeEstoqueRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/relatorio-de-vendas': {
-      id: '/relatorio-de-vendas'
-      path: '/relatorio-de-vendas'
-      fullPath: '/relatorio-de-vendas'
-      preLoaderRoute: typeof RelatorioDeVendasRouteImport
+    '/relatorio-abc': {
+      id: '/relatorio-abc'
+      path: '/relatorio-abc'
+      fullPath: '/relatorio-abc'
+      preLoaderRoute: typeof RelatorioAbcRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marcas': {
