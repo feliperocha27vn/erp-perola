@@ -11,6 +11,10 @@ const abcItemSchema = z.object({
 	percentage: z.number(),
 	cumulative_percentage: z.number(),
 	class: z.enum(["A", "B", "C"]),
+	stock_qty: z.number(),
+	units_90d: z.number(),
+	coverage_percentage: z.number().nullable(),
+	needs_purchase: z.boolean(),
 })
 
 const abcStoreSchema = z.object({

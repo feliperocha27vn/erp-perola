@@ -8,6 +8,8 @@ import type {
 	SalesReportRow,
 	StockReportRepository,
 	StockReportRow,
+	StockTotalRow,
+	Units90dRow,
 } from "../report-repository.js"
 
 export class DrizzleReportRepository
@@ -111,6 +113,39 @@ export class DrizzleReportRepository
 			total_revenue: row.total_revenue,
 			qty_sales: row.qty_sales,
 			qty_units: row.qty_units,
+		}))
+	}
+
+	async fetchStockTotals(): Promise<StockTotalRow[]> {
+		const rows = await db
+			.select({
+				sku: products.sku,
+				stock_qty: sql<number>`coalesce(sum(${stocks.qtde}), 0)`.mapWith(Number),
+			})
+			.from(products)
+			.leftJoin(stocks, eq(stocks.product_id, products.id))
+			.groupBy(products.sku)
+
+		return rows
+	}
+
+	async fetchUnits90dByStore(): Promise<Units90dRow[]> {
+		const rows = await db
+			.select({
+				store_name: stores.name,
+				sku: products.sku,
+				units_90d: sql<number>`coalesce(sum(${sales.quantity}), 0)`.mapWith(Number),
+			})
+			.from(sales)
+			.innerJoin(products, eq(products.id, sales.product_id))
+			.leftJoin(stores, eq(stores.id, sales.store_id))
+			.where(sql`${sales.sale_date} >= now() - interval '90 days'`)
+			.groupBy(stores.name, products.sku)
+
+		return rows.map((row) => ({
+			store_name: row.store_name ?? null,
+			sku: row.sku,
+			units_90d: row.units_90d,
 		}))
 	}
 }

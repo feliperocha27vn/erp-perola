@@ -75,6 +75,22 @@ export type GetReportsAbc200 = {
        * @type string
        */
       class: ItemsClassEnumKey;
+      /**
+       * @type number
+       */
+      stock_qty: number;
+      /**
+       * @type number
+       */
+      units_90d: number;
+      /**
+       * @type number
+       */
+      coverage_percentage: number | null;
+      /**
+       * @type boolean
+       */
+      needs_purchase: boolean;
     }[];
   }[];
 };

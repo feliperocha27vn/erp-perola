@@ -38,6 +38,19 @@ export interface AbcReportRawRow {
 	qty_units: number
 }
 
+export interface StockTotalRow {
+	sku: string
+	stock_qty: number
+}
+
+export interface Units90dRow {
+	store_name: string | null
+	sku: string
+	units_90d: number
+}
+
 export interface AbcReportRepository {
 	fetchAbcReport(startDate: Date, endDate: Date): Promise<AbcReportRawRow[]>
+	fetchStockTotals(): Promise<StockTotalRow[]>
+	fetchUnits90dByStore(): Promise<Units90dRow[]>
 }

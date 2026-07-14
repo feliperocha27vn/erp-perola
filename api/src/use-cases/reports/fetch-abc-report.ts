@@ -14,6 +14,10 @@ export interface AbcItem {
 	percentage: number
 	cumulative_percentage: number
 	class: "A" | "B" | "C"
+	stock_qty: number
+	units_90d: number
+	coverage_percentage: number | null
+	needs_purchase: boolean
 }
 
 export interface AbcStore {
@@ -28,12 +32,22 @@ interface FetchAbcReportUseCaseResponse {
 
 const CLASS_A_THRESHOLD = 80
 const CLASS_B_THRESHOLD = 95
+const COVERAGE_ALERT_THRESHOLD = 100
 
 export class FetchAbcReportUseCase {
 	constructor(private repo: AbcReportRepository) {}
 
 	async execute({ startDate, endDate }: FetchAbcReportUseCaseRequest): Promise<FetchAbcReportUseCaseResponse> {
-		const rows = await this.repo.fetchAbcReport(startDate, endDate)
+		const [rows, stockTotals, units90d] = await Promise.all([
+			this.repo.fetchAbcReport(startDate, endDate),
+			this.repo.fetchStockTotals(),
+			this.repo.fetchUnits90dByStore(),
+		])
+
+		const stockBySku = new Map(stockTotals.map((row) => [row.sku, row.stock_qty]))
+		const units90dByKey = new Map(
+			units90d.map((row) => [`${row.store_name ?? "Sem loja"}::${row.sku}`, row.units_90d]),
+		)
 
 		type SkuData = { revenue: number; qty_sales: number; qty_units: number }
 		const storeMap = new Map<string, { total: number; skus: Map<string, SkuData> }>()
@@ -71,6 +85,12 @@ export class FetchAbcReportUseCase {
 							? "B"
 							: "C"
 
+				const stock_qty = stockBySku.get(sku) ?? 0
+				const units_90d = units90dByKey.get(`${store_name}::${sku}`) ?? 0
+				const coverage_percentage =
+					units_90d > 0 ? Math.round((stock_qty / units_90d) * 10000) / 100 : null
+				const needs_purchase = coverage_percentage !== null && coverage_percentage < COVERAGE_ALERT_THRESHOLD
+
 				return {
 					rank: idx + 1,
 					sku,
@@ -80,6 +100,10 @@ export class FetchAbcReportUseCase {
 					percentage: Math.round(percentage * 100) / 100,
 					cumulative_percentage: Math.round(cumulative * 100) / 100,
 					class: cls,
+					stock_qty,
+					units_90d,
+					coverage_percentage,
+					needs_purchase,
 				}
 			})
 

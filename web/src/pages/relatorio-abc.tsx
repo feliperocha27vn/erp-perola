@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Copy, Download, FileBarChart2, FileText } from 'lucide-react'
+import { AlertTriangle, Copy, Download, FileBarChart2, FileText } from 'lucide-react'
 import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -22,6 +22,22 @@ function formatCents(cents: number) {
     style: 'currency',
     currency: 'BRL',
   }).format(cents / 100)
+}
+
+function coverageBadge(coveragePercentage: number | null, needsPurchase: boolean) {
+  if (coveragePercentage === null) {
+    return <span className="text-muted-foreground">—</span>
+  }
+  return (
+    <span
+      className={`inline-flex items-center gap-1 justify-end tabular-nums ${
+        needsPurchase ? 'text-destructive font-semibold' : 'text-foreground'
+      }`}
+    >
+      {needsPurchase && <AlertTriangle className="size-3.5" />}
+      {coveragePercentage.toFixed(1)}%
+    </span>
+  )
 }
 
 function classBadge(cls: 'A' | 'B' | 'C') {
@@ -67,7 +83,21 @@ function RelatorioAbcPage() {
   function handleExportCsv() {
     if (stores.length === 0) return
 
-    const header = ['Loja', 'Rank', 'SKU', 'Faturamento (R$)', 'Qtd. Vendas', 'Unidades', '% do Total', '% Acumulado', 'Classe']
+    const header = [
+      'Loja',
+      'Rank',
+      'SKU',
+      'Faturamento (R$)',
+      'Qtd. Vendas',
+      'Unidades',
+      '% do Total',
+      '% Acumulado',
+      'Classe',
+      'Estoque Atual',
+      'Vendas 90d',
+      '% Cobertura de Estoque',
+      'Precisa Comprar',
+    ]
     const rows = stores.flatMap((store) =>
       store.items.map((item) => [
         store.store_name,
@@ -79,6 +109,10 @@ function RelatorioAbcPage() {
         item.percentage.toFixed(2).replace('.', ','),
         item.cumulative_percentage.toFixed(2).replace('.', ','),
         item.class,
+        item.stock_qty,
+        item.units_90d,
+        item.coverage_percentage === null ? '—' : item.coverage_percentage.toFixed(2).replace('.', ','),
+        item.needs_purchase ? 'Sim' : 'Não',
       ]),
     )
 
@@ -176,6 +210,12 @@ function RelatorioAbcPage() {
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">C</span>
             <span className="text-muted-foreground">Cauda longa (~5%)</span>
           </div>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="size-4 text-destructive" />
+            <span className="text-muted-foreground">
+              Cobertura de Estoque abaixo de 100% (estoque menor que as vendas dos últimos 90 dias) — precisa comprar
+            </span>
+          </div>
         </div>
       )}
 
@@ -254,6 +294,7 @@ function RelatorioAbcPage() {
                   <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">% Total</th>
                   <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">% Acum.</th>
                   <th className="text-center font-semibold text-foreground px-4 py-3 whitespace-nowrap w-20">Classe</th>
+                  <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">Cobertura de Estoque</th>
                 </tr>
               </thead>
               <tbody>
@@ -287,6 +328,12 @@ function RelatorioAbcPage() {
                     </td>
                     <td className="px-4 py-2.5 text-center">
                       {classBadge(item.class)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                      {coverageBadge(item.coverage_percentage, item.needs_purchase)}
+                      <span className="block text-[10px] text-muted-foreground font-normal">
+                        {item.stock_qty} em estoque · {item.units_90d} vendidos/90d
+                      </span>
                     </td>
                   </tr>
                 ))}
