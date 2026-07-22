@@ -1,15 +1,8 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { useId, useMemo } from 'react'
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { useMemo } from 'react'
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts'
+import { type ChartConfig, ChartContainer } from '@/components/ui/chart'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import {
@@ -32,6 +25,13 @@ type RecentSalesChartProps = {
   onRetry?: () => void
 }
 
+const chartConfig = {
+  total: {
+    label: 'Faturamento',
+    color: '#1F5B72',
+  },
+} satisfies ChartConfig
+
 export function RecentSalesChart({
   items,
   dailyAverageCents,
@@ -39,8 +39,6 @@ export function RecentSalesChart({
   isError = false,
   onRetry,
 }: RecentSalesChartProps) {
-  const gradientId = useId()
-
   const chartData = useMemo(
     () => mapDailyRevenueData(items, format, ptBR),
     [items]
@@ -49,7 +47,7 @@ export function RecentSalesChart({
   const totalRevenue = useMemo(() => calculateTotalRevenue(items), [items])
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-6 h-full">
+    <div className="glass-card rounded-2xl p-6 md:p-8 flex flex-col gap-6 h-full">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
@@ -87,70 +85,60 @@ export function RecentSalesChart({
           title="Nao foi possivel carregar o grafico"
           description="Verifique sua conexao e tente novamente."
           onRetry={onRetry}
-          className="h-[280px] flex items-center"
+          className="flex-1 min-h-[220px] flex items-center"
         />
       ) : chartData.length === 0 ? (
         <EmptyState
           title="Nenhuma venda encontrada no periodo."
-          className="h-[280px] flex flex-col justify-center"
+          className="flex-1 min-h-[220px] flex flex-col justify-center"
         />
       ) : (
-        <div className="h-[280px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={chartData}
-              margin={{ top: 8, right: 8, left: 8, bottom: 8 }}
-            >
-              <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1F5B72" stopOpacity={0.32} />
-                  <stop offset="100%" stopColor="#1F5B72" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="rgba(111,126,134,0.25)"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="dayLabel"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: '#6F7E86', fontSize: 12 }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: '#6F7E86', fontSize: 12 }}
-                tickFormatter={(value: number) =>
-                  `R$ ${Number(value).toFixed(0)}`
-                }
-              />
-              <Tooltip
-                contentStyle={{
-                  background: '#ffffff',
-                  border: '1px solid #D6DEE2',
-                  borderRadius: '12px',
-                  color: '#163746',
-                }}
-                labelFormatter={(_, payload) => {
-                  const point = payload?.[0]?.payload as
-                    | { fullDateLabel?: string }
-                    | undefined
-                  return point?.fullDateLabel ?? ''
-                }}
-                formatter={(value: number) => formatMoney(Number(value))}
-              />
-              <Area
-                type="monotone"
-                dataKey="total"
-                stroke="#1F5B72"
-                strokeWidth={2.5}
-                fill={`url(#${gradientId})`}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        <ChartContainer
+          config={chartConfig}
+          className="flex-1 min-h-[220px] w-full aspect-auto"
+        >
+          <BarChart
+            data={chartData}
+            margin={{ top: 8, right: 8, left: 8, bottom: 8 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(111,126,134,0.25)"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="dayLabel"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: '#6F7E86', fontSize: 12 }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: '#6F7E86', fontSize: 12 }}
+              tickFormatter={(value: number) =>
+                `R$ ${Number(value).toFixed(0)}`
+              }
+            />
+            <Tooltip
+              cursor={{ fill: 'rgba(31,91,114,0.08)' }}
+              contentStyle={{
+                background: '#ffffff',
+                border: '1px solid #D6DEE2',
+                borderRadius: '12px',
+                color: '#163746',
+              }}
+              labelFormatter={(_, payload) => {
+                const point = payload?.[0]?.payload as
+                  | { fullDateLabel?: string }
+                  | undefined
+                return point?.fullDateLabel ?? ''
+              }}
+              formatter={(value: number) => formatMoney(Number(value))}
+            />
+            <Bar dataKey="total" fill="var(--color-total)" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ChartContainer>
       )}
     </div>
   )
