@@ -7,48 +7,48 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   PostProductsProductIdStocksMutationRequest,
   PostProductsProductIdStocksMutationResponse,
   PostProductsProductIdStocksPathParams,
   PostProductsProductIdStocks404,
-} from '../../types/stocksController/PostProductsProductIdStocks.ts'
-import { mutationOptions, useMutation } from '@tanstack/react-query'
-import { postProductsProductIdStocks } from '../../clients/stocksController/postProductsProductIdStocks.ts'
+} from "../../types/stocksController/PostProductsProductIdStocks.ts";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+import { postProductsProductIdStocks } from "../../clients/stocksController/postProductsProductIdStocks.ts";
 
 export const postProductsProductIdStocksMutationKey = () =>
-  [{ url: '/products/:productId/stocks' }] as const
+  [{ url: "/products/:productId/stocks" }] as const;
 
 export type PostProductsProductIdStocksMutationKey = ReturnType<
   typeof postProductsProductIdStocksMutationKey
->
+>;
 
 export function postProductsProductIdStocksMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostProductsProductIdStocksMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const mutationKey = postProductsProductIdStocksMutationKey()
+  const mutationKey = postProductsProductIdStocksMutationKey();
   return mutationOptions<
     PostProductsProductIdStocksMutationResponse,
     ResponseErrorConfig<PostProductsProductIdStocks404>,
     {
-      productId: PostProductsProductIdStocksPathParams['productId']
-      data: PostProductsProductIdStocksMutationRequest
+      productId: PostProductsProductIdStocksPathParams["productId"];
+      data: PostProductsProductIdStocksMutationRequest;
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ productId, data }) => {
-      return postProductsProductIdStocks(productId, data, config)
+      return postProductsProductIdStocks(productId, data, config);
     },
-  })
+  });
 }
 
 /**
@@ -61,39 +61,39 @@ export function usePostProductsProductIdStocks<TContext>(
       PostProductsProductIdStocksMutationResponse,
       ResponseErrorConfig<PostProductsProductIdStocks404>,
       {
-        productId: PostProductsProductIdStocksPathParams['productId']
-        data: PostProductsProductIdStocksMutationRequest
+        productId: PostProductsProductIdStocksPathParams["productId"];
+        data: PostProductsProductIdStocksMutationRequest;
       },
       TContext
-    > & { client?: QueryClient }
+    > & { client?: QueryClient };
     client?: Partial<
       RequestConfig<PostProductsProductIdStocksMutationRequest>
-    > & { client?: Client }
-  } = {}
+    > & { client?: Client };
+  } = {},
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...mutationOptions } = mutation
+  const { mutation = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey =
-    mutationOptions.mutationKey ?? postProductsProductIdStocksMutationKey()
+    mutationOptions.mutationKey ?? postProductsProductIdStocksMutationKey();
 
   const baseOptions = postProductsProductIdStocksMutationOptions(
-    config
+    config,
   ) as UseMutationOptions<
     PostProductsProductIdStocksMutationResponse,
     ResponseErrorConfig<PostProductsProductIdStocks404>,
     {
-      productId: PostProductsProductIdStocksPathParams['productId']
-      data: PostProductsProductIdStocksMutationRequest
+      productId: PostProductsProductIdStocksPathParams["productId"];
+      data: PostProductsProductIdStocksMutationRequest;
     },
     TContext
-  >
+  >;
 
   return useMutation<
     PostProductsProductIdStocksMutationResponse,
     ResponseErrorConfig<PostProductsProductIdStocks404>,
     {
-      productId: PostProductsProductIdStocksPathParams['productId']
-      data: PostProductsProductIdStocksMutationRequest
+      productId: PostProductsProductIdStocksPathParams["productId"];
+      data: PostProductsProductIdStocksMutationRequest;
     },
     TContext
   >(
@@ -102,14 +102,14 @@ export function usePostProductsProductIdStocks<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient
+    queryClient,
   ) as UseMutationResult<
     PostProductsProductIdStocksMutationResponse,
     ResponseErrorConfig<PostProductsProductIdStocks404>,
     {
-      productId: PostProductsProductIdStocksPathParams['productId']
-      data: PostProductsProductIdStocksMutationRequest
+      productId: PostProductsProductIdStocksPathParams["productId"];
+      data: PostProductsProductIdStocksMutationRequest;
     },
     TContext
-  >
+  >;
 }

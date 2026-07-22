@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   PostShipmentAccountsMutationRequest,
   PostShipmentAccountsMutationResponse,
   PostShipmentAccounts409,
-} from '../../types/shipmentAccountsController/PostShipmentAccounts.ts'
-import { mutationOptions, useMutation } from '@tanstack/react-query'
-import { postShipmentAccounts } from '../../clients/shipmentAccountsController/postShipmentAccounts.ts'
+} from "../../types/shipmentAccountsController/PostShipmentAccounts.ts";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+import { postShipmentAccounts } from "../../clients/shipmentAccountsController/postShipmentAccounts.ts";
 
 export const postShipmentAccountsMutationKey = () =>
-  [{ url: '/shipment-accounts' }] as const
+  [{ url: "/shipment-accounts" }] as const;
 
 export type PostShipmentAccountsMutationKey = ReturnType<
   typeof postShipmentAccountsMutationKey
->
+>;
 
 export function postShipmentAccountsMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostShipmentAccountsMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const mutationKey = postShipmentAccountsMutationKey()
+  const mutationKey = postShipmentAccountsMutationKey();
   return mutationOptions<
     PostShipmentAccountsMutationResponse,
     ResponseErrorConfig<PostShipmentAccounts409>,
@@ -42,9 +42,9 @@ export function postShipmentAccountsMutationOptions<TContext = unknown>(
   >({
     mutationKey,
     mutationFn: async ({ data }) => {
-      return postShipmentAccounts(data, config)
+      return postShipmentAccounts(data, config);
     },
-  })
+  });
 }
 
 /**
@@ -57,25 +57,25 @@ export function usePostShipmentAccounts<TContext>(
       ResponseErrorConfig<PostShipmentAccounts409>,
       { data: PostShipmentAccountsMutationRequest },
       TContext
-    > & { client?: QueryClient }
+    > & { client?: QueryClient };
     client?: Partial<RequestConfig<PostShipmentAccountsMutationRequest>> & {
-      client?: Client
-    }
-  } = {}
+      client?: Client;
+    };
+  } = {},
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...mutationOptions } = mutation
+  const { mutation = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey =
-    mutationOptions.mutationKey ?? postShipmentAccountsMutationKey()
+    mutationOptions.mutationKey ?? postShipmentAccountsMutationKey();
 
   const baseOptions = postShipmentAccountsMutationOptions(
-    config
+    config,
   ) as UseMutationOptions<
     PostShipmentAccountsMutationResponse,
     ResponseErrorConfig<PostShipmentAccounts409>,
     { data: PostShipmentAccountsMutationRequest },
     TContext
-  >
+  >;
 
   return useMutation<
     PostShipmentAccountsMutationResponse,
@@ -88,11 +88,11 @@ export function usePostShipmentAccounts<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient
+    queryClient,
   ) as UseMutationResult<
     PostShipmentAccountsMutationResponse,
     ResponseErrorConfig<PostShipmentAccounts409>,
     { data: PostShipmentAccountsMutationRequest },
     TContext
-  >
+  >;
 }

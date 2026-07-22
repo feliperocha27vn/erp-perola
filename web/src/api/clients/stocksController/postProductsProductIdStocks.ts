@@ -3,24 +3,24 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   PostProductsProductIdStocksMutationRequest,
   PostProductsProductIdStocksMutationResponse,
   PostProductsProductIdStocksPathParams,
   PostProductsProductIdStocks404,
-} from '../../types/stocksController/PostProductsProductIdStocks.ts'
+} from "../../types/stocksController/PostProductsProductIdStocks.ts";
 
 function getPostProductsProductIdStocksUrl(
-  productId: PostProductsProductIdStocksPathParams['productId']
+  productId: PostProductsProductIdStocksPathParams["productId"],
 ) {
-  const res = { method: 'POST', url: `/products/${productId}/stocks` as const }
-  return res
+  const res = { method: "POST", url: `/products/${productId}/stocks` as const };
+  return res;
 }
 
 /**
@@ -28,25 +28,25 @@ function getPostProductsProductIdStocksUrl(
  * {@link /products/:productId/stocks}
  */
 export async function postProductsProductIdStocks(
-  productId: PostProductsProductIdStocksPathParams['productId'],
+  productId: PostProductsProductIdStocksPathParams["productId"],
   data: PostProductsProductIdStocksMutationRequest,
   config: Partial<RequestConfig<PostProductsProductIdStocksMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
-  const requestData = data
+  const requestData = data;
 
   const res = await request<
     PostProductsProductIdStocksMutationResponse,
     ResponseErrorConfig<PostProductsProductIdStocks404>,
     PostProductsProductIdStocksMutationRequest
   >({
-    method: 'POST',
+    method: "POST",
     url: getPostProductsProductIdStocksUrl(productId).url.toString(),
     data: requestData,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

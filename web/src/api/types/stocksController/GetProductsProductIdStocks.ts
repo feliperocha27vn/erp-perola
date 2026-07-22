@@ -7,8 +7,8 @@ export type GetProductsProductIdStocksPathParams = {
   /**
    * @type string, uuid
    */
-  productId: string
-}
+  productId: string;
+};
 
 /**
  * @description Default Response
@@ -21,35 +21,35 @@ export type GetProductsProductIdStocks200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string
      */
-    title: string
+    title: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    qtde: number
+    qtde: number;
     /**
      * @type boolean
      */
-    full: boolean
+    full: boolean;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }[]
-}
+    updated_at: string;
+  }[];
+};
 
 /**
  * @description Default Response
@@ -58,14 +58,14 @@ export type GetProductsProductIdStocks404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type GetProductsProductIdStocksQueryResponse =
-  GetProductsProductIdStocks200
+  GetProductsProductIdStocks200;
 
 export type GetProductsProductIdStocksQuery = {
-  Response: GetProductsProductIdStocks200
-  PathParams: GetProductsProductIdStocksPathParams
-  Errors: GetProductsProductIdStocks404
-}
+  Response: GetProductsProductIdStocks200;
+  PathParams: GetProductsProductIdStocksPathParams;
+  Errors: GetProductsProductIdStocks404;
+};

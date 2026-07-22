@@ -15,45 +15,45 @@ import { SectionErrorState } from '@/components/ui/section-error-state'
 import {
   calculateTotalRevenue,
   formatMoney,
-  mapMonthlyRevenueData,
+  mapDailyRevenueData,
 } from './formatters'
-import { MonthlyRevenueChartSkeleton } from './monthly-revenue-chart-skeleton'
+import { RecentSalesChartSkeleton } from './recent-sales-chart-skeleton'
 
-type MonthlyRevenueItem = {
+type DailyRevenueItem = {
   date: string
   total_cents: number
 }
 
-type MonthlyRevenueChartProps = {
-  items: MonthlyRevenueItem[]
+type RecentSalesChartProps = {
+  items: DailyRevenueItem[]
   dailyAverageCents: number
   isLoading: boolean
   isError?: boolean
   onRetry?: () => void
 }
 
-export function MonthlyRevenueChart({
+export function RecentSalesChart({
   items,
   dailyAverageCents,
   isLoading,
   isError = false,
   onRetry,
-}: MonthlyRevenueChartProps) {
+}: RecentSalesChartProps) {
   const gradientId = useId()
 
   const chartData = useMemo(
-    () => mapMonthlyRevenueData(items, format, ptBR),
+    () => mapDailyRevenueData(items, format, ptBR),
     [items]
   )
 
   const totalRevenue = useMemo(() => calculateTotalRevenue(items), [items])
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-6">
+    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-6 h-full">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
-            Faturamento mensal
+            Últimos 15 dias
           </p>
           <h3 className="text-2xl font-display font-bold">Vendas por dia</h3>
         </div>
@@ -81,21 +81,21 @@ export function MonthlyRevenueChart({
       </div>
 
       {isLoading ? (
-        <MonthlyRevenueChartSkeleton />
+        <RecentSalesChartSkeleton />
       ) : isError ? (
         <SectionErrorState
           title="Nao foi possivel carregar o grafico"
           description="Verifique sua conexao e tente novamente."
           onRetry={onRetry}
-          className="h-[320px] flex items-center"
+          className="h-[280px] flex items-center"
         />
       ) : chartData.length === 0 ? (
         <EmptyState
           title="Nenhuma venda encontrada no periodo."
-          className="h-[320px] flex flex-col justify-center"
+          className="h-[280px] flex flex-col justify-center"
         />
       ) : (
-        <div className="h-[320px] w-full">
+        <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}

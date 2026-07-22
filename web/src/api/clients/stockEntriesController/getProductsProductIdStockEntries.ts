@@ -3,25 +3,25 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   GetProductsProductIdStockEntriesQueryResponse,
   GetProductsProductIdStockEntriesPathParams,
-} from '../../types/stockEntriesController/GetProductsProductIdStockEntries.ts'
+} from "../../types/stockEntriesController/GetProductsProductIdStockEntries.ts";
 
 function getGetProductsProductIdStockEntriesUrl(
-  productId: GetProductsProductIdStockEntriesPathParams['productId']
+  productId: GetProductsProductIdStockEntriesPathParams["productId"],
 ) {
   const res = {
-    method: 'GET',
+    method: "GET",
     url: `/products/${productId}/stock-entries` as const,
-  }
-  return res
+  };
+  return res;
 }
 
 /**
@@ -29,19 +29,19 @@ function getGetProductsProductIdStockEntriesUrl(
  * {@link /products/:productId/stock-entries}
  */
 export async function getProductsProductIdStockEntries(
-  productId: GetProductsProductIdStockEntriesPathParams['productId'],
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  productId: GetProductsProductIdStockEntriesPathParams["productId"],
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetProductsProductIdStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: 'GET',
+    method: "GET",
     url: getGetProductsProductIdStockEntriesUrl(productId).url.toString(),
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

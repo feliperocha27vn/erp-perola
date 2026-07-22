@@ -14,25 +14,25 @@ export type GetShipmentAccounts200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    name: string
+    name: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }[]
-}
+    updated_at: string;
+  }[];
+};
 
-export type GetShipmentAccountsQueryResponse = GetShipmentAccounts200
+export type GetShipmentAccountsQueryResponse = GetShipmentAccounts200;
 
 export type GetShipmentAccountsQuery = {
-  Response: GetShipmentAccounts200
-  Errors: any
-}
+  Response: GetShipmentAccounts200;
+  Errors: any;
+};

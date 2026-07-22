@@ -7,13 +7,13 @@ export type DeleteShipmentsByIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 /**
  * @description Default Response
  */
-export type DeleteShipmentsById204 = any
+export type DeleteShipmentsById204 = any;
 
 /**
  * @description Default Response
@@ -22,8 +22,8 @@ export type DeleteShipmentsById404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -32,13 +32,13 @@ export type DeleteShipmentsById409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
-export type DeleteShipmentsByIdMutationResponse = DeleteShipmentsById204
+export type DeleteShipmentsByIdMutationResponse = DeleteShipmentsById204;
 
 export type DeleteShipmentsByIdMutation = {
-  Response: DeleteShipmentsById204
-  PathParams: DeleteShipmentsByIdPathParams
-  Errors: DeleteShipmentsById404 | DeleteShipmentsById409
-}
+  Response: DeleteShipmentsById204;
+  PathParams: DeleteShipmentsByIdPathParams;
+  Errors: DeleteShipmentsById404 | DeleteShipmentsById409;
+};

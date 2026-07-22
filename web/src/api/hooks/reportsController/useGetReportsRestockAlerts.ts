@@ -7,28 +7,28 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
-import type { GetReportsRestockAlertsQueryResponse } from '../../types/reportsController/GetReportsRestockAlerts.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getReportsRestockAlerts } from '../../clients/reportsController/getReportsRestockAlerts.ts'
+} from "@tanstack/react-query";
+import type { GetReportsRestockAlertsQueryResponse } from "../../types/reportsController/GetReportsRestockAlerts.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getReportsRestockAlerts } from "../../clients/reportsController/getReportsRestockAlerts.ts";
 
 export const getReportsRestockAlertsQueryKey = () =>
-  [{ url: '/reports/restock-alerts' }] as const
+  [{ url: "/reports/restock-alerts" }] as const;
 
 export type GetReportsRestockAlertsQueryKey = ReturnType<
   typeof getReportsRestockAlertsQueryKey
->
+>;
 
 export function getReportsRestockAlertsQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getReportsRestockAlertsQueryKey()
+  const queryKey = getReportsRestockAlertsQueryKey();
   return queryOptions<
     GetReportsRestockAlertsQueryResponse,
     ResponseErrorConfig<Error>,
@@ -40,9 +40,9 @@ export function getReportsRestockAlertsQueryOptions(
       return getReportsRestockAlerts({
         ...config,
         signal: config.signal ?? signal,
-      })
+      });
     },
-  })
+  });
 }
 
 /**
@@ -62,14 +62,14 @@ export function useGetReportsRestockAlerts<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getReportsRestockAlertsQueryKey()
+    resolvedOptions?.queryKey ?? getReportsRestockAlertsQueryKey();
 
   const query = useQuery(
     {
@@ -77,12 +77,12 @@ export function useGetReportsRestockAlerts<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

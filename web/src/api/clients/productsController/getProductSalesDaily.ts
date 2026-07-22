@@ -3,20 +3,20 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   GetProductSalesDailyQueryResponse,
   GetProductSalesDailyPathParams,
-} from '../../types/productsController/GetProductSalesDaily.ts'
+} from "../../types/productsController/GetProductSalesDaily.ts";
 
-function getGetProductSalesDailyUrl(id: GetProductSalesDailyPathParams['id']) {
-  const res = { method: 'GET', url: `/products/${id}/sales-daily` as const }
-  return res
+function getGetProductSalesDailyUrl(id: GetProductSalesDailyPathParams["id"]) {
+  const res = { method: "GET", url: `/products/${id}/sales-daily` as const };
+  return res;
 }
 
 /**
@@ -24,19 +24,19 @@ function getGetProductSalesDailyUrl(id: GetProductSalesDailyPathParams['id']) {
  * {@link /products/:id/sales-daily}
  */
 export async function getProductSalesDaily(
-  id: GetProductSalesDailyPathParams['id'],
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  id: GetProductSalesDailyPathParams["id"],
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetProductSalesDailyQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: 'GET',
+    method: "GET",
     url: getGetProductSalesDailyUrl(id).url.toString(),
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

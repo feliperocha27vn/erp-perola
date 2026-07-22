@@ -1,6 +1,6 @@
 import type { Locale } from 'date-fns'
 
-type MonthlyRevenueItem = {
+type DailyRevenueItem = {
   date: string
   total_cents: number
 }
@@ -17,12 +17,12 @@ export function formatMoney(value: number) {
   }).format(value)
 }
 
-export function calculateTotalRevenue(items: MonthlyRevenueItem[]) {
+export function calculateTotalRevenue(items: DailyRevenueItem[]) {
   return items.reduce((acc, item) => acc + item.total_cents, 0) / 100
 }
 
-export function mapMonthlyRevenueData(
-  items: MonthlyRevenueItem[],
+export function mapDailyRevenueData(
+  items: DailyRevenueItem[],
   formatDate: (date: Date, mask: string, options: { locale: Locale }) => string,
   locale: Locale
 ) {

@@ -7,8 +7,8 @@ export type PostProductsProductIdStocksPathParams = {
   /**
    * @type string, uuid
    */
-  productId: string
-}
+  productId: string;
+};
 
 /**
  * @description Default Response
@@ -21,35 +21,35 @@ export type PostProductsProductIdStocks201 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string
      */
-    title: string
+    title: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    qtde: number
+    qtde: number;
     /**
      * @type boolean
      */
-    full: boolean
+    full: boolean;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -58,33 +58,33 @@ export type PostProductsProductIdStocks404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PostProductsProductIdStocksMutationRequest = {
   /**
    * @minLength 1
    * @type string
    */
-  title: string
+  title: string;
   /**
    * @minLength 0
    * @maxLength 9007199254740991
    * @type integer
    */
-  qtde: number
+  qtde: number;
   /**
    * @type boolean
    */
-  full: boolean
-}
+  full: boolean;
+};
 
 export type PostProductsProductIdStocksMutationResponse =
-  PostProductsProductIdStocks201
+  PostProductsProductIdStocks201;
 
 export type PostProductsProductIdStocksMutation = {
-  Response: PostProductsProductIdStocks201
-  Request: PostProductsProductIdStocksMutationRequest
-  PathParams: PostProductsProductIdStocksPathParams
-  Errors: PostProductsProductIdStocks404
-}
+  Response: PostProductsProductIdStocks201;
+  Request: PostProductsProductIdStocksMutationRequest;
+  PathParams: PostProductsProductIdStocksPathParams;
+  Errors: PostProductsProductIdStocks404;
+};

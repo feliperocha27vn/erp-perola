@@ -3,21 +3,21 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   DeleteSalesIdMutationResponse,
   DeleteSalesIdPathParams,
   DeleteSalesId404,
-} from '../../types/salesController/DeleteSalesId.ts'
+} from "../../types/salesController/DeleteSalesId.ts";
 
-function getDeleteSalesIdUrl(id: DeleteSalesIdPathParams['id']) {
-  const res = { method: 'DELETE', url: `/sales/${id}` as const }
-  return res
+function getDeleteSalesIdUrl(id: DeleteSalesIdPathParams["id"]) {
+  const res = { method: "DELETE", url: `/sales/${id}` as const };
+  return res;
 }
 
 /**
@@ -25,19 +25,19 @@ function getDeleteSalesIdUrl(id: DeleteSalesIdPathParams['id']) {
  * {@link /sales/:id}
  */
 export async function deleteSalesId(
-  id: DeleteSalesIdPathParams['id'],
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  id: DeleteSalesIdPathParams["id"],
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     DeleteSalesIdMutationResponse,
     ResponseErrorConfig<DeleteSalesId404>,
     unknown
   >({
-    method: 'DELETE',
+    method: "DELETE",
     url: getDeleteSalesIdUrl(id).url.toString(),
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

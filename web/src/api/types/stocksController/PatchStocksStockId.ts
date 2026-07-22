@@ -7,8 +7,8 @@ export type PatchStocksStockIdPathParams = {
   /**
    * @type string, uuid
    */
-  stockId: string
-}
+  stockId: string;
+};
 
 /**
  * @description Default Response
@@ -21,35 +21,35 @@ export type PatchStocksStockId200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string
      */
-    title: string
+    title: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    qtde: number
+    qtde: number;
     /**
      * @type boolean
      */
-    full: boolean
+    full: boolean;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -58,32 +58,32 @@ export type PatchStocksStockId404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PatchStocksStockIdMutationRequest = {
   /**
    * @minLength 1
    * @type string | undefined
    */
-  title?: string
+  title?: string;
   /**
    * @minLength 0
    * @maxLength 9007199254740991
    * @type integer | undefined
    */
-  qtde?: number
+  qtde?: number;
   /**
    * @type boolean | undefined
    */
-  full?: boolean
-}
+  full?: boolean;
+};
 
-export type PatchStocksStockIdMutationResponse = PatchStocksStockId200
+export type PatchStocksStockIdMutationResponse = PatchStocksStockId200;
 
 export type PatchStocksStockIdMutation = {
-  Response: PatchStocksStockId200
-  Request: PatchStocksStockIdMutationRequest
-  PathParams: PatchStocksStockIdPathParams
-  Errors: PatchStocksStockId404
-}
+  Response: PatchStocksStockId200;
+  Request: PatchStocksStockIdMutationRequest;
+  PathParams: PatchStocksStockIdPathParams;
+  Errors: PatchStocksStockId404;
+};

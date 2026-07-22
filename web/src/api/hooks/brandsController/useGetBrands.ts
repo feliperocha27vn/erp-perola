@@ -7,25 +7,25 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
-import type { GetBrandsQueryResponse } from '../../types/brandsController/GetBrands.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getBrands } from '../../clients/brandsController/getBrands.ts'
+} from "@tanstack/react-query";
+import type { GetBrandsQueryResponse } from "../../types/brandsController/GetBrands.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getBrands } from "../../clients/brandsController/getBrands.ts";
 
-export const getBrandsQueryKey = () => [{ url: '/brands' }] as const
+export const getBrandsQueryKey = () => [{ url: "/brands" }] as const;
 
-export type GetBrandsQueryKey = ReturnType<typeof getBrandsQueryKey>
+export type GetBrandsQueryKey = ReturnType<typeof getBrandsQueryKey>;
 
 export function getBrandsQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getBrandsQueryKey()
+  const queryKey = getBrandsQueryKey();
   return queryOptions<
     GetBrandsQueryResponse,
     ResponseErrorConfig<Error>,
@@ -34,9 +34,9 @@ export function getBrandsQueryOptions(
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getBrands({ ...config, signal: config.signal ?? signal })
+      return getBrands({ ...config, signal: config.signal ?? signal });
     },
-  })
+  });
 }
 
 /**
@@ -57,13 +57,13 @@ export function useGetBrands<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
-  const queryKey = resolvedOptions?.queryKey ?? getBrandsQueryKey()
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const queryKey = resolvedOptions?.queryKey ?? getBrandsQueryKey();
 
   const query = useQuery(
     {
@@ -71,12 +71,12 @@ export function useGetBrands<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

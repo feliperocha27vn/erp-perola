@@ -4,28 +4,28 @@
  */
 
 export const getProductsSalesVelocityQueryParamsWithoutImageEnum = {
-  true: 'true',
-  false: 'false',
-} as const
+  true: "true",
+  false: "false",
+} as const;
 
 export type GetProductsSalesVelocityQueryParamsWithoutImageEnumKey =
-  (typeof getProductsSalesVelocityQueryParamsWithoutImageEnum)[keyof typeof getProductsSalesVelocityQueryParamsWithoutImageEnum]
+  (typeof getProductsSalesVelocityQueryParamsWithoutImageEnum)[keyof typeof getProductsSalesVelocityQueryParamsWithoutImageEnum];
 
 export type GetProductsSalesVelocityQueryParams = {
   /**
    * @default "0"
    * @type string | undefined
    */
-  pageIndex?: string
+  pageIndex?: string;
   /**
    * @type string | undefined
    */
-  search?: string
+  search?: string;
   /**
    * @type string | undefined
    */
-  withoutImage?: GetProductsSalesVelocityQueryParamsWithoutImageEnumKey
-}
+  withoutImage?: GetProductsSalesVelocityQueryParamsWithoutImageEnumKey;
+};
 
 /**
  * @description Default Response
@@ -38,38 +38,38 @@ export type GetProductsSalesVelocity200 = {
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    units_15d: number
+    units_15d: number;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    units_30d: number
+    units_30d: number;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    units_60d: number
+    units_60d: number;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    units_90d: number
-  }[]
-}
+    units_90d: number;
+  }[];
+};
 
-export type GetProductsSalesVelocityQueryResponse = GetProductsSalesVelocity200
+export type GetProductsSalesVelocityQueryResponse = GetProductsSalesVelocity200;
 
 export type GetProductsSalesVelocityQuery = {
-  Response: GetProductsSalesVelocity200
-  QueryParams: GetProductsSalesVelocityQueryParams
-  Errors: any
-}
+  Response: GetProductsSalesVelocity200;
+  QueryParams: GetProductsSalesVelocityQueryParams;
+  Errors: any;
+};

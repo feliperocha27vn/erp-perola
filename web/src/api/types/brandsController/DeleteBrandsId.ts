@@ -7,15 +7,15 @@ export type DeleteBrandsIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
-export type DeleteBrandsId204EnumKey = never
+export type DeleteBrandsId204EnumKey = never;
 
 /**
  * @description Default Response
  */
-export type DeleteBrandsId204 = DeleteBrandsId204EnumKey | null
+export type DeleteBrandsId204 = DeleteBrandsId204EnumKey | null;
 
 /**
  * @description Default Response
@@ -24,8 +24,8 @@ export type DeleteBrandsId404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -34,13 +34,13 @@ export type DeleteBrandsId409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
-export type DeleteBrandsIdMutationResponse = DeleteBrandsId204
+export type DeleteBrandsIdMutationResponse = DeleteBrandsId204;
 
 export type DeleteBrandsIdMutation = {
-  Response: DeleteBrandsId204
-  PathParams: DeleteBrandsIdPathParams
-  Errors: DeleteBrandsId404 | DeleteBrandsId409
-}
+  Response: DeleteBrandsId204;
+  PathParams: DeleteBrandsIdPathParams;
+  Errors: DeleteBrandsId404 | DeleteBrandsId409;
+};

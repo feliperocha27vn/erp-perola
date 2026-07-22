@@ -7,8 +7,8 @@ export type PatchBrandsIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 /**
  * @description Default Response
@@ -21,21 +21,21 @@ export type PatchBrandsId200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    name: string
+    name: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -44,8 +44,8 @@ export type PatchBrandsId404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -54,22 +54,22 @@ export type PatchBrandsId409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PatchBrandsIdMutationRequest = {
   /**
    * @minLength 1
    * @type string
    */
-  name: string
-}
+  name: string;
+};
 
-export type PatchBrandsIdMutationResponse = PatchBrandsId200
+export type PatchBrandsIdMutationResponse = PatchBrandsId200;
 
 export type PatchBrandsIdMutation = {
-  Response: PatchBrandsId200
-  Request: PatchBrandsIdMutationRequest
-  PathParams: PatchBrandsIdPathParams
-  Errors: PatchBrandsId404 | PatchBrandsId409
-}
+  Response: PatchBrandsId200;
+  Request: PatchBrandsIdMutationRequest;
+  PathParams: PatchBrandsIdPathParams;
+  Errors: PatchBrandsId404 | PatchBrandsId409;
+};

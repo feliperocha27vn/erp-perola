@@ -7,21 +7,21 @@ export type GetReportsAbcQueryParams = {
   /**
    * @type string, date-time
    */
-  startDate: string
+  startDate: string;
   /**
    * @type string, date-time
    */
-  endDate: string
-}
+  endDate: string;
+};
 
 export const itemsClassEnum = {
-  A: 'A',
-  B: 'B',
-  C: 'C',
-} as const
+  A: "A",
+  B: "B",
+  C: "C",
+} as const;
 
 export type ItemsClassEnumKey =
-  (typeof itemsClassEnum)[keyof typeof itemsClassEnum]
+  (typeof itemsClassEnum)[keyof typeof itemsClassEnum];
 
 /**
  * @description Default Response
@@ -34,11 +34,11 @@ export type GetReportsAbc200 = {
     /**
      * @type string
      */
-    store_name: string
+    store_name: string;
     /**
      * @type number
      */
-    total_revenue: number
+    total_revenue: number;
     /**
      * @type array
      */
@@ -46,59 +46,59 @@ export type GetReportsAbc200 = {
       /**
        * @type number
        */
-      rank: number
+      rank: number;
       /**
        * @type string
        */
-      sku: string
+      sku: string;
       /**
        * @type number
        */
-      total_revenue: number
+      total_revenue: number;
       /**
        * @type number
        */
-      qty_sales: number
+      qty_sales: number;
       /**
        * @type number
        */
-      qty_units: number
+      qty_units: number;
       /**
        * @type number
        */
-      percentage: number
+      percentage: number;
       /**
        * @type number
        */
-      cumulative_percentage: number
+      cumulative_percentage: number;
       /**
        * @type string
        */
-      class: ItemsClassEnumKey
+      class: ItemsClassEnumKey;
       /**
        * @type number
        */
-      stock_qty: number
+      stock_qty: number;
       /**
        * @type number
        */
-      units_90d: number
+      units_90d: number;
       /**
        * @type number
        */
-      coverage_percentage: number | null
+      coverage_percentage: number | null;
       /**
        * @type boolean
        */
-      needs_purchase: boolean
-    }[]
-  }[]
-}
+      needs_purchase: boolean;
+    }[];
+  }[];
+};
 
-export type GetReportsAbcQueryResponse = GetReportsAbc200
+export type GetReportsAbcQueryResponse = GetReportsAbc200;
 
 export type GetReportsAbcQuery = {
-  Response: GetReportsAbc200
-  QueryParams: GetReportsAbcQueryParams
-  Errors: any
-}
+  Response: GetReportsAbc200;
+  QueryParams: GetReportsAbcQueryParams;
+  Errors: any;
+};

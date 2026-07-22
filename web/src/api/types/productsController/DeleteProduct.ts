@@ -7,13 +7,13 @@ export type DeleteProductPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 /**
  * @description Default Response
  */
-export type DeleteProduct204 = object
+export type DeleteProduct204 = object;
 
 /**
  * @description Default Response
@@ -22,13 +22,13 @@ export type DeleteProduct404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
-export type DeleteProductMutationResponse = DeleteProduct204
+export type DeleteProductMutationResponse = DeleteProduct204;
 
 export type DeleteProductMutation = {
-  Response: DeleteProduct204
-  PathParams: DeleteProductPathParams
-  Errors: DeleteProduct404
-}
+  Response: DeleteProduct204;
+  PathParams: DeleteProductPathParams;
+  Errors: DeleteProduct404;
+};

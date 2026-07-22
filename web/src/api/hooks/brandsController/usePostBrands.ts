@@ -7,30 +7,30 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   PostBrandsMutationRequest,
   PostBrandsMutationResponse,
   PostBrands409,
-} from '../../types/brandsController/PostBrands.ts'
-import { mutationOptions, useMutation } from '@tanstack/react-query'
-import { postBrands } from '../../clients/brandsController/postBrands.ts'
+} from "../../types/brandsController/PostBrands.ts";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+import { postBrands } from "../../clients/brandsController/postBrands.ts";
 
-export const postBrandsMutationKey = () => [{ url: '/brands' }] as const
+export const postBrandsMutationKey = () => [{ url: "/brands" }] as const;
 
-export type PostBrandsMutationKey = ReturnType<typeof postBrandsMutationKey>
+export type PostBrandsMutationKey = ReturnType<typeof postBrandsMutationKey>;
 
 export function postBrandsMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostBrandsMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const mutationKey = postBrandsMutationKey()
+  const mutationKey = postBrandsMutationKey();
   return mutationOptions<
     PostBrandsMutationResponse,
     ResponseErrorConfig<PostBrands409>,
@@ -39,9 +39,9 @@ export function postBrandsMutationOptions<TContext = unknown>(
   >({
     mutationKey,
     mutationFn: async ({ data }) => {
-      return postBrands(data, config)
+      return postBrands(data, config);
     },
-  })
+  });
 }
 
 /**
@@ -55,22 +55,22 @@ export function usePostBrands<TContext>(
       ResponseErrorConfig<PostBrands409>,
       { data: PostBrandsMutationRequest },
       TContext
-    > & { client?: QueryClient }
+    > & { client?: QueryClient };
     client?: Partial<RequestConfig<PostBrandsMutationRequest>> & {
-      client?: Client
-    }
-  } = {}
+      client?: Client;
+    };
+  } = {},
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...mutationOptions } = mutation
-  const mutationKey = mutationOptions.mutationKey ?? postBrandsMutationKey()
+  const { mutation = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions.mutationKey ?? postBrandsMutationKey();
 
   const baseOptions = postBrandsMutationOptions(config) as UseMutationOptions<
     PostBrandsMutationResponse,
     ResponseErrorConfig<PostBrands409>,
     { data: PostBrandsMutationRequest },
     TContext
-  >
+  >;
 
   return useMutation<
     PostBrandsMutationResponse,
@@ -83,11 +83,11 @@ export function usePostBrands<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient
+    queryClient,
   ) as UseMutationResult<
     PostBrandsMutationResponse,
     ResponseErrorConfig<PostBrands409>,
     { data: PostBrandsMutationRequest },
     TContext
-  >
+  >;
 }

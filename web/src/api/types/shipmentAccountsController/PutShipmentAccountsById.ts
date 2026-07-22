@@ -7,8 +7,8 @@ export type PutShipmentAccountsByIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 /**
  * @description Default Response
@@ -21,21 +21,21 @@ export type PutShipmentAccountsById200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    name: string
+    name: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -44,8 +44,8 @@ export type PutShipmentAccountsById404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -54,22 +54,23 @@ export type PutShipmentAccountsById409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PutShipmentAccountsByIdMutationRequest = {
   /**
    * @minLength 1
    * @type string
    */
-  name: string
-}
+  name: string;
+};
 
-export type PutShipmentAccountsByIdMutationResponse = PutShipmentAccountsById200
+export type PutShipmentAccountsByIdMutationResponse =
+  PutShipmentAccountsById200;
 
 export type PutShipmentAccountsByIdMutation = {
-  Response: PutShipmentAccountsById200
-  Request: PutShipmentAccountsByIdMutationRequest
-  PathParams: PutShipmentAccountsByIdPathParams
-  Errors: PutShipmentAccountsById404 | PutShipmentAccountsById409
-}
+  Response: PutShipmentAccountsById200;
+  Request: PutShipmentAccountsByIdMutationRequest;
+  PathParams: PutShipmentAccountsByIdPathParams;
+  Errors: PutShipmentAccountsById404 | PutShipmentAccountsById409;
+};

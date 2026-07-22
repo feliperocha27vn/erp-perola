@@ -7,39 +7,39 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   GetProductsProductIdStockEntriesQueryResponse,
   GetProductsProductIdStockEntriesPathParams,
-} from '../../types/stockEntriesController/GetProductsProductIdStockEntries.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getProductsProductIdStockEntries } from '../../clients/stockEntriesController/getProductsProductIdStockEntries.ts'
+} from "../../types/stockEntriesController/GetProductsProductIdStockEntries.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getProductsProductIdStockEntries } from "../../clients/stockEntriesController/getProductsProductIdStockEntries.ts";
 
 export const getProductsProductIdStockEntriesQueryKey = (
-  productId: GetProductsProductIdStockEntriesPathParams['productId']
+  productId: GetProductsProductIdStockEntriesPathParams["productId"],
 ) =>
   [
     {
-      url: '/products/:productId/stock-entries',
+      url: "/products/:productId/stock-entries",
       params: { productId: productId },
     },
-  ] as const
+  ] as const;
 
 export type GetProductsProductIdStockEntriesQueryKey = ReturnType<
   typeof getProductsProductIdStockEntriesQueryKey
->
+>;
 
 export function getProductsProductIdStockEntriesQueryOptions(
-  productId: GetProductsProductIdStockEntriesPathParams['productId'],
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  productId: GetProductsProductIdStockEntriesPathParams["productId"],
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getProductsProductIdStockEntriesQueryKey(productId)
+  const queryKey = getProductsProductIdStockEntriesQueryKey(productId);
   return queryOptions<
     GetProductsProductIdStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -52,9 +52,9 @@ export function getProductsProductIdStockEntriesQueryOptions(
       return getProductsProductIdStockEntries(productId, {
         ...config,
         signal: config.signal ?? signal,
-      })
+      });
     },
-  })
+  });
 }
 
 /**
@@ -66,7 +66,7 @@ export function useGetProductsProductIdStockEntries<
   TQueryData = GetProductsProductIdStockEntriesQueryResponse,
   TQueryKey extends QueryKey = GetProductsProductIdStockEntriesQueryKey,
 >(
-  productId: GetProductsProductIdStockEntriesPathParams['productId'],
+  productId: GetProductsProductIdStockEntriesPathParams["productId"],
   options: {
     query?: Partial<
       QueryObserverOptions<
@@ -76,15 +76,15 @@ export function useGetProductsProductIdStockEntries<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
     resolvedOptions?.queryKey ??
-    getProductsProductIdStockEntriesQueryKey(productId)
+    getProductsProductIdStockEntriesQueryKey(productId);
 
   const query = useQuery(
     {
@@ -92,12 +92,12 @@ export function useGetProductsProductIdStockEntries<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

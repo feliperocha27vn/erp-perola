@@ -7,16 +7,16 @@ export type GetShipmentsByIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 export const shipmentStatusEnum2 = {
-  rascunho: 'rascunho',
-  confirmado: 'confirmado',
-} as const
+  rascunho: "rascunho",
+  confirmado: "confirmado",
+} as const;
 
 export type ShipmentStatusEnum2Key =
-  (typeof shipmentStatusEnum2)[keyof typeof shipmentStatusEnum2]
+  (typeof shipmentStatusEnum2)[keyof typeof shipmentStatusEnum2];
 
 /**
  * @description Default Response
@@ -29,27 +29,27 @@ export type GetShipmentsById200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    account_id: string
+    account_id: string;
     /**
      * @type string
      */
-    account_name: string
+    account_name: string;
     /**
      * @type string, date-time
      */
-    date: string
+    date: string;
     /**
      * @type string
      */
-    notes: string | null
+    notes: string | null;
     /**
      * @type string
      */
-    status: ShipmentStatusEnum2Key
+    status: ShipmentStatusEnum2Key;
     /**
      * @type array
      */
@@ -57,54 +57,54 @@ export type GetShipmentsById200 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string, uuid
        */
-      shipment_id: string
+      shipment_id: string;
       /**
        * @type string, uuid
        */
-      product_id: string
+      product_id: string;
       /**
        * @type string
        */
-      sku: string
+      sku: string;
       /**
        * @type number
        */
-      quantity: number
+      quantity: number;
       /**
        * @type string, uuid
        */
-      source_stock_id: string
+      source_stock_id: string;
       /**
        * @type string
        */
-      source_stock_title: string
+      source_stock_title: string;
       /**
        * @type string, uuid
        */
-      destination_stock_id: string
+      destination_stock_id: string;
       /**
        * @type string
        */
-      destination_stock_title: string
+      destination_stock_title: string;
       /**
        * @type string, date-time
        */
-      created_at: string
-    }[]
+      created_at: string;
+    }[];
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -113,13 +113,13 @@ export type GetShipmentsById404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
-export type GetShipmentsByIdQueryResponse = GetShipmentsById200
+export type GetShipmentsByIdQueryResponse = GetShipmentsById200;
 
 export type GetShipmentsByIdQuery = {
-  Response: GetShipmentsById200
-  PathParams: GetShipmentsByIdPathParams
-  Errors: GetShipmentsById404
-}
+  Response: GetShipmentsById200;
+  PathParams: GetShipmentsByIdPathParams;
+  Errors: GetShipmentsById404;
+};

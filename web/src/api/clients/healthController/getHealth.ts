@@ -3,31 +3,31 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
-import type { GetHealthQueryResponse } from '../../types/healthController/GetHealth.ts'
+} from "@/lib/kubb-axios-client";
+import type { GetHealthQueryResponse } from "../../types/healthController/GetHealth.ts";
 
 function getGetHealthUrl() {
-  const res = { method: 'GET', url: `/health` as const }
-  return res
+  const res = { method: "GET", url: `/health` as const };
+  return res;
 }
 
 /**
  * {@link /health}
  */
 export async function getHealth(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetHealthQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
-  >({ method: 'GET', url: getGetHealthUrl().url.toString(), ...requestConfig })
-  return res.data
+  >({ method: "GET", url: getGetHealthUrl().url.toString(), ...requestConfig });
+  return res.data;
 }

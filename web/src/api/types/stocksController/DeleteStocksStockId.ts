@@ -7,15 +7,15 @@ export type DeleteStocksStockIdPathParams = {
   /**
    * @type string, uuid
    */
-  stockId: string
-}
+  stockId: string;
+};
 
-export type DeleteStocksStockId204EnumKey = never
+export type DeleteStocksStockId204EnumKey = never;
 
 /**
  * @description Default Response
  */
-export type DeleteStocksStockId204 = DeleteStocksStockId204EnumKey | null
+export type DeleteStocksStockId204 = DeleteStocksStockId204EnumKey | null;
 
 /**
  * @description Default Response
@@ -24,13 +24,13 @@ export type DeleteStocksStockId404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
-export type DeleteStocksStockIdMutationResponse = DeleteStocksStockId204
+export type DeleteStocksStockIdMutationResponse = DeleteStocksStockId204;
 
 export type DeleteStocksStockIdMutation = {
-  Response: DeleteStocksStockId204
-  PathParams: DeleteStocksStockIdPathParams
-  Errors: DeleteStocksStockId404
-}
+  Response: DeleteStocksStockId204;
+  PathParams: DeleteStocksStockIdPathParams;
+  Errors: DeleteStocksStockId404;
+};

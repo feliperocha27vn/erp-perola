@@ -7,7 +7,7 @@ import { StockProductMismatchError } from "../../errors/stock-product-mismatch-e
 import type {
 	BrandSalesCount,
 	CreateSaleInput,
-	FetchCurrentMonthSalesMetricsReply,
+	FetchLast15DaysSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
 	FindManySalesFilters,
 	FindManySalesReply,
@@ -44,10 +44,10 @@ function mapSale(
 }
 
 export class DrizzleSaleRepository implements SaleRepository {
-	async fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply> {
+	async fetchLast15DaysSalesMetrics(): Promise<FetchLast15DaysSalesMetricsReply> {
+		const TRAILING_DAYS = 15
 		const dayBucket = sql`date_trunc('day', ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo')`
-		const monthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo')`
-		const nextMonthStart = sql`${monthStart} + interval '1 month'`
+		const rangeStart = sql`date_trunc('day', now() AT TIME ZONE 'America/Sao_Paulo') - (${TRAILING_DAYS - 1} || ' days')::interval`
 
 		const rows = await db
 			.select({
@@ -56,27 +56,24 @@ export class DrizzleSaleRepository implements SaleRepository {
 			})
 			.from(sales)
 			.where(
-				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${monthStart} AND ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' < ${nextMonthStart}`,
+				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${rangeStart}`,
 			)
 			.groupBy(dayBucket)
 			.orderBy(dayBucket)
 
-		const yearMonthFormatter = new Intl.DateTimeFormat("en-CA", {
+		const dateFormatter = new Intl.DateTimeFormat("en-CA", {
 			timeZone: "America/Sao_Paulo",
 			year: "numeric",
 			month: "2-digit",
+			day: "2-digit",
 		})
 
 		const now = new Date()
-		const [yearPart, monthPart] = yearMonthFormatter.format(now).split("-")
-		const year = Number(yearPart)
-		const month = Number(monthPart)
-		const totalDays = new Date(year, month, 0).getDate()
-
 		const totalsByDay = new Map(rows.map((row) => [row.date, row.total_cents]))
-		const items = Array.from({ length: totalDays }, (_, index) => {
-			const day = String(index + 1).padStart(2, "0")
-			const date = `${yearPart}-${monthPart}-${day}`
+		const items = Array.from({ length: TRAILING_DAYS }, (_, index) => {
+			const day = new Date(now)
+			day.setDate(day.getDate() - (TRAILING_DAYS - 1 - index))
+			const date = dateFormatter.format(day)
 
 			return {
 				date,
@@ -84,13 +81,10 @@ export class DrizzleSaleRepository implements SaleRepository {
 			}
 		})
 
-		const totalMonthCents = items.reduce(
-			(sum, item) => sum + item.total_cents,
-			0,
-		)
+		const totalCents = items.reduce((sum, item) => sum + item.total_cents, 0)
 		const daysWithSales = items.filter((item) => item.total_cents > 0).length
 		const daily_average_cents =
-			daysWithSales > 0 ? Math.round(totalMonthCents / daysWithSales) : 0
+			daysWithSales > 0 ? Math.round(totalCents / daysWithSales) : 0
 
 		return {
 			items,

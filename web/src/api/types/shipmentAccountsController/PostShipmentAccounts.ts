@@ -14,21 +14,21 @@ export type PostShipmentAccounts201 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    name: string
+    name: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -37,21 +37,21 @@ export type PostShipmentAccounts409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PostShipmentAccountsMutationRequest = {
   /**
    * @minLength 1
    * @type string
    */
-  name: string
-}
+  name: string;
+};
 
-export type PostShipmentAccountsMutationResponse = PostShipmentAccounts201
+export type PostShipmentAccountsMutationResponse = PostShipmentAccounts201;
 
 export type PostShipmentAccountsMutation = {
-  Response: PostShipmentAccounts201
-  Request: PostShipmentAccountsMutationRequest
-  Errors: PostShipmentAccounts409
-}
+  Response: PostShipmentAccounts201;
+  Request: PostShipmentAccountsMutationRequest;
+  Errors: PostShipmentAccounts409;
+};

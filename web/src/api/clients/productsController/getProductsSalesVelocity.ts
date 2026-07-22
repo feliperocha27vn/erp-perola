@@ -3,20 +3,20 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   GetProductsSalesVelocityQueryResponse,
   GetProductsSalesVelocityQueryParams,
-} from '../../types/productsController/GetProductsSalesVelocity.ts'
+} from "../../types/productsController/GetProductsSalesVelocity.ts";
 
 function getGetProductsSalesVelocityUrl() {
-  const res = { method: 'GET', url: `/products/sales-velocity` as const }
-  return res
+  const res = { method: "GET", url: `/products/sales-velocity` as const };
+  return res;
 }
 
 /**
@@ -25,19 +25,19 @@ function getGetProductsSalesVelocityUrl() {
  */
 export async function getProductsSalesVelocity(
   params?: GetProductsSalesVelocityQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetProductsSalesVelocityQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: 'GET',
+    method: "GET",
     url: getGetProductsSalesVelocityUrl().url.toString(),
     params,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

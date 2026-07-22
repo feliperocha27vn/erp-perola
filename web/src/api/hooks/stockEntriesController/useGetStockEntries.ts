@@ -7,30 +7,32 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   GetStockEntriesQueryResponse,
   GetStockEntriesQueryParams,
-} from '../../types/stockEntriesController/GetStockEntries.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getStockEntries } from '../../clients/stockEntriesController/getStockEntries.ts'
+} from "../../types/stockEntriesController/GetStockEntries.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getStockEntries } from "../../clients/stockEntriesController/getStockEntries.ts";
 
 export const getStockEntriesQueryKey = (params?: GetStockEntriesQueryParams) =>
-  [{ url: '/stock-entries' }, ...(params ? [params] : [])] as const
+  [{ url: "/stock-entries" }, ...(params ? [params] : [])] as const;
 
-export type GetStockEntriesQueryKey = ReturnType<typeof getStockEntriesQueryKey>
+export type GetStockEntriesQueryKey = ReturnType<
+  typeof getStockEntriesQueryKey
+>;
 
 export function getStockEntriesQueryOptions(
   params?: GetStockEntriesQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getStockEntriesQueryKey(params)
+  const queryKey = getStockEntriesQueryKey(params);
   return queryOptions<
     GetStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -42,9 +44,9 @@ export function getStockEntriesQueryOptions(
       return getStockEntries(params, {
         ...config,
         signal: config.signal ?? signal,
-      })
+      });
     },
-  })
+  });
 }
 
 /**
@@ -66,13 +68,13 @@ export function useGetStockEntries<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
-  const queryKey = resolvedOptions?.queryKey ?? getStockEntriesQueryKey(params)
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const queryKey = resolvedOptions?.queryKey ?? getStockEntriesQueryKey(params);
 
   const query = useQuery(
     {
@@ -80,12 +82,12 @@ export function useGetStockEntries<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

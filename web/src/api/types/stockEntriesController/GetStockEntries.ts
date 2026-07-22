@@ -7,20 +7,20 @@ export type GetStockEntriesQueryParams = {
   /**
    * @type string | undefined, uuid
    */
-  brandId?: string
+  brandId?: string;
   /**
    * @type string | undefined
    */
-  noBrand?: string
+  noBrand?: string;
   /**
    * @type string | undefined
    */
-  startDate?: string
+  startDate?: string;
   /**
    * @type string | undefined
    */
-  endDate?: string
-}
+  endDate?: string;
+};
 
 /**
  * @description Default Response
@@ -33,52 +33,52 @@ export type GetStockEntries200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    stock_id: string
+    stock_id: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number
+    quantity: number;
     /**
      * @type string
      */
-    notes: string | null
+    notes: string | null;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string
      */
-    stock_title: string
+    stock_title: string;
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string
      */
-    product_sku: string
+    product_sku: string;
     /**
      * @type string, uuid
      */
-    brand_id: string | null
+    brand_id: string | null;
     /**
      * @type string
      */
-    brand_name: string | null
-  }[]
-}
+    brand_name: string | null;
+  }[];
+};
 
-export type GetStockEntriesQueryResponse = GetStockEntries200
+export type GetStockEntriesQueryResponse = GetStockEntries200;
 
 export type GetStockEntriesQuery = {
-  Response: GetStockEntries200
-  QueryParams: GetStockEntriesQueryParams
-  Errors: any
-}
+  Response: GetStockEntries200;
+  QueryParams: GetStockEntriesQueryParams;
+  Errors: any;
+};

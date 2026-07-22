@@ -4,12 +4,12 @@
  */
 
 export const shipmentsStatusEnum = {
-  rascunho: 'rascunho',
-  confirmado: 'confirmado',
-} as const
+  rascunho: "rascunho",
+  confirmado: "confirmado",
+} as const;
 
 export type ShipmentsStatusEnumKey =
-  (typeof shipmentsStatusEnum)[keyof typeof shipmentsStatusEnum]
+  (typeof shipmentsStatusEnum)[keyof typeof shipmentsStatusEnum];
 
 /**
  * @description Default Response
@@ -22,45 +22,45 @@ export type GetShipments200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    account_id: string
+    account_id: string;
     /**
      * @type string
      */
-    account_name: string
+    account_name: string;
     /**
      * @type string, date-time
      */
-    date: string
+    date: string;
     /**
      * @type string
      */
-    notes: string | null
+    notes: string | null;
     /**
      * @type string
      */
-    status: ShipmentsStatusEnumKey
+    status: ShipmentsStatusEnumKey;
     /**
      * @type number
      */
-    item_count: number
+    item_count: number;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }[]
-}
+    updated_at: string;
+  }[];
+};
 
-export type GetShipmentsQueryResponse = GetShipments200
+export type GetShipmentsQueryResponse = GetShipments200;
 
 export type GetShipmentsQuery = {
-  Response: GetShipments200
-  Errors: any
-}
+  Response: GetShipments200;
+  Errors: any;
+};

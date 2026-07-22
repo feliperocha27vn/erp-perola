@@ -3,24 +3,24 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   PostStocksStockIdEntriesMutationRequest,
   PostStocksStockIdEntriesMutationResponse,
   PostStocksStockIdEntriesPathParams,
   PostStocksStockIdEntries404,
-} from '../../types/stockEntriesController/PostStocksStockIdEntries.ts'
+} from "../../types/stockEntriesController/PostStocksStockIdEntries.ts";
 
 function getPostStocksStockIdEntriesUrl(
-  stockId: PostStocksStockIdEntriesPathParams['stockId']
+  stockId: PostStocksStockIdEntriesPathParams["stockId"],
 ) {
-  const res = { method: 'POST', url: `/stocks/${stockId}/entries` as const }
-  return res
+  const res = { method: "POST", url: `/stocks/${stockId}/entries` as const };
+  return res;
 }
 
 /**
@@ -28,25 +28,25 @@ function getPostStocksStockIdEntriesUrl(
  * {@link /stocks/:stockId/entries}
  */
 export async function postStocksStockIdEntries(
-  stockId: PostStocksStockIdEntriesPathParams['stockId'],
+  stockId: PostStocksStockIdEntriesPathParams["stockId"],
   data: PostStocksStockIdEntriesMutationRequest,
   config: Partial<RequestConfig<PostStocksStockIdEntriesMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
-  const requestData = data
+  const requestData = data;
 
   const res = await request<
     PostStocksStockIdEntriesMutationResponse,
     ResponseErrorConfig<PostStocksStockIdEntries404>,
     PostStocksStockIdEntriesMutationRequest
   >({
-    method: 'POST',
+    method: "POST",
     url: getPostStocksStockIdEntriesUrl(stockId).url.toString(),
     data: requestData,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

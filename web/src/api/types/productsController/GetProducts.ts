@@ -4,20 +4,20 @@
  */
 
 export const getProductsQueryParamsWithoutImageEnum = {
-  true: 'true',
-  false: 'false',
-} as const
+  true: "true",
+  false: "false",
+} as const;
 
 export type GetProductsQueryParamsWithoutImageEnumKey =
-  (typeof getProductsQueryParamsWithoutImageEnum)[keyof typeof getProductsQueryParamsWithoutImageEnum]
+  (typeof getProductsQueryParamsWithoutImageEnum)[keyof typeof getProductsQueryParamsWithoutImageEnum];
 
 export const getProductsQueryParamsSortOrderEnum = {
-  asc: 'asc',
-  desc: 'desc',
-} as const
+  asc: "asc",
+  desc: "desc",
+} as const;
 
 export type GetProductsQueryParamsSortOrderEnumKey =
-  (typeof getProductsQueryParamsSortOrderEnum)[keyof typeof getProductsQueryParamsSortOrderEnum]
+  (typeof getProductsQueryParamsSortOrderEnum)[keyof typeof getProductsQueryParamsSortOrderEnum];
 
 export type GetProductsQueryParams = {
   /**
@@ -25,28 +25,28 @@ export type GetProductsQueryParams = {
    * @default "0"
    * @type string | undefined
    */
-  pageIndex?: string
+  pageIndex?: string;
   /**
    * @description Pesquisa por SKU ou EAN
    * @type string | undefined
    */
-  search?: string
+  search?: string;
   /**
    * @description Filtrar apenas produtos sem imagem
    * @type string | undefined
    */
-  withoutImage?: GetProductsQueryParamsWithoutImageEnumKey
+  withoutImage?: GetProductsQueryParamsWithoutImageEnumKey;
   /**
    * @description Filtrar por ID da marca
    * @type string | undefined, uuid
    */
-  brandId?: string
+  brandId?: string;
   /**
    * @description Ordenação por data de criação: asc (mais antigos) ou desc (mais recentes)
    * @type string | undefined
    */
-  sortOrder?: GetProductsQueryParamsSortOrderEnumKey
-}
+  sortOrder?: GetProductsQueryParamsSortOrderEnumKey;
+};
 
 /**
  * @description Default Response
@@ -59,25 +59,25 @@ export type GetProducts200 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    sku: string
+    sku: string;
     /**
      * @type string
      */
-    ean: string
+    ean: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price_cents: number | null
+    sale_price_cents: number | null;
     /**
      * @type string, uuid
      */
-    brand_id: string | null
+    brand_id: string | null;
     /**
      * @type object
      */
@@ -85,60 +85,60 @@ export type GetProducts200 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string
        */
-      name: string
+      name: string;
       /**
        * @type string, date-time
        */
-      created_at: string
+      created_at: string;
       /**
        * @type string, date-time
        */
-      updated_at: string
-    } | null
+      updated_at: string;
+    } | null;
     /**
      * @type string
      */
-    url_image: string | null
+    url_image: string | null;
     /**
      * @type string
      */
-    technical_title: string | null
+    technical_title: string | null;
     /**
      * @type string
      */
-    technical_subtitle: string | null
+    technical_subtitle: string | null;
     /**
      * @type string
      */
-    technical_analysis: string | null
+    technical_analysis: string | null;
     /**
      * @type string
      */
-    technical_movement: string | null
+    technical_movement: string | null;
     /**
      * @type string
      */
-    technical_case_and_crystal: string | null
+    technical_case_and_crystal: string | null;
     /**
      * @type string
      */
-    technical_specific_functionality: string | null
+    technical_specific_functionality: string | null;
     /**
      * @type string
      */
-    technical_dial_and_luminosity: string | null
+    technical_dial_and_luminosity: string | null;
     /**
      * @type string
      */
-    technical_bracelet_construction: string | null
+    technical_bracelet_construction: string | null;
     /**
      * @type string
      */
-    technical_table: string | null
+    technical_table: string | null;
     /**
      * @type array
      */
@@ -146,57 +146,57 @@ export type GetProducts200 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string, uuid
        */
-      product_id: string
+      product_id: string;
       /**
        * @type string
        */
-      title: string
+      title: string;
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number
+      qtde: number;
       /**
        * @type boolean
        */
-      full: boolean
+      full: boolean;
       /**
        * @type string, date-time
        */
-      created_at: string
+      created_at: string;
       /**
        * @type string, date-time
        */
-      updated_at: string
-    }[]
+      updated_at: string;
+    }[];
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }[]
+    updated_at: string;
+  }[];
   /**
    * @type number
    */
-  total: number
+  total: number;
   /**
    * @type number
    */
-  pageIndex: number
-}
+  pageIndex: number;
+};
 
-export type GetProductsQueryResponse = GetProducts200
+export type GetProductsQueryResponse = GetProducts200;
 
 export type GetProductsQuery = {
-  Response: GetProducts200
-  QueryParams: GetProductsQueryParams
-  Errors: any
-}
+  Response: GetProducts200;
+  QueryParams: GetProductsQueryParams;
+  Errors: any;
+};

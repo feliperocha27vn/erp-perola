@@ -7,25 +7,25 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
-import type { GetShipmentsQueryResponse } from '../../types/shipmentsController/GetShipments.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getShipments } from '../../clients/shipmentsController/getShipments.ts'
+} from "@tanstack/react-query";
+import type { GetShipmentsQueryResponse } from "../../types/shipmentsController/GetShipments.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getShipments } from "../../clients/shipmentsController/getShipments.ts";
 
-export const getShipmentsQueryKey = () => [{ url: '/shipments' }] as const
+export const getShipmentsQueryKey = () => [{ url: "/shipments" }] as const;
 
-export type GetShipmentsQueryKey = ReturnType<typeof getShipmentsQueryKey>
+export type GetShipmentsQueryKey = ReturnType<typeof getShipmentsQueryKey>;
 
 export function getShipmentsQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getShipmentsQueryKey()
+  const queryKey = getShipmentsQueryKey();
   return queryOptions<
     GetShipmentsQueryResponse,
     ResponseErrorConfig<Error>,
@@ -34,9 +34,9 @@ export function getShipmentsQueryOptions(
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getShipments({ ...config, signal: config.signal ?? signal })
+      return getShipments({ ...config, signal: config.signal ?? signal });
     },
-  })
+  });
 }
 
 /**
@@ -56,13 +56,13 @@ export function useGetShipments<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
-  const queryKey = resolvedOptions?.queryKey ?? getShipmentsQueryKey()
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const queryKey = resolvedOptions?.queryKey ?? getShipmentsQueryKey();
 
   const query = useQuery(
     {
@@ -70,12 +70,12 @@ export function useGetShipments<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
   calculateTotalRevenue,
   formatMoney,
-  mapMonthlyRevenueData,
+  mapDailyRevenueData,
   toLocalDate,
 } from './formatters'
 
@@ -28,8 +28,8 @@ describe('dashboard formatters', () => {
     expect(total).toBe(35)
   })
 
-  it('maps monthly revenue chart data', () => {
-    const mapped = mapMonthlyRevenueData(
+  it('maps daily revenue chart data', () => {
+    const mapped = mapDailyRevenueData(
       [{ date: '2026-04-10', total_cents: 4500 }],
       format,
       ptBR

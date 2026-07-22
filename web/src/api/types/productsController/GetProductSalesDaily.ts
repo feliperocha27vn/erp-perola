@@ -7,36 +7,36 @@ export type GetProductSalesDailyPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 export const periodsPeriodEnum = {
-  '15': 15,
-} as const
+  "15": 15,
+} as const;
 
 export type PeriodsPeriodEnumKey =
-  (typeof periodsPeriodEnum)[keyof typeof periodsPeriodEnum]
+  (typeof periodsPeriodEnum)[keyof typeof periodsPeriodEnum];
 
 export const periodsPeriodEnum2 = {
-  '30': 30,
-} as const
+  "30": 30,
+} as const;
 
 export type PeriodsPeriodEnum2Key =
-  (typeof periodsPeriodEnum2)[keyof typeof periodsPeriodEnum2]
+  (typeof periodsPeriodEnum2)[keyof typeof periodsPeriodEnum2];
 
 export const periodsPeriodEnum3 = {
-  '60': 60,
-} as const
+  "60": 60,
+} as const;
 
 export type PeriodsPeriodEnum3Key =
-  (typeof periodsPeriodEnum3)[keyof typeof periodsPeriodEnum3]
+  (typeof periodsPeriodEnum3)[keyof typeof periodsPeriodEnum3];
 
 export const periodsPeriodEnum4 = {
-  '90': 90,
-} as const
+  "90": 90,
+} as const;
 
 export type PeriodsPeriodEnum4Key =
-  (typeof periodsPeriodEnum4)[keyof typeof periodsPeriodEnum4]
+  (typeof periodsPeriodEnum4)[keyof typeof periodsPeriodEnum4];
 
 /**
  * @description Default Response
@@ -49,11 +49,11 @@ export type GetProductSalesDaily200 = {
     /**
      * @type string, uuid
      */
-    store_id: string | null
+    store_id: string | null;
     /**
      * @type string
      */
-    store_name: string
+    store_name: string;
     /**
      * @type array
      */
@@ -62,13 +62,13 @@ export type GetProductSalesDaily200 = {
         | PeriodsPeriodEnumKey
         | PeriodsPeriodEnum2Key
         | PeriodsPeriodEnum3Key
-        | PeriodsPeriodEnum4Key
+        | PeriodsPeriodEnum4Key;
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      total_units: number
+      total_units: number;
       /**
        * @type array
        */
@@ -76,22 +76,22 @@ export type GetProductSalesDaily200 = {
         /**
          * @type string
          */
-        date: string
+        date: string;
         /**
          * @minLength -9007199254740991
          * @maxLength 9007199254740991
          * @type integer
          */
-        units: number
-      }[]
-    }[]
-  }[]
-}
+        units: number;
+      }[];
+    }[];
+  }[];
+};
 
-export type GetProductSalesDailyQueryResponse = GetProductSalesDaily200
+export type GetProductSalesDailyQueryResponse = GetProductSalesDaily200;
 
 export type GetProductSalesDailyQuery = {
-  Response: GetProductSalesDaily200
-  PathParams: GetProductSalesDailyPathParams
-  Errors: any
-}
+  Response: GetProductSalesDaily200;
+  PathParams: GetProductSalesDailyPathParams;
+  Errors: any;
+};

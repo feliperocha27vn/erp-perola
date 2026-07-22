@@ -3,35 +3,35 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
-import type { GetReportsRestockAlertsQueryResponse } from '../../types/reportsController/GetReportsRestockAlerts.ts'
+} from "@/lib/kubb-axios-client";
+import type { GetReportsRestockAlertsQueryResponse } from "../../types/reportsController/GetReportsRestockAlerts.ts";
 
 function getGetReportsRestockAlertsUrl() {
-  const res = { method: 'GET', url: `/reports/restock-alerts` as const }
-  return res
+  const res = { method: "GET", url: `/reports/restock-alerts` as const };
+  return res;
 }
 
 /**
  * {@link /reports/restock-alerts}
  */
 export async function getReportsRestockAlerts(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetReportsRestockAlertsQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: 'GET',
+    method: "GET",
     url: getGetReportsRestockAlertsUrl().url.toString(),
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

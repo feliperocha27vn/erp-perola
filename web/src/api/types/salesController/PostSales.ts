@@ -4,14 +4,14 @@
  */
 
 export const saleChannelEnum = {
-  Amazon: 'Amazon',
-  'Mercado Livre': 'Mercado Livre',
-  Shopee: 'Shopee',
-  Direto: 'Direto',
-} as const
+  Amazon: "Amazon",
+  "Mercado Livre": "Mercado Livre",
+  Shopee: "Shopee",
+  Direto: "Direto",
+} as const;
 
 export type SaleChannelEnumKey =
-  (typeof saleChannelEnum)[keyof typeof saleChannelEnum]
+  (typeof saleChannelEnum)[keyof typeof saleChannelEnum];
 
 /**
  * @description Default Response
@@ -24,53 +24,53 @@ export type PostSales201 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string, uuid
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string, uuid
      */
-    stock_id: string
+    stock_id: string;
     /**
      * @type string, uuid
      */
-    store_id: string | null
+    store_id: string | null;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number
+    quantity: number;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price: number
+    sale_price: number;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total_price: number
+    total_price: number;
     /**
      * @type string
      */
-    channel: SaleChannelEnumKey
+    channel: SaleChannelEnumKey;
     /**
      * @type string, date-time
      */
-    sale_date: string
+    sale_date: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
+    updated_at: string;
     /**
      * @type object
      */
@@ -78,32 +78,32 @@ export type PostSales201 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string
        */
-      sku: string
+      sku: string;
       /**
        * @type string
        */
-      ean: string
+      ean: string;
       /**
        * @type string, uuid
        */
-      brand_id: string | null
+      brand_id: string | null;
       /**
        * @type string
        */
-      url_image: string | null
+      url_image: string | null;
       /**
        * @type string, date-time
        */
-      created_at: string
+      created_at: string;
       /**
        * @type string, date-time
        */
-      updated_at: string
-    }
+      updated_at: string;
+    };
     /**
      * @type object
      */
@@ -111,34 +111,34 @@ export type PostSales201 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string, uuid
        */
-      product_id: string
+      product_id: string;
       /**
        * @type string
        */
-      title: string
+      title: string;
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number
+      qtde: number;
       /**
        * @type boolean
        */
-      full: boolean
+      full: boolean;
       /**
        * @type string, date-time
        */
-      created_at: string
+      created_at: string;
       /**
        * @type string, date-time
        */
-      updated_at: string
-    }
+      updated_at: string;
+    };
     /**
      * @type object
      */
@@ -146,22 +146,22 @@ export type PostSales201 = {
       /**
        * @type string, uuid
        */
-      id: string
+      id: string;
       /**
        * @type string
        */
-      name: string
+      name: string;
       /**
        * @type string, date-time
        */
-      created_at: string
+      created_at: string;
       /**
        * @type string, date-time
        */
-      updated_at: string
-    } | null
-  }
-}
+      updated_at: string;
+    } | null;
+  };
+};
 
 /**
  * @description Default Response
@@ -170,8 +170,8 @@ export type PostSales400 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -180,58 +180,58 @@ export type PostSales404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export const postSalesMutationRequestChannelEnum = {
-  Amazon: 'Amazon',
-  'Mercado Livre': 'Mercado Livre',
-  Shopee: 'Shopee',
-  Direto: 'Direto',
-} as const
+  Amazon: "Amazon",
+  "Mercado Livre": "Mercado Livre",
+  Shopee: "Shopee",
+  Direto: "Direto",
+} as const;
 
 export type PostSalesMutationRequestChannelEnumKey =
-  (typeof postSalesMutationRequestChannelEnum)[keyof typeof postSalesMutationRequestChannelEnum]
+  (typeof postSalesMutationRequestChannelEnum)[keyof typeof postSalesMutationRequestChannelEnum];
 
 export type PostSalesMutationRequest = {
   /**
    * @type string, uuid
    */
-  product_id: string
+  product_id: string;
   /**
    * @type string, uuid
    */
-  stock_id: string
+  stock_id: string;
   /**
    * @type string, uuid
    */
-  store_id?: string | null
+  store_id?: string | null;
   /**
    * @maxLength 9007199254740991
    * @type integer
    */
-  quantity: number
+  quantity: number;
   /**
    * @minLength 0
    * @maxLength 9007199254740991
    * @type integer
    */
-  sale_price: number
+  sale_price: number;
   /**
    * @type string
    */
-  channel: PostSalesMutationRequestChannelEnumKey
+  channel: PostSalesMutationRequestChannelEnumKey;
   /**
    * @pattern ^\d{4}-\d{2}-\d{2}$
    * @type string
    */
-  sale_date: string
-}
+  sale_date: string;
+};
 
-export type PostSalesMutationResponse = PostSales201
+export type PostSalesMutationResponse = PostSales201;
 
 export type PostSalesMutation = {
-  Response: PostSales201
-  Request: PostSalesMutationRequest
-  Errors: PostSales400 | PostSales404
-}
+  Response: PostSales201;
+  Request: PostSalesMutationRequest;
+  Errors: PostSales400 | PostSales404;
+};

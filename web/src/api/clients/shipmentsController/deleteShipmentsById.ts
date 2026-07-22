@@ -3,41 +3,41 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   DeleteShipmentsByIdMutationResponse,
   DeleteShipmentsByIdPathParams,
   DeleteShipmentsById404,
   DeleteShipmentsById409,
-} from '../../types/shipmentsController/DeleteShipmentsById.ts'
+} from "../../types/shipmentsController/DeleteShipmentsById.ts";
 
-function getDeleteShipmentsByIdUrl(id: DeleteShipmentsByIdPathParams['id']) {
-  const res = { method: 'DELETE', url: `/shipments/${id}` as const }
-  return res
+function getDeleteShipmentsByIdUrl(id: DeleteShipmentsByIdPathParams["id"]) {
+  const res = { method: "DELETE", url: `/shipments/${id}` as const };
+  return res;
 }
 
 /**
  * {@link /shipments/:id}
  */
 export async function deleteShipmentsById(
-  id: DeleteShipmentsByIdPathParams['id'],
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  id: DeleteShipmentsByIdPathParams["id"],
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     DeleteShipmentsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
     unknown
   >({
-    method: 'DELETE',
+    method: "DELETE",
     url: getDeleteShipmentsByIdUrl(id).url.toString(),
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

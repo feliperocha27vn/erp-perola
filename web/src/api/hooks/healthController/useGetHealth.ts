@@ -7,25 +7,25 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
-import type { GetHealthQueryResponse } from '../../types/healthController/GetHealth.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getHealth } from '../../clients/healthController/getHealth.ts'
+} from "@tanstack/react-query";
+import type { GetHealthQueryResponse } from "../../types/healthController/GetHealth.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getHealth } from "../../clients/healthController/getHealth.ts";
 
-export const getHealthQueryKey = () => [{ url: '/health' }] as const
+export const getHealthQueryKey = () => [{ url: "/health" }] as const;
 
-export type GetHealthQueryKey = ReturnType<typeof getHealthQueryKey>
+export type GetHealthQueryKey = ReturnType<typeof getHealthQueryKey>;
 
 export function getHealthQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getHealthQueryKey()
+  const queryKey = getHealthQueryKey();
   return queryOptions<
     GetHealthQueryResponse,
     ResponseErrorConfig<Error>,
@@ -34,9 +34,9 @@ export function getHealthQueryOptions(
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getHealth({ ...config, signal: config.signal ?? signal })
+      return getHealth({ ...config, signal: config.signal ?? signal });
     },
-  })
+  });
 }
 
 /**
@@ -56,13 +56,13 @@ export function useGetHealth<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
-  const queryKey = resolvedOptions?.queryKey ?? getHealthQueryKey()
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const queryKey = resolvedOptions?.queryKey ?? getHealthQueryKey();
 
   const query = useQuery(
     {
@@ -70,12 +70,12 @@ export function useGetHealth<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

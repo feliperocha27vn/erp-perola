@@ -6,7 +6,7 @@
 /**
  * @description Default Response
  */
-export type GetDashboardMonthlySales200 = {
+export type GetDashboardLast15DaysSales200 = {
   /**
    * @type array
    */
@@ -14,25 +14,26 @@ export type GetDashboardMonthlySales200 = {
     /**
      * @type string
      */
-    date: string
+    date: string;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total_cents: number
-  }[]
+    total_cents: number;
+  }[];
   /**
    * @minLength -9007199254740991
    * @maxLength 9007199254740991
    * @type integer
    */
-  daily_average_cents: number
-}
+  daily_average_cents: number;
+};
 
-export type GetDashboardMonthlySalesQueryResponse = GetDashboardMonthlySales200
+export type GetDashboardLast15DaysSalesQueryResponse =
+  GetDashboardLast15DaysSales200;
 
-export type GetDashboardMonthlySalesQuery = {
-  Response: GetDashboardMonthlySales200
-  Errors: any
-}
+export type GetDashboardLast15DaysSalesQuery = {
+  Response: GetDashboardLast15DaysSales200;
+  Errors: any;
+};

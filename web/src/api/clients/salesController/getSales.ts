@@ -3,20 +3,20 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   GetSalesQueryResponse,
   GetSalesQueryParams,
-} from '../../types/salesController/GetSales.ts'
+} from "../../types/salesController/GetSales.ts";
 
 function getGetSalesUrl() {
-  const res = { method: 'GET', url: `/sales` as const }
-  return res
+  const res = { method: "GET", url: `/sales` as const };
+  return res;
 }
 
 /**
@@ -25,19 +25,19 @@ function getGetSalesUrl() {
  */
 export async function getSales(
   params?: GetSalesQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
   const res = await request<
     GetSalesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: 'GET',
+    method: "GET",
     url: getGetSalesUrl().url.toString(),
     params,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

@@ -7,13 +7,13 @@ export type PostShipmentsByIdConfirmPathParams = {
   /**
    * @type string, uuid
    */
-  id: string
-}
+  id: string;
+};
 
 /**
  * @description Default Response
  */
-export type PostShipmentsByIdConfirm204 = any
+export type PostShipmentsByIdConfirm204 = any;
 
 /**
  * @description Default Response
@@ -22,8 +22,8 @@ export type PostShipmentsByIdConfirm404 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -32,8 +32,8 @@ export type PostShipmentsByIdConfirm409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 /**
  * @description Default Response
@@ -42,17 +42,17 @@ export type PostShipmentsByIdConfirm422 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PostShipmentsByIdConfirmMutationResponse =
-  PostShipmentsByIdConfirm204
+  PostShipmentsByIdConfirm204;
 
 export type PostShipmentsByIdConfirmMutation = {
-  Response: PostShipmentsByIdConfirm204
-  PathParams: PostShipmentsByIdConfirmPathParams
+  Response: PostShipmentsByIdConfirm204;
+  PathParams: PostShipmentsByIdConfirmPathParams;
   Errors:
     | PostShipmentsByIdConfirm404
     | PostShipmentsByIdConfirm409
-    | PostShipmentsByIdConfirm422
-}
+    | PostShipmentsByIdConfirm422;
+};

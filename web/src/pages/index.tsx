@@ -10,10 +10,10 @@ import {
   Send,
   TrendingUp,
 } from 'lucide-react'
+import { useGetDashboardLast15DaysSales } from '@/api/hooks/dashboardController/useGetDashboardLast15DaysSales'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
-import { useGetDashboardMonthlySales } from '@/api/hooks/dashboardController/useGetDashboardMonthlySales'
 import { LastMonthRevenueCard } from './-components/dashboard/last-month-revenue-card'
-import { MonthlyRevenueChart } from './-components/dashboard/monthly-revenue-chart'
+import { RecentSalesChart } from './-components/dashboard/recent-sales-chart'
 import { RestockAlertCard } from './-components/dashboard/restock-alert-card'
 
 export const Route = createFileRoute('/')({
@@ -22,11 +22,11 @@ export const Route = createFileRoute('/')({
 
 function Dashboard() {
   const {
-    data: monthlySalesData,
-    isLoading: isMonthlySalesLoading,
-    isError: isMonthlySalesError,
-    refetch: refetchMonthlySales,
-  } = useGetDashboardMonthlySales()
+    data: last15DaysSalesData,
+    isLoading: isLast15DaysSalesLoading,
+    isError: isLast15DaysSalesError,
+    refetch: refetchLast15DaysSales,
+  } = useGetDashboardLast15DaysSales()
 
   const {
     data: lastMonthSalesData,
@@ -48,22 +48,26 @@ function Dashboard() {
         </div>
       </div>
 
-      <RestockAlertCard />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <div className="flex flex-col gap-6">
+          <RestockAlertCard />
 
-      <LastMonthRevenueCard
-        totalCents={lastMonthSalesData?.total_cents ?? 0}
-        isLoading={isLastMonthSalesLoading}
-        isError={isLastMonthSalesError}
-        onRetry={() => refetchLastMonthSales()}
-      />
+          <LastMonthRevenueCard
+            totalCents={lastMonthSalesData?.total_cents ?? 0}
+            isLoading={isLastMonthSalesLoading}
+            isError={isLastMonthSalesError}
+            onRetry={() => refetchLastMonthSales()}
+          />
+        </div>
 
-      <MonthlyRevenueChart
-        items={monthlySalesData?.items ?? []}
-        dailyAverageCents={monthlySalesData?.daily_average_cents ?? 0}
-        isLoading={isMonthlySalesLoading}
-        isError={isMonthlySalesError}
-        onRetry={() => refetchMonthlySales()}
-      />
+        <RecentSalesChart
+          items={last15DaysSalesData?.items ?? []}
+          dailyAverageCents={last15DaysSalesData?.daily_average_cents ?? 0}
+          isLoading={isLast15DaysSalesLoading}
+          isError={isLast15DaysSalesError}
+          onRetry={() => refetchLast15DaysSales()}
+        />
+      </div>
 
       <div className="space-y-6">
         <h3 className="text-2xl font-display flex items-center gap-2 text-foreground">

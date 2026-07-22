@@ -7,43 +7,45 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   PatchSalesIdMutationRequest,
   PatchSalesIdMutationResponse,
   PatchSalesIdPathParams,
   PatchSalesId400,
   PatchSalesId404,
-} from '../../types/salesController/PatchSalesId.ts'
-import { mutationOptions, useMutation } from '@tanstack/react-query'
-import { patchSalesId } from '../../clients/salesController/patchSalesId.ts'
+} from "../../types/salesController/PatchSalesId.ts";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+import { patchSalesId } from "../../clients/salesController/patchSalesId.ts";
 
-export const patchSalesIdMutationKey = () => [{ url: '/sales/:id' }] as const
+export const patchSalesIdMutationKey = () => [{ url: "/sales/:id" }] as const;
 
-export type PatchSalesIdMutationKey = ReturnType<typeof patchSalesIdMutationKey>
+export type PatchSalesIdMutationKey = ReturnType<
+  typeof patchSalesIdMutationKey
+>;
 
 export function patchSalesIdMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PatchSalesIdMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const mutationKey = patchSalesIdMutationKey()
+  const mutationKey = patchSalesIdMutationKey();
   return mutationOptions<
     PatchSalesIdMutationResponse,
     ResponseErrorConfig<PatchSalesId400 | PatchSalesId404>,
-    { id: PatchSalesIdPathParams['id']; data: PatchSalesIdMutationRequest },
+    { id: PatchSalesIdPathParams["id"]; data: PatchSalesIdMutationRequest },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id, data }) => {
-      return patchSalesId(id, data, config)
+      return patchSalesId(id, data, config);
     },
-  })
+  });
 }
 
 /**
@@ -55,29 +57,29 @@ export function usePatchSalesId<TContext>(
     mutation?: UseMutationOptions<
       PatchSalesIdMutationResponse,
       ResponseErrorConfig<PatchSalesId400 | PatchSalesId404>,
-      { id: PatchSalesIdPathParams['id']; data: PatchSalesIdMutationRequest },
+      { id: PatchSalesIdPathParams["id"]; data: PatchSalesIdMutationRequest },
       TContext
-    > & { client?: QueryClient }
+    > & { client?: QueryClient };
     client?: Partial<RequestConfig<PatchSalesIdMutationRequest>> & {
-      client?: Client
-    }
-  } = {}
+      client?: Client;
+    };
+  } = {},
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...mutationOptions } = mutation
-  const mutationKey = mutationOptions.mutationKey ?? patchSalesIdMutationKey()
+  const { mutation = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...mutationOptions } = mutation;
+  const mutationKey = mutationOptions.mutationKey ?? patchSalesIdMutationKey();
 
   const baseOptions = patchSalesIdMutationOptions(config) as UseMutationOptions<
     PatchSalesIdMutationResponse,
     ResponseErrorConfig<PatchSalesId400 | PatchSalesId404>,
-    { id: PatchSalesIdPathParams['id']; data: PatchSalesIdMutationRequest },
+    { id: PatchSalesIdPathParams["id"]; data: PatchSalesIdMutationRequest },
     TContext
-  >
+  >;
 
   return useMutation<
     PatchSalesIdMutationResponse,
     ResponseErrorConfig<PatchSalesId400 | PatchSalesId404>,
-    { id: PatchSalesIdPathParams['id']; data: PatchSalesIdMutationRequest },
+    { id: PatchSalesIdPathParams["id"]; data: PatchSalesIdMutationRequest },
     TContext
   >(
     {
@@ -85,11 +87,11 @@ export function usePatchSalesId<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient
+    queryClient,
   ) as UseMutationResult<
     PatchSalesIdMutationResponse,
     ResponseErrorConfig<PatchSalesId400 | PatchSalesId404>,
-    { id: PatchSalesIdPathParams['id']; data: PatchSalesIdMutationRequest },
+    { id: PatchSalesIdPathParams["id"]; data: PatchSalesIdMutationRequest },
     TContext
-  >
+  >;
 }

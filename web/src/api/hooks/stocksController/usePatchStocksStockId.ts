@@ -7,48 +7,48 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   PatchStocksStockIdMutationRequest,
   PatchStocksStockIdMutationResponse,
   PatchStocksStockIdPathParams,
   PatchStocksStockId404,
-} from '../../types/stocksController/PatchStocksStockId.ts'
-import { mutationOptions, useMutation } from '@tanstack/react-query'
-import { patchStocksStockId } from '../../clients/stocksController/patchStocksStockId.ts'
+} from "../../types/stocksController/PatchStocksStockId.ts";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+import { patchStocksStockId } from "../../clients/stocksController/patchStocksStockId.ts";
 
 export const patchStocksStockIdMutationKey = () =>
-  [{ url: '/stocks/:stockId' }] as const
+  [{ url: "/stocks/:stockId" }] as const;
 
 export type PatchStocksStockIdMutationKey = ReturnType<
   typeof patchStocksStockIdMutationKey
->
+>;
 
 export function patchStocksStockIdMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PatchStocksStockIdMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const mutationKey = patchStocksStockIdMutationKey()
+  const mutationKey = patchStocksStockIdMutationKey();
   return mutationOptions<
     PatchStocksStockIdMutationResponse,
     ResponseErrorConfig<PatchStocksStockId404>,
     {
-      stockId: PatchStocksStockIdPathParams['stockId']
-      data: PatchStocksStockIdMutationRequest
+      stockId: PatchStocksStockIdPathParams["stockId"];
+      data: PatchStocksStockIdMutationRequest;
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ stockId, data }) => {
-      return patchStocksStockId(stockId, data, config)
+      return patchStocksStockId(stockId, data, config);
     },
-  })
+  });
 }
 
 /**
@@ -61,39 +61,39 @@ export function usePatchStocksStockId<TContext>(
       PatchStocksStockIdMutationResponse,
       ResponseErrorConfig<PatchStocksStockId404>,
       {
-        stockId: PatchStocksStockIdPathParams['stockId']
-        data: PatchStocksStockIdMutationRequest
+        stockId: PatchStocksStockIdPathParams["stockId"];
+        data: PatchStocksStockIdMutationRequest;
       },
       TContext
-    > & { client?: QueryClient }
+    > & { client?: QueryClient };
     client?: Partial<RequestConfig<PatchStocksStockIdMutationRequest>> & {
-      client?: Client
-    }
-  } = {}
+      client?: Client;
+    };
+  } = {},
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...mutationOptions } = mutation
+  const { mutation = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...mutationOptions } = mutation;
   const mutationKey =
-    mutationOptions.mutationKey ?? patchStocksStockIdMutationKey()
+    mutationOptions.mutationKey ?? patchStocksStockIdMutationKey();
 
   const baseOptions = patchStocksStockIdMutationOptions(
-    config
+    config,
   ) as UseMutationOptions<
     PatchStocksStockIdMutationResponse,
     ResponseErrorConfig<PatchStocksStockId404>,
     {
-      stockId: PatchStocksStockIdPathParams['stockId']
-      data: PatchStocksStockIdMutationRequest
+      stockId: PatchStocksStockIdPathParams["stockId"];
+      data: PatchStocksStockIdMutationRequest;
     },
     TContext
-  >
+  >;
 
   return useMutation<
     PatchStocksStockIdMutationResponse,
     ResponseErrorConfig<PatchStocksStockId404>,
     {
-      stockId: PatchStocksStockIdPathParams['stockId']
-      data: PatchStocksStockIdMutationRequest
+      stockId: PatchStocksStockIdPathParams["stockId"];
+      data: PatchStocksStockIdMutationRequest;
     },
     TContext
   >(
@@ -102,14 +102,14 @@ export function usePatchStocksStockId<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient
+    queryClient,
   ) as UseMutationResult<
     PatchStocksStockIdMutationResponse,
     ResponseErrorConfig<PatchStocksStockId404>,
     {
-      stockId: PatchStocksStockIdPathParams['stockId']
-      data: PatchStocksStockIdMutationRequest
+      stockId: PatchStocksStockIdPathParams["stockId"];
+      data: PatchStocksStockIdMutationRequest;
     },
     TContext
-  >
+  >;
 }

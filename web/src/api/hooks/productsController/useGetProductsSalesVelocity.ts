@@ -7,33 +7,34 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@kubb/plugin-client/clients/axios'
+} from "@kubb/plugin-client/clients/axios";
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
 import type {
   GetProductsSalesVelocityQueryResponse,
   GetProductsSalesVelocityQueryParams,
-} from '../../types/productsController/GetProductsSalesVelocity.ts'
-import { queryOptions, useQuery } from '@tanstack/react-query'
-import { getProductsSalesVelocity } from '../../clients/productsController/getProductsSalesVelocity.ts'
+} from "../../types/productsController/GetProductsSalesVelocity.ts";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { getProductsSalesVelocity } from "../../clients/productsController/getProductsSalesVelocity.ts";
 
 export const getProductsSalesVelocityQueryKey = (
-  params?: GetProductsSalesVelocityQueryParams
-) => [{ url: '/products/sales-velocity' }, ...(params ? [params] : [])] as const
+  params?: GetProductsSalesVelocityQueryParams,
+) =>
+  [{ url: "/products/sales-velocity" }, ...(params ? [params] : [])] as const;
 
 export type GetProductsSalesVelocityQueryKey = ReturnType<
   typeof getProductsSalesVelocityQueryKey
->
+>;
 
 export function getProductsSalesVelocityQueryOptions(
   params?: GetProductsSalesVelocityQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {}
+  config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getProductsSalesVelocityQueryKey(params)
+  const queryKey = getProductsSalesVelocityQueryKey(params);
   return queryOptions<
     GetProductsSalesVelocityQueryResponse,
     ResponseErrorConfig<Error>,
@@ -45,9 +46,9 @@ export function getProductsSalesVelocityQueryOptions(
       return getProductsSalesVelocity(params, {
         ...config,
         signal: config.signal ?? signal,
-      })
+      });
     },
-  })
+  });
 }
 
 /**
@@ -69,14 +70,14 @@ export function useGetProductsSalesVelocity<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient }
-    client?: Partial<RequestConfig> & { client?: Client }
-  } = {}
+    > & { client?: QueryClient };
+    client?: Partial<RequestConfig> & { client?: Client };
+  } = {},
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {}
-  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const { query: queryConfig = {}, client: config = {} } = options ?? {};
+  const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getProductsSalesVelocityQueryKey(params)
+    resolvedOptions?.queryKey ?? getProductsSalesVelocityQueryKey(params);
 
   const query = useQuery(
     {
@@ -84,12 +85,12 @@ export function useGetProductsSalesVelocity<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient
+    queryClient,
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey
-  }
+    queryKey: TQueryKey;
+  };
 
-  query.queryKey = queryKey as TQueryKey
+  query.queryKey = queryKey as TQueryKey;
 
-  return query
+  return query;
 }

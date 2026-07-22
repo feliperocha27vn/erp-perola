@@ -3,22 +3,22 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   PostProductsMutationRequest,
   PostProductsMutationResponse,
   PostProducts404,
   PostProducts409,
-} from '../../types/productsController/PostProducts.ts'
+} from "../../types/productsController/PostProducts.ts";
 
 function getPostProductsUrl() {
-  const res = { method: 'POST', url: `/products` as const }
-  return res
+  const res = { method: "POST", url: `/products` as const };
+  return res;
 }
 
 /**
@@ -28,22 +28,22 @@ function getPostProductsUrl() {
 export async function postProducts(
   data: PostProductsMutationRequest,
   config: Partial<RequestConfig<PostProductsMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
-  const requestData = data
+  const requestData = data;
 
   const res = await request<
     PostProductsMutationResponse,
     ResponseErrorConfig<PostProducts404 | PostProducts409>,
     PostProductsMutationRequest
   >({
-    method: 'POST',
+    method: "POST",
     url: getPostProductsUrl().url.toString(),
     data: requestData,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

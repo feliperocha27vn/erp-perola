@@ -3,48 +3,48 @@
  * Do not edit manually.
  */
 
-import fetch from '@/lib/kubb-axios-client'
+import fetch from "@/lib/kubb-axios-client";
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from '@/lib/kubb-axios-client'
+} from "@/lib/kubb-axios-client";
 import type {
   PutShipmentsByIdMutationRequest,
   PutShipmentsByIdMutationResponse,
   PutShipmentsByIdPathParams,
   PutShipmentsById404,
   PutShipmentsById409,
-} from '../../types/shipmentsController/PutShipmentsById.ts'
+} from "../../types/shipmentsController/PutShipmentsById.ts";
 
-function getPutShipmentsByIdUrl(id: PutShipmentsByIdPathParams['id']) {
-  const res = { method: 'PUT', url: `/shipments/${id}` as const }
-  return res
+function getPutShipmentsByIdUrl(id: PutShipmentsByIdPathParams["id"]) {
+  const res = { method: "PUT", url: `/shipments/${id}` as const };
+  return res;
 }
 
 /**
  * {@link /shipments/:id}
  */
 export async function putShipmentsById(
-  id: PutShipmentsByIdPathParams['id'],
+  id: PutShipmentsByIdPathParams["id"],
   data: PutShipmentsByIdMutationRequest,
   config: Partial<RequestConfig<PutShipmentsByIdMutationRequest>> & {
-    client?: Client
-  } = {}
+    client?: Client;
+  } = {},
 ) {
-  const { client: request = fetch, ...requestConfig } = config
+  const { client: request = fetch, ...requestConfig } = config;
 
-  const requestData = data
+  const requestData = data;
 
   const res = await request<
     PutShipmentsByIdMutationResponse,
     ResponseErrorConfig<PutShipmentsById404 | PutShipmentsById409>,
     PutShipmentsByIdMutationRequest
   >({
-    method: 'PUT',
+    method: "PUT",
     url: getPutShipmentsByIdUrl(id).url.toString(),
     data: requestData,
     ...requestConfig,
-  })
-  return res.data
+  });
+  return res.data;
 }

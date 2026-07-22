@@ -4,20 +4,20 @@
  */
 
 export const itemsSeverityEnum = {
-  critico: 'critico',
-  atencao: 'atencao',
-} as const
+  critico: "critico",
+  atencao: "atencao",
+} as const;
 
 export type ItemsSeverityEnumKey =
-  (typeof itemsSeverityEnum)[keyof typeof itemsSeverityEnum]
+  (typeof itemsSeverityEnum)[keyof typeof itemsSeverityEnum];
 
 export const itemsReasonsEnum = {
-  perto_do_limite: 'perto_do_limite',
-  vendas_acelerando: 'vendas_acelerando',
-} as const
+  perto_do_limite: "perto_do_limite",
+  vendas_acelerando: "vendas_acelerando",
+} as const;
 
 export type ItemsReasonsEnumKey =
-  (typeof itemsReasonsEnum)[keyof typeof itemsReasonsEnum]
+  (typeof itemsReasonsEnum)[keyof typeof itemsReasonsEnum];
 
 /**
  * @description Default Response
@@ -30,45 +30,45 @@ export type GetReportsRestockAlerts200 = {
     /**
      * @type string
      */
-    product_id: string
+    product_id: string;
     /**
      * @type string
      */
-    sku: string
+    sku: string;
     /**
      * @type string
      */
-    brand_name: string | null
+    brand_name: string | null;
     /**
      * @type number
      */
-    physical_stock_qty: number
+    physical_stock_qty: number;
     /**
      * @type number
      */
-    units_15d: number
+    units_15d: number;
     /**
      * @type number
      */
-    units_30d: number
+    units_30d: number;
     /**
      * @type number
      */
-    coverage_percentage: number
+    coverage_percentage: number;
     /**
      * @type string
      */
-    severity: ItemsSeverityEnumKey
+    severity: ItemsSeverityEnumKey;
     /**
      * @type array
      */
-    reasons: ItemsReasonsEnumKey[]
-  }[]
-}
+    reasons: ItemsReasonsEnumKey[];
+  }[];
+};
 
-export type GetReportsRestockAlertsQueryResponse = GetReportsRestockAlerts200
+export type GetReportsRestockAlertsQueryResponse = GetReportsRestockAlerts200;
 
 export type GetReportsRestockAlertsQuery = {
-  Response: GetReportsRestockAlerts200
-  Errors: any
-}
+  Response: GetReportsRestockAlerts200;
+  Errors: any;
+};

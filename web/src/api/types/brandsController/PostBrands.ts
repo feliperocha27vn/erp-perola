@@ -14,21 +14,21 @@ export type PostBrands201 = {
     /**
      * @type string, uuid
      */
-    id: string
+    id: string;
     /**
      * @type string
      */
-    name: string
+    name: string;
     /**
      * @type string, date-time
      */
-    created_at: string
+    created_at: string;
     /**
      * @type string, date-time
      */
-    updated_at: string
-  }
-}
+    updated_at: string;
+  };
+};
 
 /**
  * @description Default Response
@@ -37,21 +37,21 @@ export type PostBrands409 = {
   /**
    * @type string
    */
-  error: string
-}
+  error: string;
+};
 
 export type PostBrandsMutationRequest = {
   /**
    * @minLength 1
    * @type string
    */
-  name: string
-}
+  name: string;
+};
 
-export type PostBrandsMutationResponse = PostBrands201
+export type PostBrandsMutationResponse = PostBrands201;
 
 export type PostBrandsMutation = {
-  Response: PostBrands201
-  Request: PostBrandsMutationRequest
-  Errors: PostBrands409
-}
+  Response: PostBrands201;
+  Request: PostBrandsMutationRequest;
+  Errors: PostBrands409;
+};
