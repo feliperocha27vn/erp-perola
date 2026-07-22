@@ -7,33 +7,31 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PostProductsMutationRequest,
   PostProductsMutationResponse,
   PostProducts404,
   PostProducts409,
-} from "../../types/productsController/PostProducts.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { postProducts } from "../../clients/productsController/postProducts.ts";
+} from '../../types/productsController/PostProducts.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { postProducts } from '../../clients/productsController/postProducts.ts'
 
-export const postProductsMutationKey = () => [{ url: "/products" }] as const;
+export const postProductsMutationKey = () => [{ url: '/products' }] as const
 
-export type PostProductsMutationKey = ReturnType<
-  typeof postProductsMutationKey
->;
+export type PostProductsMutationKey = ReturnType<typeof postProductsMutationKey>
 
 export function postProductsMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostProductsMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = postProductsMutationKey();
+  const mutationKey = postProductsMutationKey()
   return mutationOptions<
     PostProductsMutationResponse,
     ResponseErrorConfig<PostProducts404 | PostProducts409>,
@@ -42,9 +40,9 @@ export function postProductsMutationOptions<TContext = unknown>(
   >({
     mutationKey,
     mutationFn: async ({ data }) => {
-      return postProducts(data, config);
+      return postProducts(data, config)
     },
-  });
+  })
 }
 
 /**
@@ -58,22 +56,22 @@ export function usePostProducts<TContext>(
       ResponseErrorConfig<PostProducts404 | PostProducts409>,
       { data: PostProductsMutationRequest },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PostProductsMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
-  const mutationKey = mutationOptions.mutationKey ?? postProductsMutationKey();
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
+  const mutationKey = mutationOptions.mutationKey ?? postProductsMutationKey()
 
   const baseOptions = postProductsMutationOptions(config) as UseMutationOptions<
     PostProductsMutationResponse,
     ResponseErrorConfig<PostProducts404 | PostProducts409>,
     { data: PostProductsMutationRequest },
     TContext
-  >;
+  >
 
   return useMutation<
     PostProductsMutationResponse,
@@ -86,11 +84,11 @@ export function usePostProducts<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PostProductsMutationResponse,
     ResponseErrorConfig<PostProducts404 | PostProducts409>,
     { data: PostProductsMutationRequest },
     TContext
-  >;
+  >
 }

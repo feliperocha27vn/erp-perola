@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetReportsAbcQueryResponse,
   GetReportsAbcQueryParams,
-} from "../../types/reportsController/GetReportsAbc.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getReportsAbc } from "../../clients/reportsController/getReportsAbc.ts";
+} from '../../types/reportsController/GetReportsAbc.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getReportsAbc } from '../../clients/reportsController/getReportsAbc.ts'
 
 export const getReportsAbcSuspenseQueryKey = (
-  params: GetReportsAbcQueryParams,
-) => [{ url: "/reports/abc" }, ...(params ? [params] : [])] as const;
+  params: GetReportsAbcQueryParams
+) => [{ url: '/reports/abc' }, ...(params ? [params] : [])] as const
 
 export type GetReportsAbcSuspenseQueryKey = ReturnType<
   typeof getReportsAbcSuspenseQueryKey
->;
+>
 
 export function getReportsAbcSuspenseQueryOptions(
   params: GetReportsAbcQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getReportsAbcSuspenseQueryKey(params);
+  const queryKey = getReportsAbcSuspenseQueryKey(params)
   return queryOptions<
     GetReportsAbcQueryResponse,
     ResponseErrorConfig<Error>,
@@ -46,9 +46,9 @@ export function getReportsAbcSuspenseQueryOptions(
       return getReportsAbc(params, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -67,14 +67,14 @@ export function useGetReportsAbcSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getReportsAbcSuspenseQueryKey(params);
+    resolvedOptions?.queryKey ?? getReportsAbcSuspenseQueryKey(params)
 
   const query = useSuspenseQuery(
     {
@@ -82,12 +82,12 @@ export function useGetReportsAbcSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

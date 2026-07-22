@@ -3,40 +3,40 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   GetShipmentsByIdQueryResponse,
   GetShipmentsByIdPathParams,
   GetShipmentsById404,
-} from "../../types/shipmentsController/GetShipmentsById.ts";
+} from '../../types/shipmentsController/GetShipmentsById.ts'
 
-function getGetShipmentsByIdUrl(id: GetShipmentsByIdPathParams["id"]) {
-  const res = { method: "GET", url: `/shipments/${id}` as const };
-  return res;
+function getGetShipmentsByIdUrl(id: GetShipmentsByIdPathParams['id']) {
+  const res = { method: 'GET', url: `/shipments/${id}` as const }
+  return res
 }
 
 /**
  * {@link /shipments/:id}
  */
 export async function getShipmentsById(
-  id: GetShipmentsByIdPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: GetShipmentsByIdPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetShipmentsByIdQueryResponse,
     ResponseErrorConfig<GetShipmentsById404>,
     unknown
   >({
-    method: "GET",
+    method: 'GET',
     url: getGetShipmentsByIdUrl(id).url.toString(),
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

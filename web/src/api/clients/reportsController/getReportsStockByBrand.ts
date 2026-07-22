@@ -3,20 +3,20 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   GetReportsStockByBrandQueryResponse,
   GetReportsStockByBrandQueryParams,
-} from "../../types/reportsController/GetReportsStockByBrand.ts";
+} from '../../types/reportsController/GetReportsStockByBrand.ts'
 
 function getGetReportsStockByBrandUrl() {
-  const res = { method: "GET", url: `/reports/stock-by-brand` as const };
-  return res;
+  const res = { method: 'GET', url: `/reports/stock-by-brand` as const }
+  return res
 }
 
 /**
@@ -25,19 +25,19 @@ function getGetReportsStockByBrandUrl() {
  */
 export async function getReportsStockByBrand(
   params?: GetReportsStockByBrandQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetReportsStockByBrandQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: "GET",
+    method: 'GET',
     url: getGetReportsStockByBrandUrl().url.toString(),
     params,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

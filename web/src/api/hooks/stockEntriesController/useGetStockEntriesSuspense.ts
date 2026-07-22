@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetStockEntriesQueryResponse,
   GetStockEntriesQueryParams,
-} from "../../types/stockEntriesController/GetStockEntries.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getStockEntries } from "../../clients/stockEntriesController/getStockEntries.ts";
+} from '../../types/stockEntriesController/GetStockEntries.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getStockEntries } from '../../clients/stockEntriesController/getStockEntries.ts'
 
 export const getStockEntriesSuspenseQueryKey = (
-  params?: GetStockEntriesQueryParams,
-) => [{ url: "/stock-entries" }, ...(params ? [params] : [])] as const;
+  params?: GetStockEntriesQueryParams
+) => [{ url: '/stock-entries' }, ...(params ? [params] : [])] as const
 
 export type GetStockEntriesSuspenseQueryKey = ReturnType<
   typeof getStockEntriesSuspenseQueryKey
->;
+>
 
 export function getStockEntriesSuspenseQueryOptions(
   params?: GetStockEntriesQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getStockEntriesSuspenseQueryKey(params);
+  const queryKey = getStockEntriesSuspenseQueryKey(params)
   return queryOptions<
     GetStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -45,9 +45,9 @@ export function getStockEntriesSuspenseQueryOptions(
       return getStockEntries(params, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -67,14 +67,14 @@ export function useGetStockEntriesSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getStockEntriesSuspenseQueryKey(params);
+    resolvedOptions?.queryKey ?? getStockEntriesSuspenseQueryKey(params)
 
   const query = useSuspenseQuery(
     {
@@ -82,12 +82,12 @@ export function useGetStockEntriesSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

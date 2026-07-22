@@ -3,20 +3,20 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   GetStockEntriesQueryResponse,
   GetStockEntriesQueryParams,
-} from "../../types/stockEntriesController/GetStockEntries.ts";
+} from '../../types/stockEntriesController/GetStockEntries.ts'
 
 function getGetStockEntriesUrl() {
-  const res = { method: "GET", url: `/stock-entries` as const };
-  return res;
+  const res = { method: 'GET', url: `/stock-entries` as const }
+  return res
 }
 
 /**
@@ -25,19 +25,19 @@ function getGetStockEntriesUrl() {
  */
 export async function getStockEntries(
   params?: GetStockEntriesQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: "GET",
+    method: 'GET',
     url: getGetStockEntriesUrl().url.toString(),
     params,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

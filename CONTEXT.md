@@ -9,11 +9,21 @@ A catalog item with a SKU, EAN, and optional Brand. A Product has zero or more S
 ## Stock (Estoque)
 A named inventory entry belonging to a Product (e.g. a warehouse or marketplace slot). Holds a quantity that is decremented when a Sale is created and incremented when a Sale is deleted.
 
+## Physical Stock (Estoque Físico)
+The subset of a Product's Stock records where `full = false` — inventory held by the business itself (e.g. Galpão, Loja Centro), as opposed to inventory held in marketplace fulfillment centers (`full = true`, e.g. Amazon FBA, ML Full). Physical Stock quantity is the sum of `qtde` across those records only.
+
 ## Brand (Marca)
 A label grouping Products (e.g. ORIENT, MONDAINE). A Product may have no Brand (`brand_id` is nullable). Deleting a Brand sets all its Products' `brand_id` to NULL.
 
 ## Store (Loja)
 A named point of sale or responsible person (e.g. Lilian, Santo, Laurinda). A Sale may reference one Store via `store_id` (nullable — sales created before this feature have no Store). From this feature forward, Store is required when creating or editing a Sale. Stores are managed via seed/migration; there is no UI CRUD for them. Deleting a Store is not defined yet.
+
+## Purchase Restock Alert (Alerta de Reposição)
+A per-Product signal, computed live (no scheduled job, no persisted snapshot) on every load of the Dashboard (`/`) and its dedicated page (`/alertas-de-reposicao`). Compares 30-day Sales Velocity (`units_30d`, all channels) against Physical Stock for the Product, with two severities:
+- 🔴 **Crítico**: `units_30d > Physical Stock` (equivalent to a Stock Coverage under 100%, but using Physical Stock instead of total stock).
+- 🟡 **Atenção**: not Crítico, but either (a) coverage between 100% and 130% — tagged "Perto do limite" — or (b) the 15-day pace projected to 30 days would exceed the actual 30-day total, `units_15d × 2 > units_30d` — tagged "Vendas acelerando". Both tags can apply at once.
+Products with zero 30-day sales are never flagged, regardless of stock level — same reasoning as Stock Coverage: no recent sales isn't evidence of shortage. Does not suggest a purchase quantity — only flags the Product.
+Deliberately distinct from Stock Coverage: this alert is global per-Product (not per-Store), uses a fixed 30-day window (not 90), and considers Physical Stock only (excludes marketplace-fulfillment stock) — because a purchase decision is about what's on hand to sell in-house *and* to replenish marketplace fulfillment centers, not a per-Store breakdown. See [ADR 0004](./docs/adr/0004-alerta-de-reposicao-sem-ia-sem-cron.md) for why this has no AI/LLM layer and no real scheduled job despite the feature originally being framed as "cron job with an AI layer".
 
 ## Sales Velocity (Velocidade de Giro)
 Units sold per product across fixed trailing windows: 15, 30, 60, and 90 days counted back from today. Measured as the sum of `Sale.quantity` (units), not the count of Sale records. All four windows are always shown simultaneously on the Product card. Data is fetched from a dedicated endpoint (`GET /products/sales-velocity`) that accepts the same pagination and search params as `GET /products`, keeping both in sync.

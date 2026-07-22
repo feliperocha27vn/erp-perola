@@ -7,27 +7,27 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
-import type { GetBrandsQueryResponse } from "../../types/brandsController/GetBrands.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getBrands } from "../../clients/brandsController/getBrands.ts";
+} from '@tanstack/react-query'
+import type { GetBrandsQueryResponse } from '../../types/brandsController/GetBrands.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getBrands } from '../../clients/brandsController/getBrands.ts'
 
-export const getBrandsSuspenseQueryKey = () => [{ url: "/brands" }] as const;
+export const getBrandsSuspenseQueryKey = () => [{ url: '/brands' }] as const
 
 export type GetBrandsSuspenseQueryKey = ReturnType<
   typeof getBrandsSuspenseQueryKey
->;
+>
 
 export function getBrandsSuspenseQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getBrandsSuspenseQueryKey();
+  const queryKey = getBrandsSuspenseQueryKey()
   return queryOptions<
     GetBrandsQueryResponse,
     ResponseErrorConfig<Error>,
@@ -36,9 +36,9 @@ export function getBrandsSuspenseQueryOptions(
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getBrands({ ...config, signal: config.signal ?? signal });
+      return getBrands({ ...config, signal: config.signal ?? signal })
     },
-  });
+  })
 }
 
 /**
@@ -57,13 +57,13 @@ export function useGetBrandsSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
-  const queryKey = resolvedOptions?.queryKey ?? getBrandsSuspenseQueryKey();
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = resolvedOptions?.queryKey ?? getBrandsSuspenseQueryKey()
 
   const query = useSuspenseQuery(
     {
@@ -71,12 +71,12 @@ export function useGetBrandsSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

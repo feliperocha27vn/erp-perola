@@ -14,25 +14,25 @@ export type GetStores200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string
      */
-    name: string;
+    name: string
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
-  }[];
-};
+    updated_at: string
+  }[]
+}
 
-export type GetStoresQueryResponse = GetStores200;
+export type GetStoresQueryResponse = GetStores200
 
 export type GetStoresQuery = {
-  Response: GetStores200;
-  Errors: any;
-};
+  Response: GetStores200
+  Errors: any
+}

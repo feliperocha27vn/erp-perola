@@ -1,9 +1,12 @@
 import { and, asc, desc, eq, gte, isNull, lte, sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
-import { products, sales, stocks, stores } from "../../db/schema.js"
+import { brands, products, sales, stocks, stores } from "../../db/schema.js"
 import type {
 	AbcReportRawRow,
 	AbcReportRepository,
+	RestockAlertProductRow,
+	RestockAlertRepository,
+	RestockAlertSalesRow,
 	SalesReportRepository,
 	SalesReportRow,
 	StockReportRepository,
@@ -13,7 +16,7 @@ import type {
 } from "../report-repository.js"
 
 export class DrizzleReportRepository
-	implements StockReportRepository, SalesReportRepository, AbcReportRepository {
+	implements StockReportRepository, SalesReportRepository, AbcReportRepository, RestockAlertRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
 		const rows = await db
 			.select({
@@ -146,6 +149,47 @@ export class DrizzleReportRepository
 			store_name: row.store_name ?? null,
 			sku: row.sku,
 			units_90d: row.units_90d,
+		}))
+	}
+
+	async fetchRestockAlertProducts(): Promise<RestockAlertProductRow[]> {
+		const rows = await db
+			.select({
+				product_id: products.id,
+				sku: products.sku,
+				brand_name: brands.name,
+				physical_stock_qty: sql<number>`coalesce(sum(${stocks.qtde}), 0)::int`,
+			})
+			.from(products)
+			.leftJoin(brands, eq(brands.id, products.brand_id))
+			.leftJoin(stocks, and(eq(stocks.product_id, products.id), eq(stocks.full, false)))
+			.where(isNull(products.deleted_at))
+			.groupBy(products.id, brands.name)
+
+		return rows.map((row) => ({
+			product_id: row.product_id,
+			sku: row.sku,
+			brand_name: row.brand_name ?? null,
+			physical_stock_qty: Number(row.physical_stock_qty),
+		}))
+	}
+
+	async fetchRestockAlertSalesPace(): Promise<RestockAlertSalesRow[]> {
+		const rows = await db
+			.select({
+				product_id: products.id,
+				units_15d: sql<number>`coalesce(sum(case when ${sales.sale_date} >= now() - interval '15 days' then ${sales.quantity} else 0 end), 0)::int`,
+				units_30d: sql<number>`coalesce(sum(case when ${sales.sale_date} >= now() - interval '30 days' then ${sales.quantity} else 0 end), 0)::int`,
+			})
+			.from(products)
+			.leftJoin(sales, eq(sales.product_id, products.id))
+			.where(isNull(products.deleted_at))
+			.groupBy(products.id)
+
+		return rows.map((row) => ({
+			product_id: row.product_id,
+			units_15d: Number(row.units_15d),
+			units_30d: Number(row.units_30d),
 		}))
 	}
 }

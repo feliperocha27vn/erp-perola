@@ -7,28 +7,28 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
-import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getDashboardMonthlySales } from "../../clients/dashboardController/getDashboardMonthlySales.ts";
+} from '@tanstack/react-query'
+import type { GetDashboardMonthlySalesQueryResponse } from '../../types/dashboardController/GetDashboardMonthlySales.ts'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+import { getDashboardMonthlySales } from '../../clients/dashboardController/getDashboardMonthlySales.ts'
 
 export const getDashboardMonthlySalesQueryKey = () =>
-  [{ url: "/dashboard/monthly-sales" }] as const;
+  [{ url: '/dashboard/monthly-sales' }] as const
 
 export type GetDashboardMonthlySalesQueryKey = ReturnType<
   typeof getDashboardMonthlySalesQueryKey
->;
+>
 
 export function getDashboardMonthlySalesQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getDashboardMonthlySalesQueryKey();
+  const queryKey = getDashboardMonthlySalesQueryKey()
   return queryOptions<
     GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -40,9 +40,9 @@ export function getDashboardMonthlySalesQueryOptions(
       return getDashboardMonthlySales({
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -63,14 +63,14 @@ export function useGetDashboardMonthlySales<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getDashboardMonthlySalesQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesQueryKey()
 
   const query = useQuery(
     {
@@ -78,12 +78,12 @@ export function useGetDashboardMonthlySales<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient,
+    queryClient
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

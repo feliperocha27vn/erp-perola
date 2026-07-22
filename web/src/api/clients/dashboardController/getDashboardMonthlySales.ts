@@ -3,17 +3,17 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
-import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
+} from '@/lib/kubb-axios-client'
+import type { GetDashboardMonthlySalesQueryResponse } from '../../types/dashboardController/GetDashboardMonthlySales.ts'
 
 function getGetDashboardMonthlySalesUrl() {
-  const res = { method: "GET", url: `/dashboard/monthly-sales` as const };
-  return res;
+  const res = { method: 'GET', url: `/dashboard/monthly-sales` as const }
+  return res
 }
 
 /**
@@ -21,18 +21,18 @@ function getGetDashboardMonthlySalesUrl() {
  * {@link /dashboard/monthly-sales}
  */
 export async function getDashboardMonthlySales(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: "GET",
+    method: 'GET',
     url: getGetDashboardMonthlySalesUrl().url.toString(),
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

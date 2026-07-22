@@ -7,34 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetProductsSalesVelocityQueryResponse,
   GetProductsSalesVelocityQueryParams,
-} from "../../types/productsController/GetProductsSalesVelocity.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getProductsSalesVelocity } from "../../clients/productsController/getProductsSalesVelocity.ts";
+} from '../../types/productsController/GetProductsSalesVelocity.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getProductsSalesVelocity } from '../../clients/productsController/getProductsSalesVelocity.ts'
 
 export const getProductsSalesVelocitySuspenseQueryKey = (
-  params?: GetProductsSalesVelocityQueryParams,
-) =>
-  [{ url: "/products/sales-velocity" }, ...(params ? [params] : [])] as const;
+  params?: GetProductsSalesVelocityQueryParams
+) => [{ url: '/products/sales-velocity' }, ...(params ? [params] : [])] as const
 
 export type GetProductsSalesVelocitySuspenseQueryKey = ReturnType<
   typeof getProductsSalesVelocitySuspenseQueryKey
->;
+>
 
 export function getProductsSalesVelocitySuspenseQueryOptions(
   params?: GetProductsSalesVelocityQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getProductsSalesVelocitySuspenseQueryKey(params);
+  const queryKey = getProductsSalesVelocitySuspenseQueryKey(params)
   return queryOptions<
     GetProductsSalesVelocityQueryResponse,
     ResponseErrorConfig<Error>,
@@ -46,9 +45,9 @@ export function getProductsSalesVelocitySuspenseQueryOptions(
       return getProductsSalesVelocity(params, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -68,15 +67,15 @@ export function useGetProductsSalesVelocitySuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
     resolvedOptions?.queryKey ??
-    getProductsSalesVelocitySuspenseQueryKey(params);
+    getProductsSalesVelocitySuspenseQueryKey(params)
 
   const query = useSuspenseQuery(
     {
@@ -84,12 +83,12 @@ export function useGetProductsSalesVelocitySuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

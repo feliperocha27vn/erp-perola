@@ -7,48 +7,48 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PatchProductsIdImageMutationRequest,
   PatchProductsIdImageMutationResponse,
   PatchProductsIdImagePathParams,
   PatchProductsIdImage404,
-} from "../../types/productsController/PatchProductsIdImage.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { patchProductsIdImage } from "../../clients/productsController/patchProductsIdImage.ts";
+} from '../../types/productsController/PatchProductsIdImage.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { patchProductsIdImage } from '../../clients/productsController/patchProductsIdImage.ts'
 
 export const patchProductsIdImageMutationKey = () =>
-  [{ url: "/products/:id/image" }] as const;
+  [{ url: '/products/:id/image' }] as const
 
 export type PatchProductsIdImageMutationKey = ReturnType<
   typeof patchProductsIdImageMutationKey
->;
+>
 
 export function patchProductsIdImageMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PatchProductsIdImageMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = patchProductsIdImageMutationKey();
+  const mutationKey = patchProductsIdImageMutationKey()
   return mutationOptions<
     PatchProductsIdImageMutationResponse,
     ResponseErrorConfig<PatchProductsIdImage404>,
     {
-      id: PatchProductsIdImagePathParams["id"];
-      data: PatchProductsIdImageMutationRequest;
+      id: PatchProductsIdImagePathParams['id']
+      data: PatchProductsIdImageMutationRequest
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id, data }) => {
-      return patchProductsIdImage(id, data, config);
+      return patchProductsIdImage(id, data, config)
     },
-  });
+  })
 }
 
 /**
@@ -61,39 +61,39 @@ export function usePatchProductsIdImage<TContext>(
       PatchProductsIdImageMutationResponse,
       ResponseErrorConfig<PatchProductsIdImage404>,
       {
-        id: PatchProductsIdImagePathParams["id"];
-        data: PatchProductsIdImageMutationRequest;
+        id: PatchProductsIdImagePathParams['id']
+        data: PatchProductsIdImageMutationRequest
       },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PatchProductsIdImageMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? patchProductsIdImageMutationKey();
+    mutationOptions.mutationKey ?? patchProductsIdImageMutationKey()
 
   const baseOptions = patchProductsIdImageMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PatchProductsIdImageMutationResponse,
     ResponseErrorConfig<PatchProductsIdImage404>,
     {
-      id: PatchProductsIdImagePathParams["id"];
-      data: PatchProductsIdImageMutationRequest;
+      id: PatchProductsIdImagePathParams['id']
+      data: PatchProductsIdImageMutationRequest
     },
     TContext
-  >;
+  >
 
   return useMutation<
     PatchProductsIdImageMutationResponse,
     ResponseErrorConfig<PatchProductsIdImage404>,
     {
-      id: PatchProductsIdImagePathParams["id"];
-      data: PatchProductsIdImageMutationRequest;
+      id: PatchProductsIdImagePathParams['id']
+      data: PatchProductsIdImageMutationRequest
     },
     TContext
   >(
@@ -102,14 +102,14 @@ export function usePatchProductsIdImage<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PatchProductsIdImageMutationResponse,
     ResponseErrorConfig<PatchProductsIdImage404>,
     {
-      id: PatchProductsIdImagePathParams["id"];
-      data: PatchProductsIdImageMutationRequest;
+      id: PatchProductsIdImagePathParams['id']
+      data: PatchProductsIdImageMutationRequest
     },
     TContext
-  >;
+  >
 }

@@ -7,48 +7,48 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PostStocksStockIdEntriesMutationRequest,
   PostStocksStockIdEntriesMutationResponse,
   PostStocksStockIdEntriesPathParams,
   PostStocksStockIdEntries404,
-} from "../../types/stockEntriesController/PostStocksStockIdEntries.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { postStocksStockIdEntries } from "../../clients/stockEntriesController/postStocksStockIdEntries.ts";
+} from '../../types/stockEntriesController/PostStocksStockIdEntries.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { postStocksStockIdEntries } from '../../clients/stockEntriesController/postStocksStockIdEntries.ts'
 
 export const postStocksStockIdEntriesMutationKey = () =>
-  [{ url: "/stocks/:stockId/entries" }] as const;
+  [{ url: '/stocks/:stockId/entries' }] as const
 
 export type PostStocksStockIdEntriesMutationKey = ReturnType<
   typeof postStocksStockIdEntriesMutationKey
->;
+>
 
 export function postStocksStockIdEntriesMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostStocksStockIdEntriesMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = postStocksStockIdEntriesMutationKey();
+  const mutationKey = postStocksStockIdEntriesMutationKey()
   return mutationOptions<
     PostStocksStockIdEntriesMutationResponse,
     ResponseErrorConfig<PostStocksStockIdEntries404>,
     {
-      stockId: PostStocksStockIdEntriesPathParams["stockId"];
-      data: PostStocksStockIdEntriesMutationRequest;
+      stockId: PostStocksStockIdEntriesPathParams['stockId']
+      data: PostStocksStockIdEntriesMutationRequest
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ stockId, data }) => {
-      return postStocksStockIdEntries(stockId, data, config);
+      return postStocksStockIdEntries(stockId, data, config)
     },
-  });
+  })
 }
 
 /**
@@ -61,39 +61,39 @@ export function usePostStocksStockIdEntries<TContext>(
       PostStocksStockIdEntriesMutationResponse,
       ResponseErrorConfig<PostStocksStockIdEntries404>,
       {
-        stockId: PostStocksStockIdEntriesPathParams["stockId"];
-        data: PostStocksStockIdEntriesMutationRequest;
+        stockId: PostStocksStockIdEntriesPathParams['stockId']
+        data: PostStocksStockIdEntriesMutationRequest
       },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PostStocksStockIdEntriesMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? postStocksStockIdEntriesMutationKey();
+    mutationOptions.mutationKey ?? postStocksStockIdEntriesMutationKey()
 
   const baseOptions = postStocksStockIdEntriesMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PostStocksStockIdEntriesMutationResponse,
     ResponseErrorConfig<PostStocksStockIdEntries404>,
     {
-      stockId: PostStocksStockIdEntriesPathParams["stockId"];
-      data: PostStocksStockIdEntriesMutationRequest;
+      stockId: PostStocksStockIdEntriesPathParams['stockId']
+      data: PostStocksStockIdEntriesMutationRequest
     },
     TContext
-  >;
+  >
 
   return useMutation<
     PostStocksStockIdEntriesMutationResponse,
     ResponseErrorConfig<PostStocksStockIdEntries404>,
     {
-      stockId: PostStocksStockIdEntriesPathParams["stockId"];
-      data: PostStocksStockIdEntriesMutationRequest;
+      stockId: PostStocksStockIdEntriesPathParams['stockId']
+      data: PostStocksStockIdEntriesMutationRequest
     },
     TContext
   >(
@@ -102,14 +102,14 @@ export function usePostStocksStockIdEntries<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PostStocksStockIdEntriesMutationResponse,
     ResponseErrorConfig<PostStocksStockIdEntries404>,
     {
-      stockId: PostStocksStockIdEntriesPathParams["stockId"];
-      data: PostStocksStockIdEntriesMutationRequest;
+      stockId: PostStocksStockIdEntriesPathParams['stockId']
+      data: PostStocksStockIdEntriesMutationRequest
     },
     TContext
-  >;
+  >
 }

@@ -7,42 +7,42 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   DeleteStocksStockIdMutationResponse,
   DeleteStocksStockIdPathParams,
   DeleteStocksStockId404,
-} from "../../types/stocksController/DeleteStocksStockId.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { deleteStocksStockId } from "../../clients/stocksController/deleteStocksStockId.ts";
+} from '../../types/stocksController/DeleteStocksStockId.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { deleteStocksStockId } from '../../clients/stocksController/deleteStocksStockId.ts'
 
 export const deleteStocksStockIdMutationKey = () =>
-  [{ url: "/stocks/:stockId" }] as const;
+  [{ url: '/stocks/:stockId' }] as const
 
 export type DeleteStocksStockIdMutationKey = ReturnType<
   typeof deleteStocksStockIdMutationKey
->;
+>
 
 export function deleteStocksStockIdMutationOptions<TContext = unknown>(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const mutationKey = deleteStocksStockIdMutationKey();
+  const mutationKey = deleteStocksStockIdMutationKey()
   return mutationOptions<
     DeleteStocksStockIdMutationResponse,
     ResponseErrorConfig<DeleteStocksStockId404>,
-    { stockId: DeleteStocksStockIdPathParams["stockId"] },
+    { stockId: DeleteStocksStockIdPathParams['stockId'] },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ stockId }) => {
-      return deleteStocksStockId(stockId, config);
+      return deleteStocksStockId(stockId, config)
     },
-  });
+  })
 }
 
 /**
@@ -54,30 +54,30 @@ export function useDeleteStocksStockId<TContext>(
     mutation?: UseMutationOptions<
       DeleteStocksStockIdMutationResponse,
       ResponseErrorConfig<DeleteStocksStockId404>,
-      { stockId: DeleteStocksStockIdPathParams["stockId"] },
+      { stockId: DeleteStocksStockIdPathParams['stockId'] },
       TContext
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? deleteStocksStockIdMutationKey();
+    mutationOptions.mutationKey ?? deleteStocksStockIdMutationKey()
 
   const baseOptions = deleteStocksStockIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     DeleteStocksStockIdMutationResponse,
     ResponseErrorConfig<DeleteStocksStockId404>,
-    { stockId: DeleteStocksStockIdPathParams["stockId"] },
+    { stockId: DeleteStocksStockIdPathParams['stockId'] },
     TContext
-  >;
+  >
 
   return useMutation<
     DeleteStocksStockIdMutationResponse,
     ResponseErrorConfig<DeleteStocksStockId404>,
-    { stockId: DeleteStocksStockIdPathParams["stockId"] },
+    { stockId: DeleteStocksStockIdPathParams['stockId'] },
     TContext
   >(
     {
@@ -85,11 +85,11 @@ export function useDeleteStocksStockId<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     DeleteStocksStockIdMutationResponse,
     ResponseErrorConfig<DeleteStocksStockId404>,
-    { stockId: DeleteStocksStockIdPathParams["stockId"] },
+    { stockId: DeleteStocksStockIdPathParams['stockId'] },
     TContext
-  >;
+  >
 }

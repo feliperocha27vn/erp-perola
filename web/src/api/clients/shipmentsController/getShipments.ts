@@ -3,35 +3,35 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
-import type { GetShipmentsQueryResponse } from "../../types/shipmentsController/GetShipments.ts";
+} from '@/lib/kubb-axios-client'
+import type { GetShipmentsQueryResponse } from '../../types/shipmentsController/GetShipments.ts'
 
 function getGetShipmentsUrl() {
-  const res = { method: "GET", url: `/shipments` as const };
-  return res;
+  const res = { method: 'GET', url: `/shipments` as const }
+  return res
 }
 
 /**
  * {@link /shipments}
  */
 export async function getShipments(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetShipmentsQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
   >({
-    method: "GET",
+    method: 'GET',
     url: getGetShipmentsUrl().url.toString(),
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

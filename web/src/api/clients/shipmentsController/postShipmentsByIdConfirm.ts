@@ -3,35 +3,35 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   PostShipmentsByIdConfirmMutationResponse,
   PostShipmentsByIdConfirmPathParams,
   PostShipmentsByIdConfirm404,
   PostShipmentsByIdConfirm409,
   PostShipmentsByIdConfirm422,
-} from "../../types/shipmentsController/PostShipmentsByIdConfirm.ts";
+} from '../../types/shipmentsController/PostShipmentsByIdConfirm.ts'
 
 function getPostShipmentsByIdConfirmUrl(
-  id: PostShipmentsByIdConfirmPathParams["id"],
+  id: PostShipmentsByIdConfirmPathParams['id']
 ) {
-  const res = { method: "POST", url: `/shipments/${id}/confirm` as const };
-  return res;
+  const res = { method: 'POST', url: `/shipments/${id}/confirm` as const }
+  return res
 }
 
 /**
  * {@link /shipments/:id/confirm}
  */
 export async function postShipmentsByIdConfirm(
-  id: PostShipmentsByIdConfirmPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: PostShipmentsByIdConfirmPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     PostShipmentsByIdConfirmMutationResponse,
@@ -42,9 +42,9 @@ export async function postShipmentsByIdConfirm(
     >,
     unknown
   >({
-    method: "POST",
+    method: 'POST',
     url: getPostShipmentsByIdConfirmUrl(id).url.toString(),
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

@@ -7,13 +7,13 @@ export type DeleteShipmentAccountsByIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string;
-};
+  id: string
+}
 
 /**
  * @description Default Response
  */
-export type DeleteShipmentAccountsById204 = any;
+export type DeleteShipmentAccountsById204 = any
 
 /**
  * @description Default Response
@@ -22,14 +22,14 @@ export type DeleteShipmentAccountsById404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export type DeleteShipmentAccountsByIdMutationResponse =
-  DeleteShipmentAccountsById204;
+  DeleteShipmentAccountsById204
 
 export type DeleteShipmentAccountsByIdMutation = {
-  Response: DeleteShipmentAccountsById204;
-  PathParams: DeleteShipmentAccountsByIdPathParams;
-  Errors: DeleteShipmentAccountsById404;
-};
+  Response: DeleteShipmentAccountsById204
+  PathParams: DeleteShipmentAccountsByIdPathParams
+  Errors: DeleteShipmentAccountsById404
+}

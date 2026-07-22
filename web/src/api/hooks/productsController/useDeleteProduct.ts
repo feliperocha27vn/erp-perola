@@ -7,42 +7,42 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   DeleteProductMutationResponse,
   DeleteProductPathParams,
   DeleteProduct404,
-} from "../../types/productsController/DeleteProduct.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { deleteProduct } from "../../clients/productsController/deleteProduct.ts";
+} from '../../types/productsController/DeleteProduct.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { deleteProduct } from '../../clients/productsController/deleteProduct.ts'
 
 export const deleteProductMutationKey = () =>
-  [{ url: "/products/:id" }] as const;
+  [{ url: '/products/:id' }] as const
 
 export type DeleteProductMutationKey = ReturnType<
   typeof deleteProductMutationKey
->;
+>
 
 export function deleteProductMutationOptions<TContext = unknown>(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const mutationKey = deleteProductMutationKey();
+  const mutationKey = deleteProductMutationKey()
   return mutationOptions<
     DeleteProductMutationResponse,
     ResponseErrorConfig<DeleteProduct404>,
-    { id: DeleteProductPathParams["id"] },
+    { id: DeleteProductPathParams['id'] },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id }) => {
-      return deleteProduct(id, config);
+      return deleteProduct(id, config)
     },
-  });
+  })
 }
 
 /**
@@ -53,29 +53,29 @@ export function useDeleteProduct<TContext>(
     mutation?: UseMutationOptions<
       DeleteProductMutationResponse,
       ResponseErrorConfig<DeleteProduct404>,
-      { id: DeleteProductPathParams["id"] },
+      { id: DeleteProductPathParams['id'] },
       TContext
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
-  const mutationKey = mutationOptions.mutationKey ?? deleteProductMutationKey();
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
+  const mutationKey = mutationOptions.mutationKey ?? deleteProductMutationKey()
 
   const baseOptions = deleteProductMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     DeleteProductMutationResponse,
     ResponseErrorConfig<DeleteProduct404>,
-    { id: DeleteProductPathParams["id"] },
+    { id: DeleteProductPathParams['id'] },
     TContext
-  >;
+  >
 
   return useMutation<
     DeleteProductMutationResponse,
     ResponseErrorConfig<DeleteProduct404>,
-    { id: DeleteProductPathParams["id"] },
+    { id: DeleteProductPathParams['id'] },
     TContext
   >(
     {
@@ -83,11 +83,11 @@ export function useDeleteProduct<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     DeleteProductMutationResponse,
     ResponseErrorConfig<DeleteProduct404>,
-    { id: DeleteProductPathParams["id"] },
+    { id: DeleteProductPathParams['id'] },
     TContext
-  >;
+  >
 }

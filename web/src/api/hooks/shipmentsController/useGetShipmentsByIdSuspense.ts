@@ -7,34 +7,34 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetShipmentsByIdQueryResponse,
   GetShipmentsByIdPathParams,
   GetShipmentsById404,
-} from "../../types/shipmentsController/GetShipmentsById.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getShipmentsById } from "../../clients/shipmentsController/getShipmentsById.ts";
+} from '../../types/shipmentsController/GetShipmentsById.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getShipmentsById } from '../../clients/shipmentsController/getShipmentsById.ts'
 
 export const getShipmentsByIdSuspenseQueryKey = (
-  id: GetShipmentsByIdPathParams["id"],
-) => [{ url: "/shipments/:id", params: { id: id } }] as const;
+  id: GetShipmentsByIdPathParams['id']
+) => [{ url: '/shipments/:id', params: { id: id } }] as const
 
 export type GetShipmentsByIdSuspenseQueryKey = ReturnType<
   typeof getShipmentsByIdSuspenseQueryKey
->;
+>
 
 export function getShipmentsByIdSuspenseQueryOptions(
-  id: GetShipmentsByIdPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: GetShipmentsByIdPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getShipmentsByIdSuspenseQueryKey(id);
+  const queryKey = getShipmentsByIdSuspenseQueryKey(id)
   return queryOptions<
     GetShipmentsByIdQueryResponse,
     ResponseErrorConfig<GetShipmentsById404>,
@@ -47,9 +47,9 @@ export function getShipmentsByIdSuspenseQueryOptions(
       return getShipmentsById(id, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -59,7 +59,7 @@ export function useGetShipmentsByIdSuspense<
   TData = GetShipmentsByIdQueryResponse,
   TQueryKey extends QueryKey = GetShipmentsByIdSuspenseQueryKey,
 >(
-  id: GetShipmentsByIdPathParams["id"],
+  id: GetShipmentsByIdPathParams['id'],
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -68,14 +68,14 @@ export function useGetShipmentsByIdSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getShipmentsByIdSuspenseQueryKey(id);
+    resolvedOptions?.queryKey ?? getShipmentsByIdSuspenseQueryKey(id)
 
   const query = useSuspenseQuery(
     {
@@ -83,13 +83,13 @@ export function useGetShipmentsByIdSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<
     TData,
     ResponseErrorConfig<GetShipmentsById404>
-  > & { queryKey: TQueryKey };
+  > & { queryKey: TQueryKey }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

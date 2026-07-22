@@ -4,12 +4,12 @@
  */
 
 export const shipmentStatusEnum = {
-  rascunho: "rascunho",
-  confirmado: "confirmado",
-} as const;
+  rascunho: 'rascunho',
+  confirmado: 'confirmado',
+} as const
 
 export type ShipmentStatusEnumKey =
-  (typeof shipmentStatusEnum)[keyof typeof shipmentStatusEnum];
+  (typeof shipmentStatusEnum)[keyof typeof shipmentStatusEnum]
 
 /**
  * @description Default Response
@@ -22,27 +22,27 @@ export type PostShipments201 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    account_id: string;
+    account_id: string
     /**
      * @type string
      */
-    account_name: string;
+    account_name: string
     /**
      * @type string, date-time
      */
-    date: string;
+    date: string
     /**
      * @type string
      */
-    notes: string | null;
+    notes: string | null
     /**
      * @type string
      */
-    status: ShipmentStatusEnumKey;
+    status: ShipmentStatusEnumKey
     /**
      * @type array
      */
@@ -50,42 +50,42 @@ export type PostShipments201 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string, uuid
        */
-      shipment_id: string;
+      shipment_id: string
       /**
        * @type string, uuid
        */
-      product_id: string;
+      product_id: string
       /**
        * @type number
        */
-      quantity: number;
+      quantity: number
       /**
        * @type string, uuid
        */
-      source_stock_id: string;
+      source_stock_id: string
       /**
        * @type string, uuid
        */
-      destination_stock_id: string;
+      destination_stock_id: string
       /**
        * @type string, date-time
        */
-      created_at: string;
-    }[];
+      created_at: string
+    }[]
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
-  };
-};
+    updated_at: string
+  }
+}
 
 /**
  * @description Default Response
@@ -94,22 +94,22 @@ export type PostShipments404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export type PostShipmentsMutationRequest = {
   /**
    * @type string, uuid
    */
-  account_id: string;
+  account_id: string
   /**
    * @type string, date-time
    */
-  date: string;
+  date: string
   /**
    * @type string
    */
-  notes?: string | null;
+  notes?: string | null
   /**
    * @type array
    */
@@ -117,27 +117,27 @@ export type PostShipmentsMutationRequest = {
     /**
      * @type string, uuid
      */
-    product_id: string;
+    product_id: string
     /**
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @type string, uuid
      */
-    source_stock_id: string;
+    source_stock_id: string
     /**
      * @type string, uuid
      */
-    destination_stock_id: string;
-  }[];
-};
+    destination_stock_id: string
+  }[]
+}
 
-export type PostShipmentsMutationResponse = PostShipments201;
+export type PostShipmentsMutationResponse = PostShipments201
 
 export type PostShipmentsMutation = {
-  Response: PostShipments201;
-  Request: PostShipmentsMutationRequest;
-  Errors: PostShipments404;
-};
+  Response: PostShipments201
+  Request: PostShipmentsMutationRequest
+  Errors: PostShipments404
+}

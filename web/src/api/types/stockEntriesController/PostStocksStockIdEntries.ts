@@ -7,8 +7,8 @@ export type PostStocksStockIdEntriesPathParams = {
   /**
    * @type string, uuid
    */
-  stockId: string;
-};
+  stockId: string
+}
 
 /**
  * @description Default Response
@@ -21,27 +21,27 @@ export type PostStocksStockIdEntries201 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    stock_id: string;
+    stock_id: string
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @type string
      */
-    notes: string | null;
+    notes: string | null
     /**
      * @type string, date-time
      */
-    created_at: string;
-  };
-};
+    created_at: string
+  }
+}
 
 /**
  * @description Default Response
@@ -50,8 +50,8 @@ export type PostStocksStockIdEntries404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export type PostStocksStockIdEntriesMutationRequest = {
   /**
@@ -59,19 +59,19 @@ export type PostStocksStockIdEntriesMutationRequest = {
    * @maxLength 9007199254740991
    * @type integer
    */
-  quantity: number;
+  quantity: number
   /**
    * @type string
    */
-  notes?: string | null;
-};
+  notes?: string | null
+}
 
 export type PostStocksStockIdEntriesMutationResponse =
-  PostStocksStockIdEntries201;
+  PostStocksStockIdEntries201
 
 export type PostStocksStockIdEntriesMutation = {
-  Response: PostStocksStockIdEntries201;
-  Request: PostStocksStockIdEntriesMutationRequest;
-  PathParams: PostStocksStockIdEntriesPathParams;
-  Errors: PostStocksStockIdEntries404;
-};
+  Response: PostStocksStockIdEntries201
+  Request: PostStocksStockIdEntriesMutationRequest
+  PathParams: PostStocksStockIdEntriesPathParams
+  Errors: PostStocksStockIdEntries404
+}

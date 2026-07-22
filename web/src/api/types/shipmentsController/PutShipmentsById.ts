@@ -7,16 +7,16 @@ export type PutShipmentsByIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string;
-};
+  id: string
+}
 
 export const shipmentStatusEnum3 = {
-  rascunho: "rascunho",
-  confirmado: "confirmado",
-} as const;
+  rascunho: 'rascunho',
+  confirmado: 'confirmado',
+} as const
 
 export type ShipmentStatusEnum3Key =
-  (typeof shipmentStatusEnum3)[keyof typeof shipmentStatusEnum3];
+  (typeof shipmentStatusEnum3)[keyof typeof shipmentStatusEnum3]
 
 /**
  * @description Default Response
@@ -29,27 +29,27 @@ export type PutShipmentsById200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    account_id: string;
+    account_id: string
     /**
      * @type string
      */
-    account_name: string;
+    account_name: string
     /**
      * @type string, date-time
      */
-    date: string;
+    date: string
     /**
      * @type string
      */
-    notes: string | null;
+    notes: string | null
     /**
      * @type string
      */
-    status: ShipmentStatusEnum3Key;
+    status: ShipmentStatusEnum3Key
     /**
      * @type array
      */
@@ -57,42 +57,42 @@ export type PutShipmentsById200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string, uuid
        */
-      shipment_id: string;
+      shipment_id: string
       /**
        * @type string, uuid
        */
-      product_id: string;
+      product_id: string
       /**
        * @type number
        */
-      quantity: number;
+      quantity: number
       /**
        * @type string, uuid
        */
-      source_stock_id: string;
+      source_stock_id: string
       /**
        * @type string, uuid
        */
-      destination_stock_id: string;
+      destination_stock_id: string
       /**
        * @type string, date-time
        */
-      created_at: string;
-    }[];
+      created_at: string
+    }[]
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
-  };
-};
+    updated_at: string
+  }
+}
 
 /**
  * @description Default Response
@@ -101,8 +101,8 @@ export type PutShipmentsById404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 /**
  * @description Default Response
@@ -111,22 +111,22 @@ export type PutShipmentsById409 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export type PutShipmentsByIdMutationRequest = {
   /**
    * @type string | undefined, uuid
    */
-  account_id?: string;
+  account_id?: string
   /**
    * @type string | undefined, date-time
    */
-  date?: string;
+  date?: string
   /**
    * @type string
    */
-  notes?: string | null;
+  notes?: string | null
   /**
    * @type array | undefined
    */
@@ -134,28 +134,28 @@ export type PutShipmentsByIdMutationRequest = {
     /**
      * @type string, uuid
      */
-    product_id: string;
+    product_id: string
     /**
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @type string, uuid
      */
-    source_stock_id: string;
+    source_stock_id: string
     /**
      * @type string, uuid
      */
-    destination_stock_id: string;
-  }[];
-};
+    destination_stock_id: string
+  }[]
+}
 
-export type PutShipmentsByIdMutationResponse = PutShipmentsById200;
+export type PutShipmentsByIdMutationResponse = PutShipmentsById200
 
 export type PutShipmentsByIdMutation = {
-  Response: PutShipmentsById200;
-  Request: PutShipmentsByIdMutationRequest;
-  PathParams: PutShipmentsByIdPathParams;
-  Errors: PutShipmentsById404 | PutShipmentsById409;
-};
+  Response: PutShipmentsById200
+  Request: PutShipmentsByIdMutationRequest
+  PathParams: PutShipmentsByIdPathParams
+  Errors: PutShipmentsById404 | PutShipmentsById409
+}

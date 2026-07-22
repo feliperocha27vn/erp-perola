@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PostShipmentsByIdConfirmMutationResponse,
   PostShipmentsByIdConfirmPathParams,
   PostShipmentsByIdConfirm404,
   PostShipmentsByIdConfirm409,
   PostShipmentsByIdConfirm422,
-} from "../../types/shipmentsController/PostShipmentsByIdConfirm.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { postShipmentsByIdConfirm } from "../../clients/shipmentsController/postShipmentsByIdConfirm.ts";
+} from '../../types/shipmentsController/PostShipmentsByIdConfirm.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { postShipmentsByIdConfirm } from '../../clients/shipmentsController/postShipmentsByIdConfirm.ts'
 
 export const postShipmentsByIdConfirmMutationKey = () =>
-  [{ url: "/shipments/:id/confirm" }] as const;
+  [{ url: '/shipments/:id/confirm' }] as const
 
 export type PostShipmentsByIdConfirmMutationKey = ReturnType<
   typeof postShipmentsByIdConfirmMutationKey
->;
+>
 
 export function postShipmentsByIdConfirmMutationOptions<TContext = unknown>(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const mutationKey = postShipmentsByIdConfirmMutationKey();
+  const mutationKey = postShipmentsByIdConfirmMutationKey()
   return mutationOptions<
     PostShipmentsByIdConfirmMutationResponse,
     ResponseErrorConfig<
@@ -41,14 +41,14 @@ export function postShipmentsByIdConfirmMutationOptions<TContext = unknown>(
       | PostShipmentsByIdConfirm409
       | PostShipmentsByIdConfirm422
     >,
-    { id: PostShipmentsByIdConfirmPathParams["id"] },
+    { id: PostShipmentsByIdConfirmPathParams['id'] },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id }) => {
-      return postShipmentsByIdConfirm(id, config);
+      return postShipmentsByIdConfirm(id, config)
     },
-  });
+  })
 }
 
 /**
@@ -63,19 +63,19 @@ export function usePostShipmentsByIdConfirm<TContext>(
         | PostShipmentsByIdConfirm409
         | PostShipmentsByIdConfirm422
       >,
-      { id: PostShipmentsByIdConfirmPathParams["id"] },
+      { id: PostShipmentsByIdConfirmPathParams['id'] },
       TContext
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? postShipmentsByIdConfirmMutationKey();
+    mutationOptions.mutationKey ?? postShipmentsByIdConfirmMutationKey()
 
   const baseOptions = postShipmentsByIdConfirmMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PostShipmentsByIdConfirmMutationResponse,
     ResponseErrorConfig<
@@ -83,9 +83,9 @@ export function usePostShipmentsByIdConfirm<TContext>(
       | PostShipmentsByIdConfirm409
       | PostShipmentsByIdConfirm422
     >,
-    { id: PostShipmentsByIdConfirmPathParams["id"] },
+    { id: PostShipmentsByIdConfirmPathParams['id'] },
     TContext
-  >;
+  >
 
   return useMutation<
     PostShipmentsByIdConfirmMutationResponse,
@@ -94,7 +94,7 @@ export function usePostShipmentsByIdConfirm<TContext>(
       | PostShipmentsByIdConfirm409
       | PostShipmentsByIdConfirm422
     >,
-    { id: PostShipmentsByIdConfirmPathParams["id"] },
+    { id: PostShipmentsByIdConfirmPathParams['id'] },
     TContext
   >(
     {
@@ -102,7 +102,7 @@ export function usePostShipmentsByIdConfirm<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PostShipmentsByIdConfirmMutationResponse,
     ResponseErrorConfig<
@@ -110,7 +110,7 @@ export function usePostShipmentsByIdConfirm<TContext>(
       | PostShipmentsByIdConfirm409
       | PostShipmentsByIdConfirm422
     >,
-    { id: PostShipmentsByIdConfirmPathParams["id"] },
+    { id: PostShipmentsByIdConfirmPathParams['id'] },
     TContext
-  >;
+  >
 }

@@ -7,28 +7,28 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
-import type { GetDashboardMonthlySalesQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySales.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getDashboardMonthlySales } from "../../clients/dashboardController/getDashboardMonthlySales.ts";
+} from '@tanstack/react-query'
+import type { GetDashboardMonthlySalesQueryResponse } from '../../types/dashboardController/GetDashboardMonthlySales.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getDashboardMonthlySales } from '../../clients/dashboardController/getDashboardMonthlySales.ts'
 
 export const getDashboardMonthlySalesSuspenseQueryKey = () =>
-  [{ url: "/dashboard/monthly-sales" }] as const;
+  [{ url: '/dashboard/monthly-sales' }] as const
 
 export type GetDashboardMonthlySalesSuspenseQueryKey = ReturnType<
   typeof getDashboardMonthlySalesSuspenseQueryKey
->;
+>
 
 export function getDashboardMonthlySalesSuspenseQueryOptions(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getDashboardMonthlySalesSuspenseQueryKey();
+  const queryKey = getDashboardMonthlySalesSuspenseQueryKey()
   return queryOptions<
     GetDashboardMonthlySalesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -40,9 +40,9 @@ export function getDashboardMonthlySalesSuspenseQueryOptions(
       return getDashboardMonthlySales({
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -61,14 +61,14 @@ export function useGetDashboardMonthlySalesSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getDashboardMonthlySalesSuspenseQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesSuspenseQueryKey()
 
   const query = useSuspenseQuery(
     {
@@ -76,12 +76,12 @@ export function useGetDashboardMonthlySalesSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

@@ -7,32 +7,32 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PostShipmentsMutationRequest,
   PostShipmentsMutationResponse,
   PostShipments404,
-} from "../../types/shipmentsController/PostShipments.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { postShipments } from "../../clients/shipmentsController/postShipments.ts";
+} from '../../types/shipmentsController/PostShipments.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { postShipments } from '../../clients/shipmentsController/postShipments.ts'
 
-export const postShipmentsMutationKey = () => [{ url: "/shipments" }] as const;
+export const postShipmentsMutationKey = () => [{ url: '/shipments' }] as const
 
 export type PostShipmentsMutationKey = ReturnType<
   typeof postShipmentsMutationKey
->;
+>
 
 export function postShipmentsMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PostShipmentsMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = postShipmentsMutationKey();
+  const mutationKey = postShipmentsMutationKey()
   return mutationOptions<
     PostShipmentsMutationResponse,
     ResponseErrorConfig<PostShipments404>,
@@ -41,9 +41,9 @@ export function postShipmentsMutationOptions<TContext = unknown>(
   >({
     mutationKey,
     mutationFn: async ({ data }) => {
-      return postShipments(data, config);
+      return postShipments(data, config)
     },
-  });
+  })
 }
 
 /**
@@ -56,24 +56,24 @@ export function usePostShipments<TContext>(
       ResponseErrorConfig<PostShipments404>,
       { data: PostShipmentsMutationRequest },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PostShipmentsMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
-  const mutationKey = mutationOptions.mutationKey ?? postShipmentsMutationKey();
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
+  const mutationKey = mutationOptions.mutationKey ?? postShipmentsMutationKey()
 
   const baseOptions = postShipmentsMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PostShipmentsMutationResponse,
     ResponseErrorConfig<PostShipments404>,
     { data: PostShipmentsMutationRequest },
     TContext
-  >;
+  >
 
   return useMutation<
     PostShipmentsMutationResponse,
@@ -86,11 +86,11 @@ export function usePostShipments<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PostShipmentsMutationResponse,
     ResponseErrorConfig<PostShipments404>,
     { data: PostShipmentsMutationRequest },
     TContext
-  >;
+  >
 }

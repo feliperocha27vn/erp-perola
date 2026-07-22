@@ -7,8 +7,8 @@ export type GetProductsProductIdStockEntriesPathParams = {
   /**
    * @type string, uuid
    */
-  productId: string;
-};
+  productId: string
+}
 
 /**
  * @description Default Response
@@ -21,53 +21,53 @@ export type GetProductsProductIdStockEntries200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    stock_id: string;
+    stock_id: string
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @type string
      */
-    notes: string | null;
+    notes: string | null
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string
      */
-    stock_title: string;
+    stock_title: string
     /**
      * @type string, uuid
      */
-    product_id: string;
+    product_id: string
     /**
      * @type string
      */
-    product_sku: string;
+    product_sku: string
     /**
      * @type string, uuid
      */
-    brand_id: string | null;
+    brand_id: string | null
     /**
      * @type string
      */
-    brand_name: string | null;
-  }[];
-};
+    brand_name: string | null
+  }[]
+}
 
 export type GetProductsProductIdStockEntriesQueryResponse =
-  GetProductsProductIdStockEntries200;
+  GetProductsProductIdStockEntries200
 
 export type GetProductsProductIdStockEntriesQuery = {
-  Response: GetProductsProductIdStockEntries200;
-  PathParams: GetProductsProductIdStockEntriesPathParams;
-  Errors: any;
-};
+  Response: GetProductsProductIdStockEntries200
+  PathParams: GetProductsProductIdStockEntriesPathParams
+  Errors: any
+}

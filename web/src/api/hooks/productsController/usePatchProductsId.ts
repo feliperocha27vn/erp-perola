@@ -7,49 +7,49 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PatchProductsIdMutationRequest,
   PatchProductsIdMutationResponse,
   PatchProductsIdPathParams,
   PatchProductsId404,
   PatchProductsId409,
-} from "../../types/productsController/PatchProductsId.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { patchProductsId } from "../../clients/productsController/patchProductsId.ts";
+} from '../../types/productsController/PatchProductsId.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { patchProductsId } from '../../clients/productsController/patchProductsId.ts'
 
 export const patchProductsIdMutationKey = () =>
-  [{ url: "/products/:id" }] as const;
+  [{ url: '/products/:id' }] as const
 
 export type PatchProductsIdMutationKey = ReturnType<
   typeof patchProductsIdMutationKey
->;
+>
 
 export function patchProductsIdMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PatchProductsIdMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = patchProductsIdMutationKey();
+  const mutationKey = patchProductsIdMutationKey()
   return mutationOptions<
     PatchProductsIdMutationResponse,
     ResponseErrorConfig<PatchProductsId404 | PatchProductsId409>,
     {
-      id: PatchProductsIdPathParams["id"];
-      data: PatchProductsIdMutationRequest;
+      id: PatchProductsIdPathParams['id']
+      data: PatchProductsIdMutationRequest
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id, data }) => {
-      return patchProductsId(id, data, config);
+      return patchProductsId(id, data, config)
     },
-  });
+  })
 }
 
 /**
@@ -62,39 +62,39 @@ export function usePatchProductsId<TContext>(
       PatchProductsIdMutationResponse,
       ResponseErrorConfig<PatchProductsId404 | PatchProductsId409>,
       {
-        id: PatchProductsIdPathParams["id"];
-        data: PatchProductsIdMutationRequest;
+        id: PatchProductsIdPathParams['id']
+        data: PatchProductsIdMutationRequest
       },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PatchProductsIdMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? patchProductsIdMutationKey();
+    mutationOptions.mutationKey ?? patchProductsIdMutationKey()
 
   const baseOptions = patchProductsIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PatchProductsIdMutationResponse,
     ResponseErrorConfig<PatchProductsId404 | PatchProductsId409>,
     {
-      id: PatchProductsIdPathParams["id"];
-      data: PatchProductsIdMutationRequest;
+      id: PatchProductsIdPathParams['id']
+      data: PatchProductsIdMutationRequest
     },
     TContext
-  >;
+  >
 
   return useMutation<
     PatchProductsIdMutationResponse,
     ResponseErrorConfig<PatchProductsId404 | PatchProductsId409>,
     {
-      id: PatchProductsIdPathParams["id"];
-      data: PatchProductsIdMutationRequest;
+      id: PatchProductsIdPathParams['id']
+      data: PatchProductsIdMutationRequest
     },
     TContext
   >(
@@ -103,14 +103,14 @@ export function usePatchProductsId<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PatchProductsIdMutationResponse,
     ResponseErrorConfig<PatchProductsId404 | PatchProductsId409>,
     {
-      id: PatchProductsIdPathParams["id"];
-      data: PatchProductsIdMutationRequest;
+      id: PatchProductsIdPathParams['id']
+      data: PatchProductsIdMutationRequest
     },
     TContext
-  >;
+  >
 }

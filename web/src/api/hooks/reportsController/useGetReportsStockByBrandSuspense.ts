@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetReportsStockByBrandQueryResponse,
   GetReportsStockByBrandQueryParams,
-} from "../../types/reportsController/GetReportsStockByBrand.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getReportsStockByBrand } from "../../clients/reportsController/getReportsStockByBrand.ts";
+} from '../../types/reportsController/GetReportsStockByBrand.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getReportsStockByBrand } from '../../clients/reportsController/getReportsStockByBrand.ts'
 
 export const getReportsStockByBrandSuspenseQueryKey = (
-  params?: GetReportsStockByBrandQueryParams,
-) => [{ url: "/reports/stock-by-brand" }, ...(params ? [params] : [])] as const;
+  params?: GetReportsStockByBrandQueryParams
+) => [{ url: '/reports/stock-by-brand' }, ...(params ? [params] : [])] as const
 
 export type GetReportsStockByBrandSuspenseQueryKey = ReturnType<
   typeof getReportsStockByBrandSuspenseQueryKey
->;
+>
 
 export function getReportsStockByBrandSuspenseQueryOptions(
   params?: GetReportsStockByBrandQueryParams,
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getReportsStockByBrandSuspenseQueryKey(params);
+  const queryKey = getReportsStockByBrandSuspenseQueryKey(params)
   return queryOptions<
     GetReportsStockByBrandQueryResponse,
     ResponseErrorConfig<Error>,
@@ -45,9 +45,9 @@ export function getReportsStockByBrandSuspenseQueryOptions(
       return getReportsStockByBrand(params, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -67,14 +67,14 @@ export function useGetReportsStockByBrandSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getReportsStockByBrandSuspenseQueryKey(params);
+    resolvedOptions?.queryKey ?? getReportsStockByBrandSuspenseQueryKey(params)
 
   const query = useSuspenseQuery(
     {
@@ -82,12 +82,12 @@ export function useGetReportsStockByBrandSuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

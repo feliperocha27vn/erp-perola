@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetProductSalesDailyQueryResponse,
   GetProductSalesDailyPathParams,
-} from "../../types/productsController/GetProductSalesDaily.ts";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getProductSalesDaily } from "../../clients/productsController/getProductSalesDaily.ts";
+} from '../../types/productsController/GetProductSalesDaily.ts'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+import { getProductSalesDaily } from '../../clients/productsController/getProductSalesDaily.ts'
 
 export const getProductSalesDailyQueryKey = (
-  id: GetProductSalesDailyPathParams["id"],
-) => [{ url: "/products/:id/sales-daily", params: { id: id } }] as const;
+  id: GetProductSalesDailyPathParams['id']
+) => [{ url: '/products/:id/sales-daily', params: { id: id } }] as const
 
 export type GetProductSalesDailyQueryKey = ReturnType<
   typeof getProductSalesDailyQueryKey
->;
+>
 
 export function getProductSalesDailyQueryOptions(
-  id: GetProductSalesDailyPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: GetProductSalesDailyPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getProductSalesDailyQueryKey(id);
+  const queryKey = getProductSalesDailyQueryKey(id)
   return queryOptions<
     GetProductSalesDailyQueryResponse,
     ResponseErrorConfig<Error>,
@@ -46,9 +46,9 @@ export function getProductSalesDailyQueryOptions(
       return getProductSalesDaily(id, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -60,7 +60,7 @@ export function useGetProductSalesDaily<
   TQueryData = GetProductSalesDailyQueryResponse,
   TQueryKey extends QueryKey = GetProductSalesDailyQueryKey,
 >(
-  id: GetProductSalesDailyPathParams["id"],
+  id: GetProductSalesDailyPathParams['id'],
   options: {
     query?: Partial<
       QueryObserverOptions<
@@ -70,14 +70,13 @@ export function useGetProductSalesDaily<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
-  const queryKey =
-    resolvedOptions?.queryKey ?? getProductSalesDailyQueryKey(id);
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = resolvedOptions?.queryKey ?? getProductSalesDailyQueryKey(id)
 
   const query = useQuery(
     {
@@ -85,12 +84,12 @@ export function useGetProductSalesDaily<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient,
+    queryClient
   ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

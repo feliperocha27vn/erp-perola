@@ -7,12 +7,12 @@ export type GetReportsSalesQueryParams = {
   /**
    * @type string, date-time
    */
-  startDate: string;
+  startDate: string
   /**
    * @type string, date-time
    */
-  endDate: string;
-};
+  endDate: string
+}
 
 /**
  * @description Default Response
@@ -25,48 +25,48 @@ export type GetReportsSales200 = {
     /**
      * @type string, date-time
      */
-    sale_date: string;
+    sale_date: string
     /**
      * @type string
      */
-    sku: string;
+    sku: string
     /**
      * @type string
      */
-    store_name: string | null;
+    store_name: string | null
     /**
      * @type string
      */
-    channel: string;
+    channel: string
     /**
      * @type string
      */
-    stock_title: string;
+    stock_title: string
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price: number;
+    sale_price: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total_price: number;
-  }[];
-};
+    total_price: number
+  }[]
+}
 
-export type GetReportsSalesQueryResponse = GetReportsSales200;
+export type GetReportsSalesQueryResponse = GetReportsSales200
 
 export type GetReportsSalesQuery = {
-  Response: GetReportsSales200;
-  QueryParams: GetReportsSalesQueryParams;
-  Errors: any;
-};
+  Response: GetReportsSales200
+  QueryParams: GetReportsSalesQueryParams
+  Errors: any
+}

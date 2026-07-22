@@ -14,6 +14,7 @@ import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/u
 import { useGetDashboardMonthlySales } from '@/api/hooks/dashboardController/useGetDashboardMonthlySales'
 import { LastMonthRevenueCard } from './-components/dashboard/last-month-revenue-card'
 import { MonthlyRevenueChart } from './-components/dashboard/monthly-revenue-chart'
+import { RestockAlertCard } from './-components/dashboard/restock-alert-card'
 
 export const Route = createFileRoute('/')({
   component: Dashboard,
@@ -46,6 +47,8 @@ function Dashboard() {
           </h1>
         </div>
       </div>
+
+      <RestockAlertCard />
 
       <LastMonthRevenueCard
         totalCents={lastMonthSalesData?.total_cents ?? 0}
@@ -121,7 +124,8 @@ function Dashboard() {
               Relatório de Estoque
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Visualize a distribuição de estoque por marca, com colunas por local e totais por produto.
+              Visualize a distribuição de estoque por marca, com colunas por
+              local e totais por produto.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Relatório
@@ -161,7 +165,8 @@ function Dashboard() {
               Lançamentos de Estoque
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Veja o histórico de entradas de estoque por período e marca. Registre reposições diretamente no produto.
+              Veja o histórico de entradas de estoque por período e marca.
+              Registre reposições diretamente no produto.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Lançamentos
@@ -180,7 +185,8 @@ function Dashboard() {
               Relatório de Vendas
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Gere relatórios de vendas por período com SKU, loja, canal, depósito e valor. Exporte em CSV ou compartilhe o link.
+              Gere relatórios de vendas por período com SKU, loja, canal,
+              depósito e valor. Exporte em CSV ou compartilhe o link.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Relatório
@@ -199,7 +205,8 @@ function Dashboard() {
               Curva ABC
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Classifique os SKUs por faturamento em cada loja (A/B/C). Identifique os produtos mais estratégicos.
+              Classifique os SKUs por faturamento em cada loja (A/B/C).
+              Identifique os produtos mais estratégicos.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Ver Curva ABC
@@ -218,7 +225,8 @@ function Dashboard() {
               Envios para centro de distribuição
             </h4>
             <p className="text-muted-foreground leading-relaxed">
-              Crie e gerencie envios para centros de distribuição. Transfira estoque entre locais automaticamente.
+              Crie e gerencie envios para centros de distribuição. Transfira
+              estoque entre locais automaticamente.
             </p>
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Acessar Envios

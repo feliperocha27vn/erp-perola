@@ -14,25 +14,25 @@ export type GetBrands200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string
      */
-    name: string;
+    name: string
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
-  }[];
-};
+    updated_at: string
+  }[]
+}
 
-export type GetBrandsQueryResponse = GetBrands200;
+export type GetBrandsQueryResponse = GetBrands200
 
 export type GetBrandsQuery = {
-  Response: GetBrands200;
-  Errors: any;
-};
+  Response: GetBrands200
+  Errors: any
+}

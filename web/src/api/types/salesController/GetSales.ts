@@ -7,44 +7,44 @@ export type GetSalesQueryParams = {
   /**
    * @type string | undefined, date-time
    */
-  startDate?: string;
+  startDate?: string
   /**
    * @type string | undefined, date-time
    */
-  endDate?: string;
+  endDate?: string
   /**
    * @type string | undefined, uuid
    */
-  brandId?: string;
+  brandId?: string
   /**
    * @type string | undefined, uuid
    */
-  storeId?: string;
+  storeId?: string
   /**
    * @minLength 1
    * @maxLength 9007199254740991
    * @default 1
    * @type integer | undefined
    */
-  page?: number;
+  page?: number
   /**
    * @minLength 1
    * @maxLength 100
    * @default 10
    * @type integer | undefined
    */
-  limit?: number;
-};
+  limit?: number
+}
 
 export const itemsChannelEnum = {
-  Amazon: "Amazon",
-  "Mercado Livre": "Mercado Livre",
-  Shopee: "Shopee",
-  Direto: "Direto",
-} as const;
+  Amazon: 'Amazon',
+  'Mercado Livre': 'Mercado Livre',
+  Shopee: 'Shopee',
+  Direto: 'Direto',
+} as const
 
 export type ItemsChannelEnumKey =
-  (typeof itemsChannelEnum)[keyof typeof itemsChannelEnum];
+  (typeof itemsChannelEnum)[keyof typeof itemsChannelEnum]
 
 /**
  * @description Default Response
@@ -57,53 +57,53 @@ export type GetSales200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    product_id: string;
+    product_id: string
     /**
      * @type string, uuid
      */
-    stock_id: string;
+    stock_id: string
     /**
      * @type string, uuid
      */
-    store_id: string | null;
+    store_id: string | null
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price: number;
+    sale_price: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total_price: number;
+    total_price: number
     /**
      * @type string
      */
-    channel: ItemsChannelEnumKey;
+    channel: ItemsChannelEnumKey
     /**
      * @type string, date-time
      */
-    sale_date: string;
+    sale_date: string
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
+    updated_at: string
     /**
      * @type object
      */
@@ -111,32 +111,32 @@ export type GetSales200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      sku: string;
+      sku: string
       /**
        * @type string
        */
-      ean: string;
+      ean: string
       /**
        * @type string, uuid
        */
-      brand_id: string | null;
+      brand_id: string | null
       /**
        * @type string
        */
-      url_image: string | null;
+      url_image: string | null
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    };
+      updated_at: string
+    }
     /**
      * @type object
      */
@@ -144,34 +144,34 @@ export type GetSales200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string, uuid
        */
-      product_id: string;
+      product_id: string
       /**
        * @type string
        */
-      title: string;
+      title: string
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number;
+      qtde: number
       /**
        * @type boolean
        */
-      full: boolean;
+      full: boolean
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    };
+      updated_at: string
+    }
     /**
      * @type object
      */
@@ -179,39 +179,39 @@ export type GetSales200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      name: string;
+      name: string
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    } | null;
-  }[];
+      updated_at: string
+    } | null
+  }[]
   /**
    * @minLength -9007199254740991
    * @maxLength 9007199254740991
    * @type integer
    */
-  totalCount: number;
+  totalCount: number
   /**
    * @minLength -9007199254740991
    * @maxLength 9007199254740991
    * @type integer
    */
-  totalPages: number;
+  totalPages: number
   /**
    * @minLength -9007199254740991
    * @maxLength 9007199254740991
    * @type integer
    */
-  currentPage: number;
+  currentPage: number
   /**
    * @type array
    */
@@ -219,24 +219,24 @@ export type GetSales200 = {
     /**
      * @type string, uuid
      */
-    brand_id: string;
+    brand_id: string
     /**
      * @type string
      */
-    brand_name: string;
+    brand_name: string
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    count: number;
-  }[];
-};
+    count: number
+  }[]
+}
 
-export type GetSalesQueryResponse = GetSales200;
+export type GetSalesQueryResponse = GetSales200
 
 export type GetSalesQuery = {
-  Response: GetSales200;
-  QueryParams: GetSalesQueryParams;
-  Errors: any;
-};
+  Response: GetSales200
+  QueryParams: GetSalesQueryParams
+  Errors: any
+}

@@ -3,40 +3,40 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   DeleteProductMutationResponse,
   DeleteProductPathParams,
   DeleteProduct404,
-} from "../../types/productsController/DeleteProduct.ts";
+} from '../../types/productsController/DeleteProduct.ts'
 
-function getDeleteProductUrl(id: DeleteProductPathParams["id"]) {
-  const res = { method: "DELETE", url: `/products/${id}` as const };
-  return res;
+function getDeleteProductUrl(id: DeleteProductPathParams['id']) {
+  const res = { method: 'DELETE', url: `/products/${id}` as const }
+  return res
 }
 
 /**
  * {@link /products/:id}
  */
 export async function deleteProduct(
-  id: DeleteProductPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: DeleteProductPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     DeleteProductMutationResponse,
     ResponseErrorConfig<DeleteProduct404>,
     unknown
   >({
-    method: "DELETE",
+    method: 'DELETE',
     url: getDeleteProductUrl(id).url.toString(),
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

@@ -3,17 +3,17 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
-import type { GetStoresQueryResponse } from "../../types/storesController/GetStores.ts";
+} from '@/lib/kubb-axios-client'
+import type { GetStoresQueryResponse } from '../../types/storesController/GetStores.ts'
 
 function getGetStoresUrl() {
-  const res = { method: "GET", url: `/stores` as const };
-  return res;
+  const res = { method: 'GET', url: `/stores` as const }
+  return res
 }
 
 /**
@@ -21,14 +21,14 @@ function getGetStoresUrl() {
  * {@link /stores}
  */
 export async function getStores(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
   const res = await request<
     GetStoresQueryResponse,
     ResponseErrorConfig<Error>,
     unknown
-  >({ method: "GET", url: getGetStoresUrl().url.toString(), ...requestConfig });
-  return res.data;
+  >({ method: 'GET', url: getGetStoresUrl().url.toString(), ...requestConfig })
+  return res.data
 }

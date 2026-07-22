@@ -7,45 +7,45 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PatchBrandsIdMutationRequest,
   PatchBrandsIdMutationResponse,
   PatchBrandsIdPathParams,
   PatchBrandsId404,
   PatchBrandsId409,
-} from "../../types/brandsController/PatchBrandsId.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { patchBrandsId } from "../../clients/brandsController/patchBrandsId.ts";
+} from '../../types/brandsController/PatchBrandsId.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { patchBrandsId } from '../../clients/brandsController/patchBrandsId.ts'
 
-export const patchBrandsIdMutationKey = () => [{ url: "/brands/:id" }] as const;
+export const patchBrandsIdMutationKey = () => [{ url: '/brands/:id' }] as const
 
 export type PatchBrandsIdMutationKey = ReturnType<
   typeof patchBrandsIdMutationKey
->;
+>
 
 export function patchBrandsIdMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PatchBrandsIdMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = patchBrandsIdMutationKey();
+  const mutationKey = patchBrandsIdMutationKey()
   return mutationOptions<
     PatchBrandsIdMutationResponse,
     ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
-    { id: PatchBrandsIdPathParams["id"]; data: PatchBrandsIdMutationRequest },
+    { id: PatchBrandsIdPathParams['id']; data: PatchBrandsIdMutationRequest },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id, data }) => {
-      return patchBrandsId(id, data, config);
+      return patchBrandsId(id, data, config)
     },
-  });
+  })
 }
 
 /**
@@ -57,31 +57,31 @@ export function usePatchBrandsId<TContext>(
     mutation?: UseMutationOptions<
       PatchBrandsIdMutationResponse,
       ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
-      { id: PatchBrandsIdPathParams["id"]; data: PatchBrandsIdMutationRequest },
+      { id: PatchBrandsIdPathParams['id']; data: PatchBrandsIdMutationRequest },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PatchBrandsIdMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
-  const mutationKey = mutationOptions.mutationKey ?? patchBrandsIdMutationKey();
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
+  const mutationKey = mutationOptions.mutationKey ?? patchBrandsIdMutationKey()
 
   const baseOptions = patchBrandsIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PatchBrandsIdMutationResponse,
     ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
-    { id: PatchBrandsIdPathParams["id"]; data: PatchBrandsIdMutationRequest },
+    { id: PatchBrandsIdPathParams['id']; data: PatchBrandsIdMutationRequest },
     TContext
-  >;
+  >
 
   return useMutation<
     PatchBrandsIdMutationResponse,
     ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
-    { id: PatchBrandsIdPathParams["id"]; data: PatchBrandsIdMutationRequest },
+    { id: PatchBrandsIdPathParams['id']; data: PatchBrandsIdMutationRequest },
     TContext
   >(
     {
@@ -89,11 +89,11 @@ export function usePatchBrandsId<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PatchBrandsIdMutationResponse,
     ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
-    { id: PatchBrandsIdPathParams["id"]; data: PatchBrandsIdMutationRequest },
+    { id: PatchBrandsIdPathParams['id']; data: PatchBrandsIdMutationRequest },
     TContext
-  >;
+  >
 }

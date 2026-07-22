@@ -12,13 +12,13 @@ export type GetDashboardLastMonthSales200 = {
    * @maxLength 9007199254740991
    * @type integer
    */
-  total_cents: number;
-};
+  total_cents: number
+}
 
 export type GetDashboardLastMonthSalesQueryResponse =
-  GetDashboardLastMonthSales200;
+  GetDashboardLastMonthSales200
 
 export type GetDashboardLastMonthSalesQuery = {
-  Response: GetDashboardLastMonthSales200;
-  Errors: any;
-};
+  Response: GetDashboardLastMonthSales200
+  Errors: any
+}

@@ -7,8 +7,8 @@ export type PatchProductsIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string;
-};
+  id: string
+}
 
 /**
  * @description Default Response
@@ -21,25 +21,25 @@ export type PatchProductsId200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string
      */
-    sku: string;
+    sku: string
     /**
      * @type string
      */
-    ean: string;
+    ean: string
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price_cents: number | null;
+    sale_price_cents: number | null
     /**
      * @type string, uuid
      */
-    brand_id: string | null;
+    brand_id: string | null
     /**
      * @type object
      */
@@ -47,60 +47,60 @@ export type PatchProductsId200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      name: string;
+      name: string
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    } | null;
+      updated_at: string
+    } | null
     /**
      * @type string
      */
-    url_image: string | null;
+    url_image: string | null
     /**
      * @type string
      */
-    technical_title: string | null;
+    technical_title: string | null
     /**
      * @type string
      */
-    technical_subtitle: string | null;
+    technical_subtitle: string | null
     /**
      * @type string
      */
-    technical_analysis: string | null;
+    technical_analysis: string | null
     /**
      * @type string
      */
-    technical_movement: string | null;
+    technical_movement: string | null
     /**
      * @type string
      */
-    technical_case_and_crystal: string | null;
+    technical_case_and_crystal: string | null
     /**
      * @type string
      */
-    technical_specific_functionality: string | null;
+    technical_specific_functionality: string | null
     /**
      * @type string
      */
-    technical_dial_and_luminosity: string | null;
+    technical_dial_and_luminosity: string | null
     /**
      * @type string
      */
-    technical_bracelet_construction: string | null;
+    technical_bracelet_construction: string | null
     /**
      * @type string
      */
-    technical_table: string | null;
+    technical_table: string | null
     /**
      * @type array
      */
@@ -108,44 +108,44 @@ export type PatchProductsId200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string, uuid
        */
-      product_id: string;
+      product_id: string
       /**
        * @type string
        */
-      title: string;
+      title: string
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number;
+      qtde: number
       /**
        * @type boolean
        */
-      full: boolean;
+      full: boolean
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    }[];
+      updated_at: string
+    }[]
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
-  };
-};
+    updated_at: string
+  }
+}
 
 /**
  * @description Default Response
@@ -154,8 +154,8 @@ export type PatchProductsId404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 /**
  * @description Default Response
@@ -164,77 +164,77 @@ export type PatchProductsId409 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export type PatchProductsIdMutationRequest = {
   /**
    * @minLength 1
    * @type string | undefined
    */
-  sku?: string;
+  sku?: string
   /**
    * @minLength 1
    * @type string | undefined
    */
-  ean?: string;
+  ean?: string
   /**
    * @minLength 1
    * @maxLength 9007199254740991
    * @type integer
    */
-  sale_price_cents?: number | null;
+  sale_price_cents?: number | null
   /**
    * @type string | undefined, uuid
    */
-  brand_id?: string;
+  brand_id?: string
   /**
    * @type string, uri
    */
-  url_image?: string | null;
+  url_image?: string | null
   /**
    * @type string
    */
-  technical_title?: string | null;
+  technical_title?: string | null
   /**
    * @type string
    */
-  technical_subtitle?: string | null;
+  technical_subtitle?: string | null
   /**
    * @type string
    */
-  technical_analysis?: string | null;
+  technical_analysis?: string | null
   /**
    * @type string
    */
-  technical_movement?: string | null;
+  technical_movement?: string | null
   /**
    * @type string
    */
-  technical_case_and_crystal?: string | null;
+  technical_case_and_crystal?: string | null
   /**
    * @type string
    */
-  technical_specific_functionality?: string | null;
+  technical_specific_functionality?: string | null
   /**
    * @type string
    */
-  technical_dial_and_luminosity?: string | null;
+  technical_dial_and_luminosity?: string | null
   /**
    * @type string
    */
-  technical_bracelet_construction?: string | null;
+  technical_bracelet_construction?: string | null
   /**
    * @type string
    */
-  technical_table?: string | null;
-};
+  technical_table?: string | null
+}
 
-export type PatchProductsIdMutationResponse = PatchProductsId200;
+export type PatchProductsIdMutationResponse = PatchProductsId200
 
 export type PatchProductsIdMutation = {
-  Response: PatchProductsId200;
-  Request: PatchProductsIdMutationRequest;
-  PathParams: PatchProductsIdPathParams;
-  Errors: PatchProductsId404 | PatchProductsId409;
-};
+  Response: PatchProductsId200
+  Request: PatchProductsIdMutationRequest
+  PathParams: PatchProductsIdPathParams
+  Errors: PatchProductsId404 | PatchProductsId409
+}

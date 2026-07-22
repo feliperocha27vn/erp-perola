@@ -54,3 +54,21 @@ export interface AbcReportRepository {
 	fetchStockTotals(): Promise<StockTotalRow[]>
 	fetchUnits90dByStore(): Promise<Units90dRow[]>
 }
+
+export interface RestockAlertProductRow {
+	product_id: string
+	sku: string
+	brand_name: string | null
+	physical_stock_qty: number
+}
+
+export interface RestockAlertSalesRow {
+	product_id: string
+	units_15d: number
+	units_30d: number
+}
+
+export interface RestockAlertRepository {
+	fetchRestockAlertProducts(): Promise<RestockAlertProductRow[]>
+	fetchRestockAlertSalesPace(): Promise<RestockAlertSalesRow[]>
+}

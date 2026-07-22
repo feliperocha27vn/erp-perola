@@ -3,21 +3,21 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   PostBrandsMutationRequest,
   PostBrandsMutationResponse,
   PostBrands409,
-} from "../../types/brandsController/PostBrands.ts";
+} from '../../types/brandsController/PostBrands.ts'
 
 function getPostBrandsUrl() {
-  const res = { method: "POST", url: `/brands` as const };
-  return res;
+  const res = { method: 'POST', url: `/brands` as const }
+  return res
 }
 
 /**
@@ -27,22 +27,22 @@ function getPostBrandsUrl() {
 export async function postBrands(
   data: PostBrandsMutationRequest,
   config: Partial<RequestConfig<PostBrandsMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
-  const requestData = data;
+  const requestData = data
 
   const res = await request<
     PostBrandsMutationResponse,
     ResponseErrorConfig<PostBrands409>,
     PostBrandsMutationRequest
   >({
-    method: "POST",
+    method: 'POST',
     url: getPostBrandsUrl().url.toString(),
     data: requestData,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

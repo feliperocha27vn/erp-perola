@@ -7,18 +7,18 @@ export type PatchSalesIdPathParams = {
   /**
    * @type string, uuid
    */
-  id: string;
-};
+  id: string
+}
 
 export const saleChannelEnum2 = {
-  Amazon: "Amazon",
-  "Mercado Livre": "Mercado Livre",
-  Shopee: "Shopee",
-  Direto: "Direto",
-} as const;
+  Amazon: 'Amazon',
+  'Mercado Livre': 'Mercado Livre',
+  Shopee: 'Shopee',
+  Direto: 'Direto',
+} as const
 
 export type SaleChannelEnum2Key =
-  (typeof saleChannelEnum2)[keyof typeof saleChannelEnum2];
+  (typeof saleChannelEnum2)[keyof typeof saleChannelEnum2]
 
 /**
  * @description Default Response
@@ -31,53 +31,53 @@ export type PatchSalesId200 = {
     /**
      * @type string, uuid
      */
-    id: string;
+    id: string
     /**
      * @type string, uuid
      */
-    product_id: string;
+    product_id: string
     /**
      * @type string, uuid
      */
-    stock_id: string;
+    stock_id: string
     /**
      * @type string, uuid
      */
-    store_id: string | null;
+    store_id: string | null
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    quantity: number;
+    quantity: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    sale_price: number;
+    sale_price: number
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total_price: number;
+    total_price: number
     /**
      * @type string
      */
-    channel: SaleChannelEnum2Key;
+    channel: SaleChannelEnum2Key
     /**
      * @type string, date-time
      */
-    sale_date: string;
+    sale_date: string
     /**
      * @type string, date-time
      */
-    created_at: string;
+    created_at: string
     /**
      * @type string, date-time
      */
-    updated_at: string;
+    updated_at: string
     /**
      * @type object
      */
@@ -85,32 +85,32 @@ export type PatchSalesId200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      sku: string;
+      sku: string
       /**
        * @type string
        */
-      ean: string;
+      ean: string
       /**
        * @type string, uuid
        */
-      brand_id: string | null;
+      brand_id: string | null
       /**
        * @type string
        */
-      url_image: string | null;
+      url_image: string | null
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    };
+      updated_at: string
+    }
     /**
      * @type object
      */
@@ -118,34 +118,34 @@ export type PatchSalesId200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string, uuid
        */
-      product_id: string;
+      product_id: string
       /**
        * @type string
        */
-      title: string;
+      title: string
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number;
+      qtde: number
       /**
        * @type boolean
        */
-      full: boolean;
+      full: boolean
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    };
+      updated_at: string
+    }
     /**
      * @type object
      */
@@ -153,22 +153,22 @@ export type PatchSalesId200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      name: string;
+      name: string
       /**
        * @type string, date-time
        */
-      created_at: string;
+      created_at: string
       /**
        * @type string, date-time
        */
-      updated_at: string;
-    } | null;
-  };
-};
+      updated_at: string
+    } | null
+  }
+}
 
 /**
  * @description Default Response
@@ -177,8 +177,8 @@ export type PatchSalesId400 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 /**
  * @description Default Response
@@ -187,51 +187,51 @@ export type PatchSalesId404 = {
   /**
    * @type string
    */
-  error: string;
-};
+  error: string
+}
 
 export const patchSalesIdMutationRequestChannelEnum = {
-  Amazon: "Amazon",
-  "Mercado Livre": "Mercado Livre",
-  Shopee: "Shopee",
-  Direto: "Direto",
-} as const;
+  Amazon: 'Amazon',
+  'Mercado Livre': 'Mercado Livre',
+  Shopee: 'Shopee',
+  Direto: 'Direto',
+} as const
 
 export type PatchSalesIdMutationRequestChannelEnumKey =
-  (typeof patchSalesIdMutationRequestChannelEnum)[keyof typeof patchSalesIdMutationRequestChannelEnum];
+  (typeof patchSalesIdMutationRequestChannelEnum)[keyof typeof patchSalesIdMutationRequestChannelEnum]
 
 export type PatchSalesIdMutationRequest = {
   /**
    * @maxLength 9007199254740991
    * @type integer | undefined
    */
-  quantity?: number;
+  quantity?: number
   /**
    * @minLength 0
    * @maxLength 9007199254740991
    * @type integer | undefined
    */
-  sale_price?: number;
+  sale_price?: number
   /**
    * @type string | undefined
    */
-  channel?: PatchSalesIdMutationRequestChannelEnumKey;
+  channel?: PatchSalesIdMutationRequestChannelEnumKey
   /**
    * @pattern ^\d{4}-\d{2}-\d{2}$
    * @type string | undefined
    */
-  sale_date?: string;
+  sale_date?: string
   /**
    * @type string, uuid
    */
-  store_id?: string | null;
-};
+  store_id?: string | null
+}
 
-export type PatchSalesIdMutationResponse = PatchSalesId200;
+export type PatchSalesIdMutationResponse = PatchSalesId200
 
 export type PatchSalesIdMutation = {
-  Response: PatchSalesId200;
-  Request: PatchSalesIdMutationRequest;
-  PathParams: PatchSalesIdPathParams;
-  Errors: PatchSalesId400 | PatchSalesId404;
-};
+  Response: PatchSalesId200
+  Request: PatchSalesIdMutationRequest
+  PathParams: PatchSalesIdPathParams
+  Errors: PatchSalesId400 | PatchSalesId404
+}

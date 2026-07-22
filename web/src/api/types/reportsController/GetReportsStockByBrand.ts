@@ -7,12 +7,12 @@ export type GetReportsStockByBrandQueryParams = {
   /**
    * @type string | undefined, uuid
    */
-  brandId?: string;
+  brandId?: string
   /**
    * @type string | undefined
    */
-  noBrand?: string;
-};
+  noBrand?: string
+}
 
 /**
  * @description Default Response
@@ -25,11 +25,11 @@ export type GetReportsStockByBrand200 = {
     /**
      * @type string, uuid
      */
-    productId: string;
+    productId: string
     /**
      * @type string
      */
-    sku: string;
+    sku: string
     /**
      * @type array
      */
@@ -37,31 +37,31 @@ export type GetReportsStockByBrand200 = {
       /**
        * @type string, uuid
        */
-      id: string;
+      id: string
       /**
        * @type string
        */
-      title: string;
+      title: string
       /**
        * @minLength -9007199254740991
        * @maxLength 9007199254740991
        * @type integer
        */
-      qtde: number;
-    }[];
+      qtde: number
+    }[]
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer
      */
-    total: number;
-  }[];
-};
+    total: number
+  }[]
+}
 
-export type GetReportsStockByBrandQueryResponse = GetReportsStockByBrand200;
+export type GetReportsStockByBrandQueryResponse = GetReportsStockByBrand200
 
 export type GetReportsStockByBrandQuery = {
-  Response: GetReportsStockByBrand200;
-  QueryParams: GetReportsStockByBrandQueryParams;
-  Errors: any;
-};
+  Response: GetReportsStockByBrand200
+  QueryParams: GetReportsStockByBrandQueryParams
+  Errors: any
+}

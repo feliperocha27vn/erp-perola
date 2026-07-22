@@ -3,21 +3,21 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   PostShipmentsMutationRequest,
   PostShipmentsMutationResponse,
   PostShipments404,
-} from "../../types/shipmentsController/PostShipments.ts";
+} from '../../types/shipmentsController/PostShipments.ts'
 
 function getPostShipmentsUrl() {
-  const res = { method: "POST", url: `/shipments` as const };
-  return res;
+  const res = { method: 'POST', url: `/shipments` as const }
+  return res
 }
 
 /**
@@ -26,22 +26,22 @@ function getPostShipmentsUrl() {
 export async function postShipments(
   data: PostShipmentsMutationRequest,
   config: Partial<RequestConfig<PostShipmentsMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
-  const requestData = data;
+  const requestData = data
 
   const res = await request<
     PostShipmentsMutationResponse,
     ResponseErrorConfig<PostShipments404>,
     PostShipmentsMutationRequest
   >({
-    method: "POST",
+    method: 'POST',
     url: getPostShipmentsUrl().url.toString(),
     data: requestData,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

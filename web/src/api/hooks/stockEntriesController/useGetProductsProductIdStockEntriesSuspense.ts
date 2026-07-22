@@ -7,39 +7,39 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetProductsProductIdStockEntriesQueryResponse,
   GetProductsProductIdStockEntriesPathParams,
-} from "../../types/stockEntriesController/GetProductsProductIdStockEntries.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getProductsProductIdStockEntries } from "../../clients/stockEntriesController/getProductsProductIdStockEntries.ts";
+} from '../../types/stockEntriesController/GetProductsProductIdStockEntries.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getProductsProductIdStockEntries } from '../../clients/stockEntriesController/getProductsProductIdStockEntries.ts'
 
 export const getProductsProductIdStockEntriesSuspenseQueryKey = (
-  productId: GetProductsProductIdStockEntriesPathParams["productId"],
+  productId: GetProductsProductIdStockEntriesPathParams['productId']
 ) =>
   [
     {
-      url: "/products/:productId/stock-entries",
+      url: '/products/:productId/stock-entries',
       params: { productId: productId },
     },
-  ] as const;
+  ] as const
 
 export type GetProductsProductIdStockEntriesSuspenseQueryKey = ReturnType<
   typeof getProductsProductIdStockEntriesSuspenseQueryKey
->;
+>
 
 export function getProductsProductIdStockEntriesSuspenseQueryOptions(
-  productId: GetProductsProductIdStockEntriesPathParams["productId"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  productId: GetProductsProductIdStockEntriesPathParams['productId'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getProductsProductIdStockEntriesSuspenseQueryKey(productId);
+  const queryKey = getProductsProductIdStockEntriesSuspenseQueryKey(productId)
   return queryOptions<
     GetProductsProductIdStockEntriesQueryResponse,
     ResponseErrorConfig<Error>,
@@ -52,9 +52,9 @@ export function getProductsProductIdStockEntriesSuspenseQueryOptions(
       return getProductsProductIdStockEntries(productId, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -65,7 +65,7 @@ export function useGetProductsProductIdStockEntriesSuspense<
   TData = GetProductsProductIdStockEntriesQueryResponse,
   TQueryKey extends QueryKey = GetProductsProductIdStockEntriesSuspenseQueryKey,
 >(
-  productId: GetProductsProductIdStockEntriesPathParams["productId"],
+  productId: GetProductsProductIdStockEntriesPathParams['productId'],
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -74,31 +74,31 @@ export function useGetProductsProductIdStockEntriesSuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
     resolvedOptions?.queryKey ??
-    getProductsProductIdStockEntriesSuspenseQueryKey(productId);
+    getProductsProductIdStockEntriesSuspenseQueryKey(productId)
 
   const query = useSuspenseQuery(
     {
       ...getProductsProductIdStockEntriesSuspenseQueryOptions(
         productId,
-        config,
+        config
       ),
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

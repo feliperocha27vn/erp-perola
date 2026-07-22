@@ -7,34 +7,34 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   QueryObserverOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetShipmentsByIdQueryResponse,
   GetShipmentsByIdPathParams,
   GetShipmentsById404,
-} from "../../types/shipmentsController/GetShipmentsById.ts";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getShipmentsById } from "../../clients/shipmentsController/getShipmentsById.ts";
+} from '../../types/shipmentsController/GetShipmentsById.ts'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+import { getShipmentsById } from '../../clients/shipmentsController/getShipmentsById.ts'
 
 export const getShipmentsByIdQueryKey = (
-  id: GetShipmentsByIdPathParams["id"],
-) => [{ url: "/shipments/:id", params: { id: id } }] as const;
+  id: GetShipmentsByIdPathParams['id']
+) => [{ url: '/shipments/:id', params: { id: id } }] as const
 
 export type GetShipmentsByIdQueryKey = ReturnType<
   typeof getShipmentsByIdQueryKey
->;
+>
 
 export function getShipmentsByIdQueryOptions(
-  id: GetShipmentsByIdPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: GetShipmentsByIdPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getShipmentsByIdQueryKey(id);
+  const queryKey = getShipmentsByIdQueryKey(id)
   return queryOptions<
     GetShipmentsByIdQueryResponse,
     ResponseErrorConfig<GetShipmentsById404>,
@@ -47,9 +47,9 @@ export function getShipmentsByIdQueryOptions(
       return getShipmentsById(id, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -60,7 +60,7 @@ export function useGetShipmentsById<
   TQueryData = GetShipmentsByIdQueryResponse,
   TQueryKey extends QueryKey = GetShipmentsByIdQueryKey,
 >(
-  id: GetShipmentsByIdPathParams["id"],
+  id: GetShipmentsByIdPathParams['id'],
   options: {
     query?: Partial<
       QueryObserverOptions<
@@ -70,13 +70,13 @@ export function useGetShipmentsById<
         TQueryData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
-  const queryKey = resolvedOptions?.queryKey ?? getShipmentsByIdQueryKey(id);
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
+  const queryKey = resolvedOptions?.queryKey ?? getShipmentsByIdQueryKey(id)
 
   const query = useQuery(
     {
@@ -84,12 +84,12 @@ export function useGetShipmentsById<
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,
-    queryClient,
+    queryClient
   ) as UseQueryResult<TData, ResponseErrorConfig<GetShipmentsById404>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

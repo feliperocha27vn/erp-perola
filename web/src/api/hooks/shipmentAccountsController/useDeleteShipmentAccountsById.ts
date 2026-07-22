@@ -7,42 +7,42 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   DeleteShipmentAccountsByIdMutationResponse,
   DeleteShipmentAccountsByIdPathParams,
   DeleteShipmentAccountsById404,
-} from "../../types/shipmentAccountsController/DeleteShipmentAccountsById.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { deleteShipmentAccountsById } from "../../clients/shipmentAccountsController/deleteShipmentAccountsById.ts";
+} from '../../types/shipmentAccountsController/DeleteShipmentAccountsById.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { deleteShipmentAccountsById } from '../../clients/shipmentAccountsController/deleteShipmentAccountsById.ts'
 
 export const deleteShipmentAccountsByIdMutationKey = () =>
-  [{ url: "/shipment-accounts/:id" }] as const;
+  [{ url: '/shipment-accounts/:id' }] as const
 
 export type DeleteShipmentAccountsByIdMutationKey = ReturnType<
   typeof deleteShipmentAccountsByIdMutationKey
->;
+>
 
 export function deleteShipmentAccountsByIdMutationOptions<TContext = unknown>(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const mutationKey = deleteShipmentAccountsByIdMutationKey();
+  const mutationKey = deleteShipmentAccountsByIdMutationKey()
   return mutationOptions<
     DeleteShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentAccountsById404>,
-    { id: DeleteShipmentAccountsByIdPathParams["id"] },
+    { id: DeleteShipmentAccountsByIdPathParams['id'] },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id }) => {
-      return deleteShipmentAccountsById(id, config);
+      return deleteShipmentAccountsById(id, config)
     },
-  });
+  })
 }
 
 /**
@@ -53,30 +53,30 @@ export function useDeleteShipmentAccountsById<TContext>(
     mutation?: UseMutationOptions<
       DeleteShipmentAccountsByIdMutationResponse,
       ResponseErrorConfig<DeleteShipmentAccountsById404>,
-      { id: DeleteShipmentAccountsByIdPathParams["id"] },
+      { id: DeleteShipmentAccountsByIdPathParams['id'] },
       TContext
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? deleteShipmentAccountsByIdMutationKey();
+    mutationOptions.mutationKey ?? deleteShipmentAccountsByIdMutationKey()
 
   const baseOptions = deleteShipmentAccountsByIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     DeleteShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentAccountsById404>,
-    { id: DeleteShipmentAccountsByIdPathParams["id"] },
+    { id: DeleteShipmentAccountsByIdPathParams['id'] },
     TContext
-  >;
+  >
 
   return useMutation<
     DeleteShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentAccountsById404>,
-    { id: DeleteShipmentAccountsByIdPathParams["id"] },
+    { id: DeleteShipmentAccountsByIdPathParams['id'] },
     TContext
   >(
     {
@@ -84,11 +84,11 @@ export function useDeleteShipmentAccountsById<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     DeleteShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentAccountsById404>,
-    { id: DeleteShipmentAccountsByIdPathParams["id"] },
+    { id: DeleteShipmentAccountsByIdPathParams['id'] },
     TContext
-  >;
+  >
 }

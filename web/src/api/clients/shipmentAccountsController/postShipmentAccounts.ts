@@ -3,21 +3,21 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   PostShipmentAccountsMutationRequest,
   PostShipmentAccountsMutationResponse,
   PostShipmentAccounts409,
-} from "../../types/shipmentAccountsController/PostShipmentAccounts.ts";
+} from '../../types/shipmentAccountsController/PostShipmentAccounts.ts'
 
 function getPostShipmentAccountsUrl() {
-  const res = { method: "POST", url: `/shipment-accounts` as const };
-  return res;
+  const res = { method: 'POST', url: `/shipment-accounts` as const }
+  return res
 }
 
 /**
@@ -26,22 +26,22 @@ function getPostShipmentAccountsUrl() {
 export async function postShipmentAccounts(
   data: PostShipmentAccountsMutationRequest,
   config: Partial<RequestConfig<PostShipmentAccountsMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
-  const requestData = data;
+  const requestData = data
 
   const res = await request<
     PostShipmentAccountsMutationResponse,
     ResponseErrorConfig<PostShipmentAccounts409>,
     PostShipmentAccountsMutationRequest
   >({
-    method: "POST",
+    method: 'POST',
     url: getPostShipmentAccountsUrl().url.toString(),
     data: requestData,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

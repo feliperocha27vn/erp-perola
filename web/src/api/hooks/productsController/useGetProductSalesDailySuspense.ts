@@ -7,33 +7,33 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   QueryKey,
   QueryClient,
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   GetProductSalesDailyQueryResponse,
   GetProductSalesDailyPathParams,
-} from "../../types/productsController/GetProductSalesDaily.ts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getProductSalesDaily } from "../../clients/productsController/getProductSalesDaily.ts";
+} from '../../types/productsController/GetProductSalesDaily.ts'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { getProductSalesDaily } from '../../clients/productsController/getProductSalesDaily.ts'
 
 export const getProductSalesDailySuspenseQueryKey = (
-  id: GetProductSalesDailyPathParams["id"],
-) => [{ url: "/products/:id/sales-daily", params: { id: id } }] as const;
+  id: GetProductSalesDailyPathParams['id']
+) => [{ url: '/products/:id/sales-daily', params: { id: id } }] as const
 
 export type GetProductSalesDailySuspenseQueryKey = ReturnType<
   typeof getProductSalesDailySuspenseQueryKey
->;
+>
 
 export function getProductSalesDailySuspenseQueryOptions(
-  id: GetProductSalesDailyPathParams["id"],
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  id: GetProductSalesDailyPathParams['id'],
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const queryKey = getProductSalesDailySuspenseQueryKey(id);
+  const queryKey = getProductSalesDailySuspenseQueryKey(id)
   return queryOptions<
     GetProductSalesDailyQueryResponse,
     ResponseErrorConfig<Error>,
@@ -46,9 +46,9 @@ export function getProductSalesDailySuspenseQueryOptions(
       return getProductSalesDaily(id, {
         ...config,
         signal: config.signal ?? signal,
-      });
+      })
     },
-  });
+  })
 }
 
 /**
@@ -59,7 +59,7 @@ export function useGetProductSalesDailySuspense<
   TData = GetProductSalesDailyQueryResponse,
   TQueryKey extends QueryKey = GetProductSalesDailySuspenseQueryKey,
 >(
-  id: GetProductSalesDailyPathParams["id"],
+  id: GetProductSalesDailyPathParams['id'],
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -68,14 +68,14 @@ export function useGetProductSalesDailySuspense<
         TData,
         TQueryKey
       >
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { query: queryConfig = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...resolvedOptions } = queryConfig;
+  const { query: queryConfig = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...resolvedOptions } = queryConfig
   const queryKey =
-    resolvedOptions?.queryKey ?? getProductSalesDailySuspenseQueryKey(id);
+    resolvedOptions?.queryKey ?? getProductSalesDailySuspenseQueryKey(id)
 
   const query = useSuspenseQuery(
     {
@@ -83,12 +83,12 @@ export function useGetProductSalesDailySuspense<
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,
-    queryClient,
+    queryClient
   ) as UseSuspenseQueryResult<TData, ResponseErrorConfig<Error>> & {
-    queryKey: TQueryKey;
-  };
+    queryKey: TQueryKey
+  }
 
-  query.queryKey = queryKey as TQueryKey;
+  query.queryKey = queryKey as TQueryKey
 
-  return query;
+  return query
 }

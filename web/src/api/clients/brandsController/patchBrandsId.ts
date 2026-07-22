@@ -3,23 +3,23 @@
  * Do not edit manually.
  */
 
-import fetch from "@/lib/kubb-axios-client";
+import fetch from '@/lib/kubb-axios-client'
 import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@/lib/kubb-axios-client";
+} from '@/lib/kubb-axios-client'
 import type {
   PatchBrandsIdMutationRequest,
   PatchBrandsIdMutationResponse,
   PatchBrandsIdPathParams,
   PatchBrandsId404,
   PatchBrandsId409,
-} from "../../types/brandsController/PatchBrandsId.ts";
+} from '../../types/brandsController/PatchBrandsId.ts'
 
-function getPatchBrandsIdUrl(id: PatchBrandsIdPathParams["id"]) {
-  const res = { method: "PATCH", url: `/brands/${id}` as const };
-  return res;
+function getPatchBrandsIdUrl(id: PatchBrandsIdPathParams['id']) {
+  const res = { method: 'PATCH', url: `/brands/${id}` as const }
+  return res
 }
 
 /**
@@ -27,25 +27,25 @@ function getPatchBrandsIdUrl(id: PatchBrandsIdPathParams["id"]) {
  * {@link /brands/:id}
  */
 export async function patchBrandsId(
-  id: PatchBrandsIdPathParams["id"],
+  id: PatchBrandsIdPathParams['id'],
   data: PatchBrandsIdMutationRequest,
   config: Partial<RequestConfig<PatchBrandsIdMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const { client: request = fetch, ...requestConfig } = config;
+  const { client: request = fetch, ...requestConfig } = config
 
-  const requestData = data;
+  const requestData = data
 
   const res = await request<
     PatchBrandsIdMutationResponse,
     ResponseErrorConfig<PatchBrandsId404 | PatchBrandsId409>,
     PatchBrandsIdMutationRequest
   >({
-    method: "PATCH",
+    method: 'PATCH',
     url: getPatchBrandsIdUrl(id).url.toString(),
     data: requestData,
     ...requestConfig,
-  });
-  return res.data;
+  })
+  return res.data
 }

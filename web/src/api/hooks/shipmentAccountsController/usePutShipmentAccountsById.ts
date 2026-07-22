@@ -7,51 +7,51 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   PutShipmentAccountsByIdMutationRequest,
   PutShipmentAccountsByIdMutationResponse,
   PutShipmentAccountsByIdPathParams,
   PutShipmentAccountsById404,
   PutShipmentAccountsById409,
-} from "../../types/shipmentAccountsController/PutShipmentAccountsById.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { putShipmentAccountsById } from "../../clients/shipmentAccountsController/putShipmentAccountsById.ts";
+} from '../../types/shipmentAccountsController/PutShipmentAccountsById.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { putShipmentAccountsById } from '../../clients/shipmentAccountsController/putShipmentAccountsById.ts'
 
 export const putShipmentAccountsByIdMutationKey = () =>
-  [{ url: "/shipment-accounts/:id" }] as const;
+  [{ url: '/shipment-accounts/:id' }] as const
 
 export type PutShipmentAccountsByIdMutationKey = ReturnType<
   typeof putShipmentAccountsByIdMutationKey
->;
+>
 
 export function putShipmentAccountsByIdMutationOptions<TContext = unknown>(
   config: Partial<RequestConfig<PutShipmentAccountsByIdMutationRequest>> & {
-    client?: Client;
-  } = {},
+    client?: Client
+  } = {}
 ) {
-  const mutationKey = putShipmentAccountsByIdMutationKey();
+  const mutationKey = putShipmentAccountsByIdMutationKey()
   return mutationOptions<
     PutShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<
       PutShipmentAccountsById404 | PutShipmentAccountsById409
     >,
     {
-      id: PutShipmentAccountsByIdPathParams["id"];
-      data: PutShipmentAccountsByIdMutationRequest;
+      id: PutShipmentAccountsByIdPathParams['id']
+      data: PutShipmentAccountsByIdMutationRequest
     },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id, data }) => {
-      return putShipmentAccountsById(id, data, config);
+      return putShipmentAccountsById(id, data, config)
     },
-  });
+  })
 }
 
 /**
@@ -65,34 +65,34 @@ export function usePutShipmentAccountsById<TContext>(
         PutShipmentAccountsById404 | PutShipmentAccountsById409
       >,
       {
-        id: PutShipmentAccountsByIdPathParams["id"];
-        data: PutShipmentAccountsByIdMutationRequest;
+        id: PutShipmentAccountsByIdPathParams['id']
+        data: PutShipmentAccountsByIdMutationRequest
       },
       TContext
-    > & { client?: QueryClient };
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig<PutShipmentAccountsByIdMutationRequest>> & {
-      client?: Client;
-    };
-  } = {},
+      client?: Client
+    }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? putShipmentAccountsByIdMutationKey();
+    mutationOptions.mutationKey ?? putShipmentAccountsByIdMutationKey()
 
   const baseOptions = putShipmentAccountsByIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     PutShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<
       PutShipmentAccountsById404 | PutShipmentAccountsById409
     >,
     {
-      id: PutShipmentAccountsByIdPathParams["id"];
-      data: PutShipmentAccountsByIdMutationRequest;
+      id: PutShipmentAccountsByIdPathParams['id']
+      data: PutShipmentAccountsByIdMutationRequest
     },
     TContext
-  >;
+  >
 
   return useMutation<
     PutShipmentAccountsByIdMutationResponse,
@@ -100,8 +100,8 @@ export function usePutShipmentAccountsById<TContext>(
       PutShipmentAccountsById404 | PutShipmentAccountsById409
     >,
     {
-      id: PutShipmentAccountsByIdPathParams["id"];
-      data: PutShipmentAccountsByIdMutationRequest;
+      id: PutShipmentAccountsByIdPathParams['id']
+      data: PutShipmentAccountsByIdMutationRequest
     },
     TContext
   >(
@@ -110,16 +110,16 @@ export function usePutShipmentAccountsById<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     PutShipmentAccountsByIdMutationResponse,
     ResponseErrorConfig<
       PutShipmentAccountsById404 | PutShipmentAccountsById409
     >,
     {
-      id: PutShipmentAccountsByIdPathParams["id"];
-      data: PutShipmentAccountsByIdMutationRequest;
+      id: PutShipmentAccountsByIdPathParams['id']
+      data: PutShipmentAccountsByIdMutationRequest
     },
     TContext
-  >;
+  >
 }

@@ -7,43 +7,43 @@ import type {
   Client,
   RequestConfig,
   ResponseErrorConfig,
-} from "@kubb/plugin-client/clients/axios";
+} from '@kubb/plugin-client/clients/axios'
 import type {
   UseMutationOptions,
   UseMutationResult,
   QueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 import type {
   DeleteShipmentsByIdMutationResponse,
   DeleteShipmentsByIdPathParams,
   DeleteShipmentsById404,
   DeleteShipmentsById409,
-} from "../../types/shipmentsController/DeleteShipmentsById.ts";
-import { mutationOptions, useMutation } from "@tanstack/react-query";
-import { deleteShipmentsById } from "../../clients/shipmentsController/deleteShipmentsById.ts";
+} from '../../types/shipmentsController/DeleteShipmentsById.ts'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import { deleteShipmentsById } from '../../clients/shipmentsController/deleteShipmentsById.ts'
 
 export const deleteShipmentsByIdMutationKey = () =>
-  [{ url: "/shipments/:id" }] as const;
+  [{ url: '/shipments/:id' }] as const
 
 export type DeleteShipmentsByIdMutationKey = ReturnType<
   typeof deleteShipmentsByIdMutationKey
->;
+>
 
 export function deleteShipmentsByIdMutationOptions<TContext = unknown>(
-  config: Partial<RequestConfig> & { client?: Client } = {},
+  config: Partial<RequestConfig> & { client?: Client } = {}
 ) {
-  const mutationKey = deleteShipmentsByIdMutationKey();
+  const mutationKey = deleteShipmentsByIdMutationKey()
   return mutationOptions<
     DeleteShipmentsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
-    { id: DeleteShipmentsByIdPathParams["id"] },
+    { id: DeleteShipmentsByIdPathParams['id'] },
     TContext
   >({
     mutationKey,
     mutationFn: async ({ id }) => {
-      return deleteShipmentsById(id, config);
+      return deleteShipmentsById(id, config)
     },
-  });
+  })
 }
 
 /**
@@ -54,30 +54,30 @@ export function useDeleteShipmentsById<TContext>(
     mutation?: UseMutationOptions<
       DeleteShipmentsByIdMutationResponse,
       ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
-      { id: DeleteShipmentsByIdPathParams["id"] },
+      { id: DeleteShipmentsByIdPathParams['id'] },
       TContext
-    > & { client?: QueryClient };
-    client?: Partial<RequestConfig> & { client?: Client };
-  } = {},
+    > & { client?: QueryClient }
+    client?: Partial<RequestConfig> & { client?: Client }
+  } = {}
 ) {
-  const { mutation = {}, client: config = {} } = options ?? {};
-  const { client: queryClient, ...mutationOptions } = mutation;
+  const { mutation = {}, client: config = {} } = options ?? {}
+  const { client: queryClient, ...mutationOptions } = mutation
   const mutationKey =
-    mutationOptions.mutationKey ?? deleteShipmentsByIdMutationKey();
+    mutationOptions.mutationKey ?? deleteShipmentsByIdMutationKey()
 
   const baseOptions = deleteShipmentsByIdMutationOptions(
-    config,
+    config
   ) as UseMutationOptions<
     DeleteShipmentsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
-    { id: DeleteShipmentsByIdPathParams["id"] },
+    { id: DeleteShipmentsByIdPathParams['id'] },
     TContext
-  >;
+  >
 
   return useMutation<
     DeleteShipmentsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
-    { id: DeleteShipmentsByIdPathParams["id"] },
+    { id: DeleteShipmentsByIdPathParams['id'] },
     TContext
   >(
     {
@@ -85,11 +85,11 @@ export function useDeleteShipmentsById<TContext>(
       mutationKey,
       ...mutationOptions,
     },
-    queryClient,
+    queryClient
   ) as UseMutationResult<
     DeleteShipmentsByIdMutationResponse,
     ResponseErrorConfig<DeleteShipmentsById404 | DeleteShipmentsById409>,
-    { id: DeleteShipmentsByIdPathParams["id"] },
+    { id: DeleteShipmentsByIdPathParams['id'] },
     TContext
-  >;
+  >
 }
