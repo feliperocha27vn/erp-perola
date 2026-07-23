@@ -29,6 +29,11 @@ export type {
   PostBrandsMutationResponse,
 } from "./brandsController/PostBrands.ts";
 export type {
+  GetDashboardCurrentMonthSales200,
+  GetDashboardCurrentMonthSalesQuery,
+  GetDashboardCurrentMonthSalesQueryResponse,
+} from "./dashboardController/GetDashboardCurrentMonthSales.ts";
+export type {
   GetDashboardLast15DaysSales200,
   GetDashboardLast15DaysSalesQuery,
   GetDashboardLast15DaysSalesQueryResponse,

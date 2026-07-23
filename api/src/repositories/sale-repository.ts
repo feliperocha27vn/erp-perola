@@ -58,6 +58,10 @@ export interface FetchLastMonthSalesMetricsReply {
 	total_cents: number
 }
 
+export interface FetchCurrentMonthSalesMetricsReply {
+	total_cents: number
+}
+
 export interface CreateSaleInput {
 	product_id: string
 	stock_id: string
@@ -97,6 +101,7 @@ export interface SaleRepository {
 	findMany(filters: FindManySalesFilters): Promise<FindManySalesReply>
 	fetchLast15DaysSalesMetrics(): Promise<FetchLast15DaysSalesMetricsReply>
 	fetchLastMonthSalesMetrics(): Promise<FetchLastMonthSalesMetricsReply>
+	fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply>
 	getById(id: string): Promise<Sale | null>
 	create(data: CreateSaleInput): Promise<Sale>
 	update(id: string, data: UpdateSaleInput): Promise<Sale | null>

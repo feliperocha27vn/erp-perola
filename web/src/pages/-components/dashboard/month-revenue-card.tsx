@@ -1,30 +1,36 @@
-import { CalendarArrowUp } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { EmptyState } from '@/components/ui/empty-state'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatMoney } from './formatters'
 
-type LastMonthRevenueCardProps = {
+type MonthRevenueCardProps = {
+  icon: LucideIcon
+  label: string
+  emptyMessage: string
   totalCents: number
   isLoading: boolean
   isError?: boolean
   onRetry?: () => void
 }
 
-export function LastMonthRevenueCard({
+export function MonthRevenueCard({
+  icon: Icon,
+  label,
+  emptyMessage,
   totalCents,
   isLoading,
   isError = false,
   onRetry,
-}: LastMonthRevenueCardProps) {
+}: MonthRevenueCardProps) {
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4">
+    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4 h-full">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-primary/10 rounded-xl border border-primary/20">
-          <CalendarArrowUp className="size-5 text-primary" />
+          <Icon className="size-5 text-primary" />
         </div>
         <p className="text-sm uppercase tracking-widest text-muted-foreground">
-          Vendas do mes passado
+          {label}
         </p>
       </div>
 
@@ -40,10 +46,7 @@ export function LastMonthRevenueCard({
           onRetry={onRetry}
         />
       ) : totalCents === 0 ? (
-        <EmptyState
-          title="Nenhuma venda registrada no mes passado."
-          className="py-4"
-        />
+        <EmptyState title={emptyMessage} className="py-4" />
       ) : (
         <div>
           <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">

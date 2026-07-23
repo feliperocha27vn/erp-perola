@@ -2,6 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   BarChart3,
   Building2,
+  CalendarArrowUp,
+  CalendarClock,
   LayoutDashboard,
   Package,
   PackagePlus,
@@ -10,9 +12,10 @@ import {
   Send,
   TrendingUp,
 } from 'lucide-react'
+import { useGetDashboardCurrentMonthSales } from '@/api/hooks/dashboardController/useGetDashboardCurrentMonthSales'
 import { useGetDashboardLast15DaysSales } from '@/api/hooks/dashboardController/useGetDashboardLast15DaysSales'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
-import { LastMonthRevenueCard } from './-components/dashboard/last-month-revenue-card'
+import { MonthRevenueCard } from './-components/dashboard/month-revenue-card'
 import { RecentSalesChart } from './-components/dashboard/recent-sales-chart'
 import { RestockAlertCard } from './-components/dashboard/restock-alert-card'
 
@@ -35,6 +38,13 @@ function Dashboard() {
     refetch: refetchLastMonthSales,
   } = useGetDashboardLastMonthSales()
 
+  const {
+    data: currentMonthSalesData,
+    isLoading: isCurrentMonthSalesLoading,
+    isError: isCurrentMonthSalesError,
+    refetch: refetchCurrentMonthSales,
+  } = useGetDashboardCurrentMonthSales()
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-start">
@@ -52,12 +62,27 @@ function Dashboard() {
         <div className="flex flex-col gap-6">
           <RestockAlertCard />
 
-          <LastMonthRevenueCard
-            totalCents={lastMonthSalesData?.total_cents ?? 0}
-            isLoading={isLastMonthSalesLoading}
-            isError={isLastMonthSalesError}
-            onRetry={() => refetchLastMonthSales()}
-          />
+          <div className="grid grid-cols-2 gap-6">
+            <MonthRevenueCard
+              icon={CalendarClock}
+              label="Vendas do mes atual"
+              emptyMessage="Nenhuma venda registrada no mes atual."
+              totalCents={currentMonthSalesData?.total_cents ?? 0}
+              isLoading={isCurrentMonthSalesLoading}
+              isError={isCurrentMonthSalesError}
+              onRetry={() => refetchCurrentMonthSales()}
+            />
+
+            <MonthRevenueCard
+              icon={CalendarArrowUp}
+              label="Vendas do mes passado"
+              emptyMessage="Nenhuma venda registrada no mes passado."
+              totalCents={lastMonthSalesData?.total_cents ?? 0}
+              isLoading={isLastMonthSalesLoading}
+              isError={isLastMonthSalesError}
+              onRetry={() => refetchLastMonthSales()}
+            />
+          </div>
         </div>
 
         <RecentSalesChart

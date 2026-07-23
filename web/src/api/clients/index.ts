@@ -2,6 +2,7 @@ export { deleteBrandsId } from "./brandsController/deleteBrandsId.ts";
 export { getBrands } from "./brandsController/getBrands.ts";
 export { patchBrandsId } from "./brandsController/patchBrandsId.ts";
 export { postBrands } from "./brandsController/postBrands.ts";
+export { getDashboardCurrentMonthSales } from "./dashboardController/getDashboardCurrentMonthSales.ts";
 export { getDashboardLast15DaysSales } from "./dashboardController/getDashboardLast15DaysSales.ts";
 export { getDashboardLastMonthSales } from "./dashboardController/getDashboardLastMonthSales.ts";
 export { getHealth } from "./healthController/getHealth.ts";

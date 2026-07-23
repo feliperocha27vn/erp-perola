@@ -3,6 +3,8 @@ export type { GetBrandsQueryKey } from "./hooks/brandsController/useGetBrands.ts
 export type { GetBrandsSuspenseQueryKey } from "./hooks/brandsController/useGetBrandsSuspense.ts";
 export type { PatchBrandsIdMutationKey } from "./hooks/brandsController/usePatchBrandsId.ts";
 export type { PostBrandsMutationKey } from "./hooks/brandsController/usePostBrands.ts";
+export type { GetDashboardCurrentMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSales.ts";
+export type { GetDashboardCurrentMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
 export type { GetDashboardLast15DaysSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
 export type { GetDashboardLast15DaysSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSalesSuspense.ts";
 export type { GetDashboardLastMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
@@ -87,6 +89,11 @@ export type {
   PostBrandsMutationRequest,
   PostBrandsMutationResponse,
 } from "./types/brandsController/PostBrands.ts";
+export type {
+  GetDashboardCurrentMonthSales200,
+  GetDashboardCurrentMonthSalesQuery,
+  GetDashboardCurrentMonthSalesQueryResponse,
+} from "./types/dashboardController/GetDashboardCurrentMonthSales.ts";
 export type {
   GetDashboardLast15DaysSales200,
   GetDashboardLast15DaysSalesQuery,
@@ -358,6 +365,7 @@ export { deleteBrandsId } from "./clients/brandsController/deleteBrandsId.ts";
 export { getBrands } from "./clients/brandsController/getBrands.ts";
 export { patchBrandsId } from "./clients/brandsController/patchBrandsId.ts";
 export { postBrands } from "./clients/brandsController/postBrands.ts";
+export { getDashboardCurrentMonthSales } from "./clients/dashboardController/getDashboardCurrentMonthSales.ts";
 export { getDashboardLast15DaysSales } from "./clients/dashboardController/getDashboardLast15DaysSales.ts";
 export { getDashboardLastMonthSales } from "./clients/dashboardController/getDashboardLastMonthSales.ts";
 export { getHealth } from "./clients/healthController/getHealth.ts";
@@ -409,6 +417,12 @@ export { usePatchBrandsId } from "./hooks/brandsController/usePatchBrandsId.ts";
 export { postBrandsMutationKey } from "./hooks/brandsController/usePostBrands.ts";
 export { postBrandsMutationOptions } from "./hooks/brandsController/usePostBrands.ts";
 export { usePostBrands } from "./hooks/brandsController/usePostBrands.ts";
+export { getDashboardCurrentMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSales.ts";
+export { getDashboardCurrentMonthSalesQueryOptions } from "./hooks/dashboardController/useGetDashboardCurrentMonthSales.ts";
+export { useGetDashboardCurrentMonthSales } from "./hooks/dashboardController/useGetDashboardCurrentMonthSales.ts";
+export { getDashboardCurrentMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
+export { getDashboardCurrentMonthSalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
+export { useGetDashboardCurrentMonthSalesSuspense } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
 export { getDashboardLast15DaysSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
 export { getDashboardLast15DaysSalesQueryOptions } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
 export { useGetDashboardLast15DaysSales } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";

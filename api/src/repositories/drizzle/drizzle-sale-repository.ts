@@ -7,6 +7,7 @@ import { StockProductMismatchError } from "../../errors/stock-product-mismatch-e
 import type {
 	BrandSalesCount,
 	CreateSaleInput,
+	FetchCurrentMonthSalesMetricsReply,
 	FetchLast15DaysSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
 	FindManySalesFilters,
@@ -103,6 +104,24 @@ export class DrizzleSaleRepository implements SaleRepository {
 			.from(sales)
 			.where(
 				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${lastMonthStart} AND ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' < ${thisMonthStart}`,
+			)
+
+		return {
+			total_cents: row?.total_cents ?? 0,
+		}
+	}
+
+	async fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply> {
+		const thisMonthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo')`
+		const nextMonthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo') + interval '1 month'`
+
+		const [row] = await db
+			.select({
+				total_cents: sql<number>`coalesce(sum(${sales.total_price}), 0)::int`,
+			})
+			.from(sales)
+			.where(
+				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${thisMonthStart} AND ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' < ${nextMonthStart}`,
 			)
 
 		return {
