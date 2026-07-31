@@ -100,18 +100,8 @@ export class InMemoryProductRepository implements ProductRepository {
 			brand,
 			url_image: data.url_image ?? null,
 			technical_title: data.technical_details?.technical_title ?? null,
-			technical_subtitle: data.technical_details?.technical_subtitle ?? null,
-			technical_analysis: data.technical_details?.technical_analysis ?? null,
-			technical_movement: data.technical_details?.technical_movement ?? null,
-			technical_case_and_crystal:
-				data.technical_details?.technical_case_and_crystal ?? null,
-			technical_specific_functionality:
-				data.technical_details?.technical_specific_functionality ?? null,
-			technical_dial_and_luminosity:
-				data.technical_details?.technical_dial_and_luminosity ?? null,
-			technical_bracelet_construction:
-				data.technical_details?.technical_bracelet_construction ?? null,
-			technical_table: data.technical_details?.technical_table ?? null,
+			technical_description:
+				data.technical_details?.technical_description ?? null,
 			stocks: [],
 			deleted_at: null,
 			created_at: new Date(),
@@ -142,31 +132,8 @@ export class InMemoryProductRepository implements ProductRepository {
 		if (data.technical_title !== undefined) {
 			product.technical_title = data.technical_title
 		}
-		if (data.technical_subtitle !== undefined) {
-			product.technical_subtitle = data.technical_subtitle
-		}
-		if (data.technical_analysis !== undefined) {
-			product.technical_analysis = data.technical_analysis
-		}
-		if (data.technical_movement !== undefined) {
-			product.technical_movement = data.technical_movement
-		}
-		if (data.technical_case_and_crystal !== undefined) {
-			product.technical_case_and_crystal = data.technical_case_and_crystal
-		}
-		if (data.technical_specific_functionality !== undefined) {
-			product.technical_specific_functionality =
-				data.technical_specific_functionality
-		}
-		if (data.technical_dial_and_luminosity !== undefined) {
-			product.technical_dial_and_luminosity = data.technical_dial_and_luminosity
-		}
-		if (data.technical_bracelet_construction !== undefined) {
-			product.technical_bracelet_construction =
-				data.technical_bracelet_construction
-		}
-		if (data.technical_table !== undefined) {
-			product.technical_table = data.technical_table
+		if (data.technical_description !== undefined) {
+			product.technical_description = data.technical_description
 		}
 
 		product.updated_at = new Date()

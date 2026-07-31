@@ -123,6 +123,14 @@ class FakeProductRepository implements ProductRepository {
 			current.sale_price_cents = data.sale_price_cents
 		}
 
+		if (data.technical_title !== undefined) {
+			current.technical_title = data.technical_title
+		}
+
+		if (data.technical_description !== undefined) {
+			current.technical_description = data.technical_description
+		}
+
 		current.updated_at = new Date()
 
 		return current
@@ -158,14 +166,7 @@ function makeProduct(id: string, sku: string, ean: string): Product {
 		brand: null,
 		url_image: null,
 		technical_title: null,
-		technical_subtitle: null,
-		technical_analysis: null,
-		technical_movement: null,
-		technical_case_and_crystal: null,
-		technical_specific_functionality: null,
-		technical_dial_and_luminosity: null,
-		technical_bracelet_construction: null,
-		technical_table: null,
+		technical_description: null,
 		stocks: [],
 		deleted_at: null,
 		created_at: new Date(),
@@ -239,5 +240,24 @@ describe("UpdateProductUseCase", () => {
 		})
 
 		expect(result.product.sale_price_cents).toBe(12345)
+	})
+
+	it("updates technical_title and technical_description", async () => {
+		const repository = new FakeProductRepository([
+			makeProduct("p-1", "SKU-OLD", "EAN-OLD"),
+		])
+		const brands = new FakeBrandRepository([])
+
+		const useCase = new UpdateProductUseCase(repository, brands)
+		const result = await useCase.execute({
+			id: "p-1",
+			technical_title: "Orient Star RE-AU0001S",
+			technical_description: "## Subtítulo\nRelógio automático clássico.",
+		})
+
+		expect(result.product.technical_title).toBe("Orient Star RE-AU0001S")
+		expect(result.product.technical_description).toBe(
+			"## Subtítulo\nRelógio automático clássico.",
+		)
 	})
 })

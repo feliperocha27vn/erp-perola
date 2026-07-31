@@ -18,19 +18,7 @@ function buildDefaultTechnicalDetails(
 	sku: string,
 	ean: string,
 ): ProductTechnicalDetailsInput {
-	return {
-		technical_title: `${brandName} ${sku} - Relogio com foco tecnico em materiais e construcao`,
-		technical_subtitle:
-			"Relogio com especificacoes tecnicas consolidadas para catalogo e analise comparativa.",
-		technical_analysis:
-			"Descreva aqui a engenharia do relogio, materiais da caixa/bezel/cristal e os beneficios praticos de cada escolha tecnica.",
-		technical_movement: "Calibre nao informado.",
-		technical_case_and_crystal: "Material da caixa e cristal nao informados.",
-		technical_specific_functionality:
-			"Funcao tecnica principal ou certificacao nao informada.",
-		technical_dial_and_luminosity: "Mostrador e lumen nao informados.",
-		technical_bracelet_construction: "Pulseira e fecho nao informados.",
-		technical_table: `| Caracteristica | Detalhe |
+	const table = `| Caracteristica | Detalhe |
 | :--- | :--- |
 | Referencia | ${sku} |
 | EAN | ${ean} |
@@ -50,7 +38,24 @@ function buildDefaultTechnicalDetails(
 | Tipo de Fecho | Nao informado |
 | Resistencia a Agua | Nao informado |
 | Funcoes | Nao informado |
-| Certificacoes | Nao informado |`,
+| Certificacoes | Nao informado |`
+
+	const description = [
+		["## Subtítulo", "Relogio com especificacoes tecnicas consolidadas para catalogo e analise comparativa."],
+		["## Análise Técnica", "Descreva aqui a engenharia do relogio, materiais da caixa/bezel/cristal e os beneficios praticos de cada escolha tecnica."],
+		["## Movimento", "Calibre nao informado."],
+		["## Caixa e Cristal", "Material da caixa e cristal nao informados."],
+		["## Funcionalidade Específica", "Funcao tecnica principal ou certificacao nao informada."],
+		["## Mostrador e Luminosidade", "Mostrador e lumen nao informados."],
+		["## Construção da Pulseira", "Pulseira e fecho nao informados."],
+		["## Tabela Técnica", table],
+	]
+		.map(([heading, content]) => `${heading}\n${content}`)
+		.join("\n\n")
+
+	return {
+		technical_title: `${brandName} ${sku} - Relogio com foco tecnico em materiais e construcao`,
+		technical_description: description,
 	}
 }
 
@@ -69,14 +74,7 @@ interface CreateProductUseCaseResponse {
 		} | null
 		url_image: string | null
 		technical_title: string | null
-		technical_subtitle: string | null
-		technical_analysis: string | null
-		technical_movement: string | null
-		technical_case_and_crystal: string | null
-		technical_specific_functionality: string | null
-		technical_dial_and_luminosity: string | null
-		technical_bracelet_construction: string | null
-		technical_table: string | null
+		technical_description: string | null
 		stocks: {
 			id: string
 			product_id: string

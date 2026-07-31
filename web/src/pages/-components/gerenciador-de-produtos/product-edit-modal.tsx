@@ -20,7 +20,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { queryClient } from '@/lib/react-query'
-import { parseDeveloperDetailsJson } from './product-details-json-parser'
+import {
+  parseDeveloperDetailsJson,
+  type ProductTechnicalDetailsForm,
+} from './product-details-json-parser'
 import type { ProductItem, ProductStockItem } from './types'
 
 // ─── BRL helpers ─────────────────────────────────────────────────────────────
@@ -55,29 +58,12 @@ function parseQtde(v: string): number | null {
 
 // ─── Technical details form type ─────────────────────────────────────────────
 
-type TechnicalForm = {
-  technical_title: string
-  technical_subtitle: string
-  technical_analysis: string
-  technical_movement: string
-  technical_case_and_crystal: string
-  technical_specific_functionality: string
-  technical_dial_and_luminosity: string
-  technical_bracelet_construction: string
-  technical_table: string
-}
+type TechnicalForm = ProductTechnicalDetailsForm
 
 function buildTechnicalForm(p: ProductItem): TechnicalForm {
   return {
     technical_title: p.technical_title ?? '',
-    technical_subtitle: p.technical_subtitle ?? '',
-    technical_analysis: p.technical_analysis ?? '',
-    technical_movement: p.technical_movement ?? '',
-    technical_case_and_crystal: p.technical_case_and_crystal ?? '',
-    technical_specific_functionality: p.technical_specific_functionality ?? '',
-    technical_dial_and_luminosity: p.technical_dial_and_luminosity ?? '',
-    technical_bracelet_construction: p.technical_bracelet_construction ?? '',
-    technical_table: p.technical_table ?? '',
+    technical_description: p.technical_description ?? '',
   }
 }
 
@@ -351,7 +337,7 @@ export function ProductEditModal({
 
   return (
     <Dialog open={open} onOpenChange={next => !next && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0">
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle>Editar produto</DialogTitle>
           <DialogDescription>
@@ -708,57 +694,39 @@ export function ProductEditModal({
           {activeTab === 'detalhes' && technicalForm && (
             <div className="space-y-5">
               <section className="rounded-2xl border border-border bg-secondary/30 p-4">
-                <h4 className="mb-3 text-sm font-semibold">Cabeçalho Comercial</h4>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {([
-                    ['title', 'Título', 'technical_title'],
-                    ['subtitle', 'Subtítulo', 'technical_subtitle'],
-                  ] as const).map(([, label, key]) => (
-                    <div key={key} className="space-y-1.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <Label>{label}</Label>
-                        <Button
-                          type="button" variant="ghost" size="sm" className="h-7 px-2"
-                          onClick={() => handleCopyField(label, technicalForm[key])}
-                        >
-                          <Copy className="size-3.5 mr-1" />Copiar
-                        </Button>
-                      </div>
-                      <Input
-                        value={technicalForm[key]}
-                        onChange={e => updateTechnical(key, e.target.value)}
-                      />
-                    </div>
-                  ))}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <Label htmlFor={`${baseId}-technical-title`}>Título</Label>
+                  <Button
+                    type="button" variant="ghost" size="sm" className="h-7 px-2"
+                    onClick={() => handleCopyField('Título', technicalForm.technical_title)}
+                  >
+                    <Copy className="size-3.5 mr-1" />Copiar
+                  </Button>
                 </div>
+                <Input
+                  id={`${baseId}-technical-title`}
+                  value={technicalForm.technical_title}
+                  onChange={e => updateTechnical('technical_title', e.target.value)}
+                />
               </section>
 
-              {([
-                ['Análise Técnica', 'technical_analysis'],
-                ['Movimento', 'technical_movement'],
-                ['Caixa e Cristal', 'technical_case_and_crystal'],
-                ['Funcionalidade Específica', 'technical_specific_functionality'],
-                ['Mostrador e Luminosidade', 'technical_dial_and_luminosity'],
-                ['Construção da Pulseira', 'technical_bracelet_construction'],
-                ['Tabela Técnica', 'technical_table'],
-              ] as const).map(([label, key]) => (
-                <section key={key} className="rounded-2xl border border-border bg-secondary/30 p-4">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <h4 className="text-sm font-semibold">{label}</h4>
-                    <Button
-                      type="button" variant="ghost" size="sm" className="h-7 px-2"
-                      onClick={() => handleCopyField(label, technicalForm[key])}
-                    >
-                      <Copy className="size-3.5 mr-1" />Copiar
-                    </Button>
-                  </div>
-                  <textarea
-                    value={technicalForm[key]}
-                    onChange={e => updateTechnical(key, e.target.value)}
-                    className="min-h-24 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </section>
-              ))}
+              <section className="rounded-2xl border border-border bg-secondary/30 p-4">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <h4 className="text-sm font-semibold">Descrição</h4>
+                  <Button
+                    type="button" variant="ghost" size="sm" className="h-7 px-2"
+                    onClick={() => handleCopyField('Descrição', technicalForm.technical_description)}
+                  >
+                    <Copy className="size-3.5 mr-1" />Copiar
+                  </Button>
+                </div>
+                <textarea
+                  value={technicalForm.technical_description}
+                  onChange={e => updateTechnical('technical_description', e.target.value)}
+                  placeholder="Markdown com subtítulo, análise técnica, movimento, caixa e cristal, funcionalidade, mostrador, pulseira e tabela técnica."
+                  className="min-h-96 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </section>
 
               <section className="rounded-2xl border border-dashed border-border bg-secondary/10 p-4">
                 <div className="flex items-center justify-between gap-2 mb-2">

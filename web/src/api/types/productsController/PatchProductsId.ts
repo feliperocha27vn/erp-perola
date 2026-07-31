@@ -72,35 +72,7 @@ export type PatchProductsId200 = {
     /**
      * @type string
      */
-    technical_subtitle: string | null;
-    /**
-     * @type string
-     */
-    technical_analysis: string | null;
-    /**
-     * @type string
-     */
-    technical_movement: string | null;
-    /**
-     * @type string
-     */
-    technical_case_and_crystal: string | null;
-    /**
-     * @type string
-     */
-    technical_specific_functionality: string | null;
-    /**
-     * @type string
-     */
-    technical_dial_and_luminosity: string | null;
-    /**
-     * @type string
-     */
-    technical_bracelet_construction: string | null;
-    /**
-     * @type string
-     */
-    technical_table: string | null;
+    technical_description: string | null;
     /**
      * @type array
      */
@@ -199,35 +171,7 @@ export type PatchProductsIdMutationRequest = {
   /**
    * @type string
    */
-  technical_subtitle?: string | null;
-  /**
-   * @type string
-   */
-  technical_analysis?: string | null;
-  /**
-   * @type string
-   */
-  technical_movement?: string | null;
-  /**
-   * @type string
-   */
-  technical_case_and_crystal?: string | null;
-  /**
-   * @type string
-   */
-  technical_specific_functionality?: string | null;
-  /**
-   * @type string
-   */
-  technical_dial_and_luminosity?: string | null;
-  /**
-   * @type string
-   */
-  technical_bracelet_construction?: string | null;
-  /**
-   * @type string
-   */
-  technical_table?: string | null;
+  technical_description?: string | null;
 };
 
 export type PatchProductsIdMutationResponse = PatchProductsId200;

@@ -31,14 +31,7 @@ const productSchema = z.object({
 	brand: brandSchema.nullable(),
 	url_image: z.string().nullable(),
 	technical_title: z.string().nullable(),
-	technical_subtitle: z.string().nullable(),
-	technical_analysis: z.string().nullable(),
-	technical_movement: z.string().nullable(),
-	technical_case_and_crystal: z.string().nullable(),
-	technical_specific_functionality: z.string().nullable(),
-	technical_dial_and_luminosity: z.string().nullable(),
-	technical_bracelet_construction: z.string().nullable(),
-	technical_table: z.string().nullable(),
+	technical_description: z.string().nullable(),
 	stocks: z.array(stockSchema),
 	created_at: z.date(),
 	updated_at: z.date(),
@@ -63,14 +56,7 @@ export const updateProduct: FastifyPluginAsyncZod = async (app) => {
 						brand_id: z.string().uuid().optional(),
 						url_image: z.string().url().nullable().optional(),
 						technical_title: z.string().nullable().optional(),
-						technical_subtitle: z.string().nullable().optional(),
-						technical_analysis: z.string().nullable().optional(),
-						technical_movement: z.string().nullable().optional(),
-						technical_case_and_crystal: z.string().nullable().optional(),
-						technical_specific_functionality: z.string().nullable().optional(),
-						technical_dial_and_luminosity: z.string().nullable().optional(),
-						technical_bracelet_construction: z.string().nullable().optional(),
-						technical_table: z.string().nullable().optional(),
+						technical_description: z.string().nullable().optional(),
 					})
 					.refine((body) => Object.keys(body).length > 0),
 				response: {
@@ -91,16 +77,7 @@ export const updateProduct: FastifyPluginAsyncZod = async (app) => {
 					brand_id: req.body.brand_id,
 					url_image: req.body.url_image,
 					technical_title: req.body.technical_title,
-					technical_subtitle: req.body.technical_subtitle,
-					technical_analysis: req.body.technical_analysis,
-					technical_movement: req.body.technical_movement,
-					technical_case_and_crystal: req.body.technical_case_and_crystal,
-					technical_specific_functionality:
-						req.body.technical_specific_functionality,
-					technical_dial_and_luminosity: req.body.technical_dial_and_luminosity,
-					technical_bracelet_construction:
-						req.body.technical_bracelet_construction,
-					technical_table: req.body.technical_table,
+					technical_description: req.body.technical_description,
 				})
 
 				return reply.send(result)

@@ -12,14 +12,7 @@ interface UpdateProductUseCaseRequest {
 	brand_id?: string
 	url_image?: string | null
 	technical_title?: string | null
-	technical_subtitle?: string | null
-	technical_analysis?: string | null
-	technical_movement?: string | null
-	technical_case_and_crystal?: string | null
-	technical_specific_functionality?: string | null
-	technical_dial_and_luminosity?: string | null
-	technical_bracelet_construction?: string | null
-	technical_table?: string | null
+	technical_description?: string | null
 }
 
 function normalizeValue(value: string): string {
@@ -41,14 +34,7 @@ interface UpdateProductUseCaseResponse {
 		} | null
 		url_image: string | null
 		technical_title: string | null
-		technical_subtitle: string | null
-		technical_analysis: string | null
-		technical_movement: string | null
-		technical_case_and_crystal: string | null
-		technical_specific_functionality: string | null
-		technical_dial_and_luminosity: string | null
-		technical_bracelet_construction: string | null
-		technical_table: string | null
+		technical_description: string | null
 		stocks: {
 			id: string
 			product_id: string
@@ -77,14 +63,7 @@ export class UpdateProductUseCase {
 		brand_id,
 		url_image,
 		technical_title,
-		technical_subtitle,
-		technical_analysis,
-		technical_movement,
-		technical_case_and_crystal,
-		technical_specific_functionality,
-		technical_dial_and_luminosity,
-		technical_bracelet_construction,
-		technical_table,
+		technical_description,
 	}: UpdateProductUseCaseRequest): Promise<UpdateProductUseCaseResponse> {
 		const existingProduct = await this.productRepository.getProductById(id)
 
@@ -129,14 +108,7 @@ export class UpdateProductUseCase {
 			sale_price_cents,
 			url_image,
 			technical_title,
-			technical_subtitle,
-			technical_analysis,
-			technical_movement,
-			technical_case_and_crystal,
-			technical_specific_functionality,
-			technical_dial_and_luminosity,
-			technical_bracelet_construction,
-			technical_table,
+			technical_description,
 		})
 
 		if (!product) {

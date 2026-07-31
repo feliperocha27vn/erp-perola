@@ -1,5 +1,9 @@
 import { z } from 'zod'
-import type { ProductTechnicalDetailsForm } from './product-details-modal'
+
+export type ProductTechnicalDetailsForm = {
+  technical_title: string
+  technical_description: string
+}
 
 const developerDetailsSchema = z.object({
   produto: z.object({
@@ -27,6 +31,10 @@ function buildMarkdownTable(specs: Record<string, string>) {
   return [...header, ...rows].join('\n')
 }
 
+function buildSection(heading: string, content: string) {
+  return `## ${heading}\n${content}`
+}
+
 export function parseDeveloperDetailsJson(
   input: string
 ): ProductTechnicalDetailsForm {
@@ -52,26 +60,43 @@ export function parseDeveloperDetailsJson(
     .map(item => `- ${item}`)
     .join('\n')
 
-  const functionalityBlocks = [
+  const functionalityContent = [
     produto.campos_detalhados.funcionalidade_especifica.trim(),
     bulletList ? `Diferenciais técnicos:\n${bulletList}` : '',
-  ].filter(Boolean)
+  ]
+    .filter(Boolean)
+    .join('\n\n')
+
+  const analiseTecnicaContent = produto.analise_tecnica
+    .map(item => item.trim())
+    .filter(Boolean)
+    .join('\n\n')
+
+  const technical_description = [
+    buildSection('Subtítulo', produto.subtitulo.trim()),
+    buildSection('Análise Técnica', analiseTecnicaContent),
+    buildSection('Movimento', produto.campos_detalhados.movimento.trim()),
+    buildSection(
+      'Caixa e Cristal',
+      produto.campos_detalhados.caixa_e_cristal.trim()
+    ),
+    buildSection('Funcionalidade Específica', functionalityContent),
+    buildSection(
+      'Mostrador e Luminosidade',
+      produto.campos_detalhados.mostrador_e_luminosidade.trim()
+    ),
+    buildSection(
+      'Construção da Pulseira',
+      produto.campos_detalhados.construcao_da_pulseira.trim()
+    ),
+    buildSection(
+      'Tabela Técnica',
+      buildMarkdownTable(produto.especificacoes_tecnicas)
+    ),
+  ].join('\n\n')
 
   return {
     technical_title: produto.titulo.trim(),
-    technical_subtitle: produto.subtitulo.trim(),
-    technical_analysis: produto.analise_tecnica
-      .map(item => item.trim())
-      .filter(Boolean)
-      .join('\n\n'),
-    technical_movement: produto.campos_detalhados.movimento.trim(),
-    technical_case_and_crystal:
-      produto.campos_detalhados.caixa_e_cristal.trim(),
-    technical_specific_functionality: functionalityBlocks.join('\n\n'),
-    technical_dial_and_luminosity:
-      produto.campos_detalhados.mostrador_e_luminosidade.trim(),
-    technical_bracelet_construction:
-      produto.campos_detalhados.construcao_da_pulseira.trim(),
-    technical_table: buildMarkdownTable(produto.especificacoes_tecnicas),
+    technical_description,
   }
 }

@@ -23,14 +23,7 @@ type ProductRow = {
 	brand_id: string | null
 	url_image: string | null
 	technical_title: string | null
-	technical_subtitle: string | null
-	technical_analysis: string | null
-	technical_movement: string | null
-	technical_case_and_crystal: string | null
-	technical_specific_functionality: string | null
-	technical_dial_and_luminosity: string | null
-	technical_bracelet_construction: string | null
-	technical_table: string | null
+	technical_description: string | null
 	deleted_at: Date | null
 	created_at: Date
 	updated_at: Date
@@ -39,16 +32,7 @@ type ProductRow = {
 function mapTechnicalDetailsInput(data?: ProductTechnicalDetailsInput) {
 	return {
 		technical_title: data?.technical_title ?? null,
-		technical_subtitle: data?.technical_subtitle ?? null,
-		technical_analysis: data?.technical_analysis ?? null,
-		technical_movement: data?.technical_movement ?? null,
-		technical_case_and_crystal: data?.technical_case_and_crystal ?? null,
-		technical_specific_functionality:
-			data?.technical_specific_functionality ?? null,
-		technical_dial_and_luminosity: data?.technical_dial_and_luminosity ?? null,
-		technical_bracelet_construction:
-			data?.technical_bracelet_construction ?? null,
-		technical_table: data?.technical_table ?? null,
+		technical_description: data?.technical_description ?? null,
 	}
 }
 
@@ -238,32 +222,14 @@ export class DrizzleProductRepository implements ProductRepository {
 	}
 
 	async update(id: string, data: UpdateProductInput): Promise<Product | null> {
-		const {
-			technical_title,
-			technical_subtitle,
-			technical_analysis,
-			technical_movement,
-			technical_case_and_crystal,
-			technical_specific_functionality,
-			technical_dial_and_luminosity,
-			technical_bracelet_construction,
-			technical_table,
-			...rest
-		} = data
+		const { technical_title, technical_description, ...rest } = data
 
 		const [updatedRow] = await db
 			.update(products)
 			.set({
 				...rest,
 				technical_title,
-				technical_subtitle,
-				technical_analysis,
-				technical_movement,
-				technical_case_and_crystal,
-				technical_specific_functionality,
-				technical_dial_and_luminosity,
-				technical_bracelet_construction,
-				technical_table,
+				technical_description,
 				updated_at: new Date(),
 			})
 			.where(eq(products.id, id))

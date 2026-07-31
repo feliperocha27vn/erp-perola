@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { parseDeveloperDetailsJson } from './product-details-json-parser'
 
 describe('parseDeveloperDetailsJson', () => {
-  it('maps valid developer JSON into product details form', () => {
+  it('maps valid developer JSON into title + markdown description', () => {
     const input = JSON.stringify({
       produto: {
         titulo: 'Orient Star RE-AU0001S',
@@ -51,30 +51,53 @@ describe('parseDeveloperDetailsJson', () => {
     const result = parseDeveloperDetailsJson(input)
 
     expect(result.technical_title).toBe('Orient Star RE-AU0001S')
-    expect(result.technical_subtitle).toBe(
+
+    expect(result.technical_description).toContain('## Subtítulo')
+    expect(result.technical_description).toContain(
       'Relógio mecânico automático com proposta clássica'
     )
-    expect(result.technical_analysis).toContain('Primeiro parágrafo técnico.')
-    expect(result.technical_analysis).toContain('\n\n')
-    expect(result.technical_movement).toBe('Calibre automático in-house.')
-    expect(result.technical_case_and_crystal).toBe(
+    expect(result.technical_description).toContain('## Análise Técnica')
+    expect(result.technical_description).toContain('Primeiro parágrafo técnico.')
+    expect(result.technical_description).toContain('Segundo parágrafo técnico.')
+    expect(result.technical_description).toContain('## Movimento')
+    expect(result.technical_description).toContain('Calibre automático in-house.')
+    expect(result.technical_description).toContain('## Caixa e Cristal')
+    expect(result.technical_description).toContain(
       'Caixa em aço com cristal de safira.'
     )
-    expect(result.technical_dial_and_luminosity).toBe(
-      'Mostrador texturizado com boa legibilidade.'
+    expect(result.technical_description).toContain(
+      '## Funcionalidade Específica'
     )
-    expect(result.technical_bracelet_construction).toBe(
-      'Pulseira em aço com fecho dobrável.'
-    )
-    expect(result.technical_specific_functionality).toContain(
+    expect(result.technical_description).toContain(
       'Calendário com exibição refinada.'
     )
-    expect(result.technical_specific_functionality).toContain(
-      'Diferenciais técnicos:'
+    expect(result.technical_description).toContain('Diferenciais técnicos:')
+    expect(result.technical_description).toContain('- Diferencial 1')
+    expect(result.technical_description).toContain(
+      '## Mostrador e Luminosidade'
     )
-    expect(result.technical_specific_functionality).toContain('- Diferencial 1')
-    expect(result.technical_table).toContain('| Caracteristica | Detalhe |')
-    expect(result.technical_table).toContain('| Referencia | RE-AU0001S |')
+    expect(result.technical_description).toContain(
+      'Mostrador texturizado com boa legibilidade.'
+    )
+    expect(result.technical_description).toContain(
+      '## Construção da Pulseira'
+    )
+    expect(result.technical_description).toContain(
+      'Pulseira em aço com fecho dobrável.'
+    )
+    expect(result.technical_description).toContain('## Tabela Técnica')
+    expect(result.technical_description).toContain(
+      '| Caracteristica | Detalhe |'
+    )
+    expect(result.technical_description).toContain(
+      '| Referencia | RE-AU0001S |'
+    )
+
+    // Sections appear in a stable, predictable order
+    const subtituloIdx = result.technical_description.indexOf('## Subtítulo')
+    const tabelaIdx = result.technical_description.indexOf('## Tabela Técnica')
+    expect(subtituloIdx).toBeGreaterThanOrEqual(0)
+    expect(tabelaIdx).toBeGreaterThan(subtituloIdx)
   })
 
   it('throws when payload is not valid JSON', () => {

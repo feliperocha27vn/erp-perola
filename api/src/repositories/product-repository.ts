@@ -24,14 +24,7 @@ export interface Product {
 	brand: ProductBrand | null
 	url_image: string | null
 	technical_title: string | null
-	technical_subtitle: string | null
-	technical_analysis: string | null
-	technical_movement: string | null
-	technical_case_and_crystal: string | null
-	technical_specific_functionality: string | null
-	technical_dial_and_luminosity: string | null
-	technical_bracelet_construction: string | null
-	technical_table: string | null
+	technical_description: string | null
 	stocks: ProductStock[]
 	deleted_at: Date | null
 	created_at: Date
@@ -40,14 +33,7 @@ export interface Product {
 
 export interface ProductTechnicalDetailsInput {
 	technical_title?: string | null
-	technical_subtitle?: string | null
-	technical_analysis?: string | null
-	technical_movement?: string | null
-	technical_case_and_crystal?: string | null
-	technical_specific_functionality?: string | null
-	technical_dial_and_luminosity?: string | null
-	technical_bracelet_construction?: string | null
-	technical_table?: string | null
+	technical_description?: string | null
 }
 
 export interface FetchProductsRequest {
