@@ -8,10 +8,11 @@ import type {
 	BrandSalesCount,
 	CreateSaleInput,
 	FetchCurrentMonthSalesMetricsReply,
-	FetchLast15DaysSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
+	FetchMonthlySalesPaceMetricsReply,
 	FindManySalesFilters,
 	FindManySalesReply,
+	MonthlySalesPacePoint,
 	Sale,
 	SaleRepository,
 	UpdateSaleInput,
@@ -45,22 +46,33 @@ function mapSale(
 }
 
 export class DrizzleSaleRepository implements SaleRepository {
-	async fetchLast15DaysSalesMetrics(): Promise<FetchLast15DaysSalesMetricsReply> {
-		const TRAILING_DAYS = 15
-		const dayBucket = sql`date_trunc('day', ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo')`
-		const rangeStart = sql`date_trunc('day', now() AT TIME ZONE 'America/Sao_Paulo') - (${TRAILING_DAYS - 1} || ' days')::interval`
+	async fetchMonthlySalesPaceMetrics(): Promise<FetchMonthlySalesPaceMetricsReply> {
+		const thisMonthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo')`
+		const lastMonthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo') - interval '1 month'`
+		const nextMonthStart = sql`date_trunc('month', now() AT TIME ZONE 'America/Sao_Paulo') + interval '1 month'`
+		const dayOfMonth = sql`extract(day from ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo')::int`
 
-		const rows = await db
+		const currentMonthRows = await db
 			.select({
-				date: sql<string>`to_char(${dayBucket}, 'YYYY-MM-DD')`,
+				day: dayOfMonth,
 				total_cents: sql<number>`sum(${sales.total_price})::int`,
 			})
 			.from(sales)
 			.where(
-				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${rangeStart}`,
+				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${thisMonthStart} AND ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' < ${nextMonthStart}`,
 			)
-			.groupBy(dayBucket)
-			.orderBy(dayBucket)
+			.groupBy(dayOfMonth)
+
+		const lastMonthRows = await db
+			.select({
+				day: dayOfMonth,
+				total_cents: sql<number>`sum(${sales.total_price})::int`,
+			})
+			.from(sales)
+			.where(
+				sql`${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' >= ${lastMonthStart} AND ${sales.sale_date} AT TIME ZONE 'America/Sao_Paulo' < ${thisMonthStart}`,
+			)
+			.groupBy(dayOfMonth)
 
 		const dateFormatter = new Intl.DateTimeFormat("en-CA", {
 			timeZone: "America/Sao_Paulo",
@@ -69,27 +81,51 @@ export class DrizzleSaleRepository implements SaleRepository {
 			day: "2-digit",
 		})
 
-		const now = new Date()
-		const totalsByDay = new Map(rows.map((row) => [row.date, row.total_cents]))
-		const items = Array.from({ length: TRAILING_DAYS }, (_, index) => {
-			const day = new Date(now)
-			day.setDate(day.getDate() - (TRAILING_DAYS - 1 - index))
-			const date = dateFormatter.format(day)
+		const [todayYear, todayMonth, todayDay] = dateFormatter
+			.format(new Date())
+			.split("-")
+			.map(Number)
 
-			return {
-				date,
-				total_cents: totalsByDay.get(date) ?? 0,
-			}
-		})
+		const daysInCurrentMonth = new Date(todayYear, todayMonth, 0).getDate()
+		const lastMonthDate = new Date(todayYear, todayMonth - 2, 1)
+		const daysInLastMonth = new Date(
+			lastMonthDate.getFullYear(),
+			lastMonthDate.getMonth() + 1,
+			0,
+		).getDate()
 
-		const totalCents = items.reduce((sum, item) => sum + item.total_cents, 0)
-		const daysWithSales = items.filter((item) => item.total_cents > 0).length
-		const daily_average_cents =
-			daysWithSales > 0 ? Math.round(totalCents / daysWithSales) : 0
+		const currentMonthTotalsByDay = new Map(
+			currentMonthRows.map((row) => [row.day, row.total_cents]),
+		)
+		const lastMonthTotalsByDay = new Map(
+			lastMonthRows.map((row) => [row.day, row.total_cents]),
+		)
+
+		const maxDay = Math.max(daysInCurrentMonth, daysInLastMonth)
+		let currentMonthCumulative = 0
+		let lastMonthCumulative = 0
+
+		const items: MonthlySalesPacePoint[] = []
+
+		for (let day = 1; day <= maxDay; day++) {
+			currentMonthCumulative += currentMonthTotalsByDay.get(day) ?? 0
+			lastMonthCumulative += lastMonthTotalsByDay.get(day) ?? 0
+
+			items.push({
+				day,
+				current_month_cents: day <= todayDay ? currentMonthCumulative : null,
+				last_month_cents: day <= daysInLastMonth ? lastMonthCumulative : null,
+			})
+		}
+
+		const lastMonthTotalCents = Array.from(
+			lastMonthTotalsByDay.values(),
+		).reduce((sum, value) => sum + value, 0)
 
 		return {
 			items,
-			daily_average_cents,
+			current_month_total_cents: currentMonthCumulative,
+			last_month_total_cents: lastMonthTotalCents,
 		}
 	}
 

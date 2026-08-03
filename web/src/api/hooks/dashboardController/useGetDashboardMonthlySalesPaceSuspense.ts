@@ -14,30 +14,30 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import type { GetDashboardLast15DaysSalesQueryResponse } from "../../types/dashboardController/GetDashboardLast15DaysSales.ts";
+import type { GetDashboardMonthlySalesPaceQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySalesPace.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getDashboardLast15DaysSales } from "../../clients/dashboardController/getDashboardLast15DaysSales.ts";
+import { getDashboardMonthlySalesPace } from "../../clients/dashboardController/getDashboardMonthlySalesPace.ts";
 
-export const getDashboardLast15DaysSalesSuspenseQueryKey = () =>
-  [{ url: "/dashboard/last-15-days-sales" }] as const;
+export const getDashboardMonthlySalesPaceSuspenseQueryKey = () =>
+  [{ url: "/dashboard/monthly-sales-pace" }] as const;
 
-export type GetDashboardLast15DaysSalesSuspenseQueryKey = ReturnType<
-  typeof getDashboardLast15DaysSalesSuspenseQueryKey
+export type GetDashboardMonthlySalesPaceSuspenseQueryKey = ReturnType<
+  typeof getDashboardMonthlySalesPaceSuspenseQueryKey
 >;
 
-export function getDashboardLast15DaysSalesSuspenseQueryOptions(
+export function getDashboardMonthlySalesPaceSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getDashboardLast15DaysSalesSuspenseQueryKey();
+  const queryKey = getDashboardMonthlySalesPaceSuspenseQueryKey();
   return queryOptions<
-    GetDashboardLast15DaysSalesQueryResponse,
+    GetDashboardMonthlySalesPaceQueryResponse,
     ResponseErrorConfig<Error>,
-    GetDashboardLast15DaysSalesQueryResponse,
+    GetDashboardMonthlySalesPaceQueryResponse,
     typeof queryKey
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getDashboardLast15DaysSales({
+      return getDashboardMonthlySalesPace({
         ...config,
         signal: config.signal ?? signal,
       });
@@ -46,17 +46,17 @@ export function getDashboardLast15DaysSalesSuspenseQueryOptions(
 }
 
 /**
- * @description Retorna faturamento diario dos ultimos 15 dias com media diaria
- * {@link /dashboard/last-15-days-sales}
+ * @description Retorna faturamento acumulado por dia do mes, comparando o mes atual com o mes passado
+ * {@link /dashboard/monthly-sales-pace}
  */
-export function useGetDashboardLast15DaysSalesSuspense<
-  TData = GetDashboardLast15DaysSalesQueryResponse,
-  TQueryKey extends QueryKey = GetDashboardLast15DaysSalesSuspenseQueryKey,
+export function useGetDashboardMonthlySalesPaceSuspense<
+  TData = GetDashboardMonthlySalesPaceQueryResponse,
+  TQueryKey extends QueryKey = GetDashboardMonthlySalesPaceSuspenseQueryKey,
 >(
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<
-        GetDashboardLast15DaysSalesQueryResponse,
+        GetDashboardMonthlySalesPaceQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
         TQueryKey
@@ -68,11 +68,11 @@ export function useGetDashboardLast15DaysSalesSuspense<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getDashboardLast15DaysSalesSuspenseQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesPaceSuspenseQueryKey();
 
   const query = useSuspenseQuery(
     {
-      ...getDashboardLast15DaysSalesSuspenseQueryOptions(config),
+      ...getDashboardMonthlySalesPaceSuspenseQueryOptions(config),
       ...resolvedOptions,
       queryKey,
     } as unknown as UseSuspenseQueryOptions,

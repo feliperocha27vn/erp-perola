@@ -44,14 +44,16 @@ export interface BrandSalesCount {
 	count: number
 }
 
-export interface DailySalesMetricItem {
-	date: string
-	total_cents: number
+export interface MonthlySalesPacePoint {
+	day: number
+	current_month_cents: number | null
+	last_month_cents: number | null
 }
 
-export interface FetchLast15DaysSalesMetricsReply {
-	items: DailySalesMetricItem[]
-	daily_average_cents: number
+export interface FetchMonthlySalesPaceMetricsReply {
+	items: MonthlySalesPacePoint[]
+	current_month_total_cents: number
+	last_month_total_cents: number
 }
 
 export interface FetchLastMonthSalesMetricsReply {
@@ -99,7 +101,7 @@ export interface FindManySalesReply {
 
 export interface SaleRepository {
 	findMany(filters: FindManySalesFilters): Promise<FindManySalesReply>
-	fetchLast15DaysSalesMetrics(): Promise<FetchLast15DaysSalesMetricsReply>
+	fetchMonthlySalesPaceMetrics(): Promise<FetchMonthlySalesPaceMetricsReply>
 	fetchLastMonthSalesMetrics(): Promise<FetchLastMonthSalesMetricsReply>
 	fetchCurrentMonthSalesMetrics(): Promise<FetchCurrentMonthSalesMetricsReply>
 	getById(id: string): Promise<Sale | null>

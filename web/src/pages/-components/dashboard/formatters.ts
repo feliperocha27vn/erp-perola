@@ -1,15 +1,3 @@
-import type { Locale } from 'date-fns'
-
-type DailyRevenueItem = {
-  date: string
-  total_cents: number
-}
-
-export function toLocalDate(dateString: string) {
-  const [year, month, day] = dateString.split('-').map(Number)
-  return new Date(year, month - 1, day)
-}
-
 export function formatMoney(value: number) {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -17,23 +5,54 @@ export function formatMoney(value: number) {
   }).format(value)
 }
 
-export function calculateTotalRevenue(items: DailyRevenueItem[]) {
-  return items.reduce((acc, item) => acc + item.total_cents, 0) / 100
+export type MonthlySalesPacePoint = {
+  day: number
+  current_month_cents: number | null
+  last_month_cents: number | null
 }
 
-export function mapDailyRevenueData(
-  items: DailyRevenueItem[],
-  formatDate: (date: Date, mask: string, options: { locale: Locale }) => string,
-  locale: Locale
-) {
-  return items.map(item => {
-    const date = toLocalDate(item.date)
+export function mapMonthlyPaceData(items: MonthlySalesPacePoint[]) {
+  return items.map(item => ({
+    day: item.day,
+    current:
+      item.current_month_cents != null ? item.current_month_cents / 100 : null,
+    last: item.last_month_cents != null ? item.last_month_cents / 100 : null,
+  }))
+}
 
-    return {
-      dayLabel: formatDate(date, 'dd/MM', { locale }),
-      fullDateLabel: formatDate(date, 'dd/MM/yyyy', { locale }),
-      total: item.total_cents / 100,
-      date,
-    }
-  })
+export type PaceComparison = {
+  day: number
+  currentCents: number
+  lastMonthCentsAtSameDay: number
+  deltaPercent: number | null
+}
+
+export function computePaceComparison(
+  items: MonthlySalesPacePoint[]
+): PaceComparison | null {
+  const lastPoint = [...items]
+    .reverse()
+    .find(item => item.current_month_cents != null)
+
+  if (!lastPoint || lastPoint.current_month_cents == null) return null
+
+  const currentCents = lastPoint.current_month_cents
+  const lastMonthCentsAtSameDay = lastPoint.last_month_cents ?? 0
+
+  return {
+    day: lastPoint.day,
+    currentCents,
+    lastMonthCentsAtSameDay,
+    deltaPercent:
+      lastMonthCentsAtSameDay > 0
+        ? ((currentCents - lastMonthCentsAtSameDay) / lastMonthCentsAtSameDay) *
+          100
+        : null,
+  }
+}
+
+export function hasMonthlyPaceData(items: MonthlySalesPacePoint[]) {
+  return items.some(
+    item => (item.current_month_cents ?? 0) > 0 || (item.last_month_cents ?? 0) > 0
+  )
 }

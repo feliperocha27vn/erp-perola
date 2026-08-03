@@ -13,10 +13,10 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { useGetDashboardCurrentMonthSales } from '@/api/hooks/dashboardController/useGetDashboardCurrentMonthSales'
-import { useGetDashboardLast15DaysSales } from '@/api/hooks/dashboardController/useGetDashboardLast15DaysSales'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
+import { useGetDashboardMonthlySalesPace } from '@/api/hooks/dashboardController/useGetDashboardMonthlySalesPace'
 import { MonthRevenueCard } from './-components/dashboard/month-revenue-card'
-import { RecentSalesChart } from './-components/dashboard/recent-sales-chart'
+import { MonthlySalesPaceChart } from './-components/dashboard/monthly-sales-pace-chart'
 import { RestockAlertCard } from './-components/dashboard/restock-alert-card'
 
 export const Route = createFileRoute('/')({
@@ -25,11 +25,11 @@ export const Route = createFileRoute('/')({
 
 function Dashboard() {
   const {
-    data: last15DaysSalesData,
-    isLoading: isLast15DaysSalesLoading,
-    isError: isLast15DaysSalesError,
-    refetch: refetchLast15DaysSales,
-  } = useGetDashboardLast15DaysSales()
+    data: monthlySalesPaceData,
+    isLoading: isMonthlySalesPaceLoading,
+    isError: isMonthlySalesPaceError,
+    refetch: refetchMonthlySalesPace,
+  } = useGetDashboardMonthlySalesPace()
 
   const {
     data: lastMonthSalesData,
@@ -85,12 +85,11 @@ function Dashboard() {
           </div>
         </div>
 
-        <RecentSalesChart
-          items={last15DaysSalesData?.items ?? []}
-          dailyAverageCents={last15DaysSalesData?.daily_average_cents ?? 0}
-          isLoading={isLast15DaysSalesLoading}
-          isError={isLast15DaysSalesError}
-          onRetry={() => refetchLast15DaysSales()}
+        <MonthlySalesPaceChart
+          items={monthlySalesPaceData?.items ?? []}
+          isLoading={isMonthlySalesPaceLoading}
+          isError={isMonthlySalesPaceError}
+          onRetry={() => refetchMonthlySalesPace()}
         />
       </div>
 

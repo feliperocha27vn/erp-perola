@@ -34,15 +34,15 @@ export type {
   GetDashboardCurrentMonthSalesQueryResponse,
 } from "./dashboardController/GetDashboardCurrentMonthSales.ts";
 export type {
-  GetDashboardLast15DaysSales200,
-  GetDashboardLast15DaysSalesQuery,
-  GetDashboardLast15DaysSalesQueryResponse,
-} from "./dashboardController/GetDashboardLast15DaysSales.ts";
-export type {
   GetDashboardLastMonthSales200,
   GetDashboardLastMonthSalesQuery,
   GetDashboardLastMonthSalesQueryResponse,
 } from "./dashboardController/GetDashboardLastMonthSales.ts";
+export type {
+  GetDashboardMonthlySalesPace200,
+  GetDashboardMonthlySalesPaceQuery,
+  GetDashboardMonthlySalesPaceQueryResponse,
+} from "./dashboardController/GetDashboardMonthlySalesPace.ts";
 export type {
   GetHealth200,
   GetHealthQuery,

@@ -14,30 +14,30 @@ import type {
   QueryObserverOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import type { GetDashboardLast15DaysSalesQueryResponse } from "../../types/dashboardController/GetDashboardLast15DaysSales.ts";
+import type { GetDashboardMonthlySalesPaceQueryResponse } from "../../types/dashboardController/GetDashboardMonthlySalesPace.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getDashboardLast15DaysSales } from "../../clients/dashboardController/getDashboardLast15DaysSales.ts";
+import { getDashboardMonthlySalesPace } from "../../clients/dashboardController/getDashboardMonthlySalesPace.ts";
 
-export const getDashboardLast15DaysSalesQueryKey = () =>
-  [{ url: "/dashboard/last-15-days-sales" }] as const;
+export const getDashboardMonthlySalesPaceQueryKey = () =>
+  [{ url: "/dashboard/monthly-sales-pace" }] as const;
 
-export type GetDashboardLast15DaysSalesQueryKey = ReturnType<
-  typeof getDashboardLast15DaysSalesQueryKey
+export type GetDashboardMonthlySalesPaceQueryKey = ReturnType<
+  typeof getDashboardMonthlySalesPaceQueryKey
 >;
 
-export function getDashboardLast15DaysSalesQueryOptions(
+export function getDashboardMonthlySalesPaceQueryOptions(
   config: Partial<RequestConfig> & { client?: Client } = {},
 ) {
-  const queryKey = getDashboardLast15DaysSalesQueryKey();
+  const queryKey = getDashboardMonthlySalesPaceQueryKey();
   return queryOptions<
-    GetDashboardLast15DaysSalesQueryResponse,
+    GetDashboardMonthlySalesPaceQueryResponse,
     ResponseErrorConfig<Error>,
-    GetDashboardLast15DaysSalesQueryResponse,
+    GetDashboardMonthlySalesPaceQueryResponse,
     typeof queryKey
   >({
     queryKey,
     queryFn: async ({ signal }) => {
-      return getDashboardLast15DaysSales({
+      return getDashboardMonthlySalesPace({
         ...config,
         signal: config.signal ?? signal,
       });
@@ -46,18 +46,18 @@ export function getDashboardLast15DaysSalesQueryOptions(
 }
 
 /**
- * @description Retorna faturamento diario dos ultimos 15 dias com media diaria
- * {@link /dashboard/last-15-days-sales}
+ * @description Retorna faturamento acumulado por dia do mes, comparando o mes atual com o mes passado
+ * {@link /dashboard/monthly-sales-pace}
  */
-export function useGetDashboardLast15DaysSales<
-  TData = GetDashboardLast15DaysSalesQueryResponse,
-  TQueryData = GetDashboardLast15DaysSalesQueryResponse,
-  TQueryKey extends QueryKey = GetDashboardLast15DaysSalesQueryKey,
+export function useGetDashboardMonthlySalesPace<
+  TData = GetDashboardMonthlySalesPaceQueryResponse,
+  TQueryData = GetDashboardMonthlySalesPaceQueryResponse,
+  TQueryKey extends QueryKey = GetDashboardMonthlySalesPaceQueryKey,
 >(
   options: {
     query?: Partial<
       QueryObserverOptions<
-        GetDashboardLast15DaysSalesQueryResponse,
+        GetDashboardMonthlySalesPaceQueryResponse,
         ResponseErrorConfig<Error>,
         TData,
         TQueryData,
@@ -70,11 +70,11 @@ export function useGetDashboardLast15DaysSales<
   const { query: queryConfig = {}, client: config = {} } = options ?? {};
   const { client: queryClient, ...resolvedOptions } = queryConfig;
   const queryKey =
-    resolvedOptions?.queryKey ?? getDashboardLast15DaysSalesQueryKey();
+    resolvedOptions?.queryKey ?? getDashboardMonthlySalesPaceQueryKey();
 
   const query = useQuery(
     {
-      ...getDashboardLast15DaysSalesQueryOptions(config),
+      ...getDashboardMonthlySalesPaceQueryOptions(config),
       ...resolvedOptions,
       queryKey,
     } as unknown as QueryObserverOptions,

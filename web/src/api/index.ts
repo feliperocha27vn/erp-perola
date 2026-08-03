@@ -5,10 +5,10 @@ export type { PatchBrandsIdMutationKey } from "./hooks/brandsController/usePatch
 export type { PostBrandsMutationKey } from "./hooks/brandsController/usePostBrands.ts";
 export type { GetDashboardCurrentMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSales.ts";
 export type { GetDashboardCurrentMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
-export type { GetDashboardLast15DaysSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
-export type { GetDashboardLast15DaysSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSalesSuspense.ts";
 export type { GetDashboardLastMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
 export type { GetDashboardLastMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export type { GetDashboardMonthlySalesPaceQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesPace.ts";
+export type { GetDashboardMonthlySalesPaceSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesPaceSuspense.ts";
 export type { GetHealthQueryKey } from "./hooks/healthController/useGetHealth.ts";
 export type { GetHealthSuspenseQueryKey } from "./hooks/healthController/useGetHealthSuspense.ts";
 export type { DeleteProductMutationKey } from "./hooks/productsController/useDeleteProduct.ts";
@@ -95,15 +95,15 @@ export type {
   GetDashboardCurrentMonthSalesQueryResponse,
 } from "./types/dashboardController/GetDashboardCurrentMonthSales.ts";
 export type {
-  GetDashboardLast15DaysSales200,
-  GetDashboardLast15DaysSalesQuery,
-  GetDashboardLast15DaysSalesQueryResponse,
-} from "./types/dashboardController/GetDashboardLast15DaysSales.ts";
-export type {
   GetDashboardLastMonthSales200,
   GetDashboardLastMonthSalesQuery,
   GetDashboardLastMonthSalesQueryResponse,
 } from "./types/dashboardController/GetDashboardLastMonthSales.ts";
+export type {
+  GetDashboardMonthlySalesPace200,
+  GetDashboardMonthlySalesPaceQuery,
+  GetDashboardMonthlySalesPaceQueryResponse,
+} from "./types/dashboardController/GetDashboardMonthlySalesPace.ts";
 export type {
   GetHealth200,
   GetHealthQuery,
@@ -366,8 +366,8 @@ export { getBrands } from "./clients/brandsController/getBrands.ts";
 export { patchBrandsId } from "./clients/brandsController/patchBrandsId.ts";
 export { postBrands } from "./clients/brandsController/postBrands.ts";
 export { getDashboardCurrentMonthSales } from "./clients/dashboardController/getDashboardCurrentMonthSales.ts";
-export { getDashboardLast15DaysSales } from "./clients/dashboardController/getDashboardLast15DaysSales.ts";
 export { getDashboardLastMonthSales } from "./clients/dashboardController/getDashboardLastMonthSales.ts";
+export { getDashboardMonthlySalesPace } from "./clients/dashboardController/getDashboardMonthlySalesPace.ts";
 export { getHealth } from "./clients/healthController/getHealth.ts";
 export { deleteProduct } from "./clients/productsController/deleteProduct.ts";
 export { getProductSalesDaily } from "./clients/productsController/getProductSalesDaily.ts";
@@ -423,18 +423,18 @@ export { useGetDashboardCurrentMonthSales } from "./hooks/dashboardController/us
 export { getDashboardCurrentMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
 export { getDashboardCurrentMonthSalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
 export { useGetDashboardCurrentMonthSalesSuspense } from "./hooks/dashboardController/useGetDashboardCurrentMonthSalesSuspense.ts";
-export { getDashboardLast15DaysSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
-export { getDashboardLast15DaysSalesQueryOptions } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
-export { useGetDashboardLast15DaysSales } from "./hooks/dashboardController/useGetDashboardLast15DaysSales.ts";
-export { getDashboardLast15DaysSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLast15DaysSalesSuspense.ts";
-export { getDashboardLast15DaysSalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardLast15DaysSalesSuspense.ts";
-export { useGetDashboardLast15DaysSalesSuspense } from "./hooks/dashboardController/useGetDashboardLast15DaysSalesSuspense.ts";
 export { getDashboardLastMonthSalesQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
 export { getDashboardLastMonthSalesQueryOptions } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
 export { useGetDashboardLastMonthSales } from "./hooks/dashboardController/useGetDashboardLastMonthSales.ts";
 export { getDashboardLastMonthSalesSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
 export { getDashboardLastMonthSalesSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
 export { useGetDashboardLastMonthSalesSuspense } from "./hooks/dashboardController/useGetDashboardLastMonthSalesSuspense.ts";
+export { getDashboardMonthlySalesPaceQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesPace.ts";
+export { getDashboardMonthlySalesPaceQueryOptions } from "./hooks/dashboardController/useGetDashboardMonthlySalesPace.ts";
+export { useGetDashboardMonthlySalesPace } from "./hooks/dashboardController/useGetDashboardMonthlySalesPace.ts";
+export { getDashboardMonthlySalesPaceSuspenseQueryKey } from "./hooks/dashboardController/useGetDashboardMonthlySalesPaceSuspense.ts";
+export { getDashboardMonthlySalesPaceSuspenseQueryOptions } from "./hooks/dashboardController/useGetDashboardMonthlySalesPaceSuspense.ts";
+export { useGetDashboardMonthlySalesPaceSuspense } from "./hooks/dashboardController/useGetDashboardMonthlySalesPaceSuspense.ts";
 export { getHealthQueryKey } from "./hooks/healthController/useGetHealth.ts";
 export { getHealthQueryOptions } from "./hooks/healthController/useGetHealth.ts";
 export { useGetHealth } from "./hooks/healthController/useGetHealth.ts";

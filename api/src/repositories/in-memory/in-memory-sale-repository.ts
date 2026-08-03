@@ -2,8 +2,8 @@ import type {
 	BrandSalesCount,
 	CreateSaleInput,
 	FetchCurrentMonthSalesMetricsReply,
-	FetchLast15DaysSalesMetricsReply,
 	FetchLastMonthSalesMetricsReply,
+	FetchMonthlySalesPaceMetricsReply,
 	FindManySalesFilters,
 	FindManySalesReply,
 	Sale,
@@ -50,10 +50,11 @@ export class InMemorySaleRepository implements SaleRepository {
 		}
 	}
 
-	async fetchLast15DaysSalesMetrics(): Promise<FetchLast15DaysSalesMetricsReply> {
+	async fetchMonthlySalesPaceMetrics(): Promise<FetchMonthlySalesPaceMetricsReply> {
 		return {
 			items: [],
-			daily_average_cents: 0,
+			current_month_total_cents: 0,
+			last_month_total_cents: 0,
 		}
 	}
 
