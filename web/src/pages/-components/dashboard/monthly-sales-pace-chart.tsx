@@ -95,17 +95,20 @@ export function MonthlySalesPaceChart({
           title="Não foi possível carregar o gráfico"
           description="Verifique sua conexão e tente novamente."
           onRetry={onRetry}
-          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] flex items-center"
+          className="h-[240px] md:h-[320px] lg:h-[380px] flex items-center"
         />
       ) : !hasData ? (
         <EmptyState
           title="Nenhuma venda encontrada neste mês ou no mês passado."
-          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] flex flex-col justify-center"
+          className="h-[240px] md:h-[320px] lg:h-[380px] flex flex-col justify-center"
         />
       ) : (
         <ChartContainer
           config={chartConfig}
-          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] w-full aspect-auto"
+          // Altura DEFINIDA, nao min-height: o ResponsiveContainer do recharts usa
+          // height 100%, e percentual nao resolve contra pai de altura automatica
+          // — o grafico colapsaria para zero.
+          className="h-[240px] md:h-[320px] lg:h-[380px] w-full aspect-auto"
         >
           <LineChart
             data={chartData}
