@@ -60,40 +60,38 @@ function Dashboard() {
         </div>
       </div>
 
+      <MonthlySalesPaceChart
+        items={monthlySalesPaceData?.items ?? []}
+        isLoading={isMonthlySalesPaceLoading}
+        isError={isMonthlySalesPaceError}
+        onRetry={() => refetchMonthlySalesPace()}
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        <div className="flex flex-col gap-6">
-          <RestockAlertCard />
+        <RestockAlertCard />
 
-          <FullReplenishmentCard />
+        <FullReplenishmentCard />
+      </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <MonthRevenueCard
-              icon={CalendarClock}
-              label="Vendas do mes atual"
-              emptyMessage="Nenhuma venda registrada no mes atual."
-              totalCents={currentMonthSalesData?.total_cents ?? 0}
-              isLoading={isCurrentMonthSalesLoading}
-              isError={isCurrentMonthSalesError}
-              onRetry={() => refetchCurrentMonthSales()}
-            />
+      <div className="grid grid-cols-2 gap-6">
+        <MonthRevenueCard
+          icon={CalendarClock}
+          label="Vendas do mes atual"
+          emptyMessage="Nenhuma venda registrada no mes atual."
+          totalCents={currentMonthSalesData?.total_cents ?? 0}
+          isLoading={isCurrentMonthSalesLoading}
+          isError={isCurrentMonthSalesError}
+          onRetry={() => refetchCurrentMonthSales()}
+        />
 
-            <MonthRevenueCard
-              icon={CalendarArrowUp}
-              label="Vendas do mes passado"
-              emptyMessage="Nenhuma venda registrada no mes passado."
-              totalCents={lastMonthSalesData?.total_cents ?? 0}
-              isLoading={isLastMonthSalesLoading}
-              isError={isLastMonthSalesError}
-              onRetry={() => refetchLastMonthSales()}
-            />
-          </div>
-        </div>
-
-        <MonthlySalesPaceChart
-          items={monthlySalesPaceData?.items ?? []}
-          isLoading={isMonthlySalesPaceLoading}
-          isError={isMonthlySalesPaceError}
-          onRetry={() => refetchMonthlySalesPace()}
+        <MonthRevenueCard
+          icon={CalendarArrowUp}
+          label="Vendas do mes passado"
+          emptyMessage="Nenhuma venda registrada no mes passado."
+          totalCents={lastMonthSalesData?.total_cents ?? 0}
+          isLoading={isLastMonthSalesLoading}
+          isError={isLastMonthSalesError}
+          onRetry={() => refetchLastMonthSales()}
         />
       </div>
 

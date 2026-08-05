@@ -95,17 +95,17 @@ export function MonthlySalesPaceChart({
           title="Não foi possível carregar o gráfico"
           description="Verifique sua conexão e tente novamente."
           onRetry={onRetry}
-          className="flex-1 min-h-[220px] flex items-center"
+          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] flex items-center"
         />
       ) : !hasData ? (
         <EmptyState
           title="Nenhuma venda encontrada neste mês ou no mês passado."
-          className="flex-1 min-h-[220px] flex flex-col justify-center"
+          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] flex flex-col justify-center"
         />
       ) : (
         <ChartContainer
           config={chartConfig}
-          className="flex-1 min-h-[220px] w-full aspect-auto"
+          className="flex-1 min-h-[240px] md:min-h-[320px] lg:min-h-[380px] w-full aspect-auto"
         >
           <LineChart
             data={chartData}
