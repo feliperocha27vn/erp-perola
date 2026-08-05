@@ -5,12 +5,15 @@ export interface ProductBrand {
 	updated_at: Date
 }
 
+export type Marketplace = "mercado_livre" | "amazon" | "shopee"
+
 export interface ProductStock {
 	id: string
 	product_id: string
 	title: string
 	qtde: number
 	full: boolean
+	marketplace: Marketplace | null
 	created_at: Date
 	updated_at: Date
 }

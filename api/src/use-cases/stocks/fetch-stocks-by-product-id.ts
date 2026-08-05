@@ -1,5 +1,5 @@
 import { ProductNotFoundError } from "../../errors/product-not-found-error.js"
-import type { ProductRepository } from "../../repositories/product-repository.js"
+import type { ProductRepository, ProductStock } from "../../repositories/product-repository.js"
 import type { StockRepository } from "../../repositories/stock-repository.js"
 
 interface FetchStocksByProductIdUseCaseRequest {
@@ -7,15 +7,7 @@ interface FetchStocksByProductIdUseCaseRequest {
 }
 
 interface FetchStocksByProductIdUseCaseResponse {
-	stocks: {
-		id: string
-		product_id: string
-		title: string
-		qtde: number
-		full: boolean
-		created_at: Date
-		updated_at: Date
-	}[]
+	stocks: ProductStock[]
 }
 
 export class FetchStocksByProductIdUseCase {

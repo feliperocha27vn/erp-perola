@@ -48,6 +48,15 @@ export type GetProductsQueryParams = {
   sortOrder?: GetProductsQueryParamsSortOrderEnumKey;
 };
 
+export const stocksMarketplaceEnum2 = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StocksMarketplaceEnum2Key =
+  (typeof stocksMarketplaceEnum2)[keyof typeof stocksMarketplaceEnum2];
+
 /**
  * @description Default Response
  */
@@ -137,6 +146,10 @@ export type GetProducts200 = {
        * @type boolean
        */
       full: boolean;
+      /**
+       * @type string
+       */
+      marketplace: StocksMarketplaceEnum2Key | null;
       /**
        * @type string, date-time
        */

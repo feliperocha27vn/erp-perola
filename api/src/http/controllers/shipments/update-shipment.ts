@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
-import { ShipmentAlreadyConfirmedError } from "../../../errors/shipment-already-confirmed-error.js"
+import { ShipmentNotEditableError } from "../../../errors/shipment-not-editable-error.js"
 import { ShipmentNotFoundError } from "../../../errors/shipment-not-found-error.js"
 import { makeUpdateShipmentUseCase } from "../../../factories/shipments/make-update-shipment-use-case.js"
 
@@ -20,7 +20,7 @@ const shipmentSchema = z.object({
 	account_name: z.string(),
 	date: z.date(),
 	notes: z.string().nullable(),
-	status: z.enum(["rascunho", "confirmado"]),
+	status: z.enum(["rascunho", "em_transito", "recebido"]),
 	items: z.array(itemSchema),
 	created_at: z.date(),
 	updated_at: z.date(),
@@ -69,7 +69,7 @@ export const updateShipment: FastifyPluginAsyncZod = async (app) => {
 				if (error instanceof ShipmentNotFoundError) {
 					return reply.status(404).send({ error: error.message })
 				}
-				if (error instanceof ShipmentAlreadyConfirmedError) {
+				if (error instanceof ShipmentNotEditableError) {
 					return reply.status(409).send({ error: error.message })
 				}
 				throw error

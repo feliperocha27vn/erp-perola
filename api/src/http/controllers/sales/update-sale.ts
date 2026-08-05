@@ -34,6 +34,7 @@ const stockSchema = z.object({
 	title: z.string(),
 	qtde: z.number().int(),
 	full: z.boolean(),
+	marketplace: z.enum(["mercado_livre", "amazon", "shopee"]).nullable(),
 	created_at: z.date(),
 	updated_at: z.date(),
 })

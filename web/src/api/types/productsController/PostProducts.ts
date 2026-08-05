@@ -3,6 +3,15 @@
  * Do not edit manually.
  */
 
+export const stocksMarketplaceEnum = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StocksMarketplaceEnumKey =
+  (typeof stocksMarketplaceEnum)[keyof typeof stocksMarketplaceEnum];
+
 /**
  * @description Default Response
  */
@@ -92,6 +101,10 @@ export type PostProducts201 = {
        * @type boolean
        */
       full: boolean;
+      /**
+       * @type string
+       */
+      marketplace: StocksMarketplaceEnumKey | null;
       /**
        * @type string, date-time
        */

@@ -1,16 +1,18 @@
-import type { ProductStock } from "./product-repository.js"
+import type { Marketplace, ProductStock } from "./product-repository.js"
 
 export interface CreateStockInput {
 	product_id: string
 	title: string
 	qtde: number
 	full: boolean
+	marketplace?: Marketplace | null
 }
 
 export interface UpdateStockInput {
 	title?: string
 	qtde?: number
 	full?: boolean
+	marketplace?: Marketplace | null
 }
 
 export interface StockRepository {

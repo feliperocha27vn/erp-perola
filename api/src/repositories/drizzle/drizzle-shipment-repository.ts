@@ -6,6 +6,7 @@ import type {
 	CreateShipmentInput,
 	ShipmentRepository,
 	ShipmentRow,
+	ShipmentStatus,
 	UpdateShipmentInput,
 } from "../shipment-repository.js"
 
@@ -146,7 +147,7 @@ export class DrizzleShipmentRepository implements ShipmentRepository {
 		return this.getById(id)
 	}
 
-	async updateStatus(id: string, status: "rascunho" | "confirmado"): Promise<ShipmentRow | null> {
+	async updateStatus(id: string, status: ShipmentStatus): Promise<ShipmentRow | null> {
 		const [row] = await db
 			.update(shipments)
 			.set({ status, updated_at: new Date() })

@@ -17,7 +17,17 @@ export const salesChannelEnum = pgEnum("sales_channel", [
 	"Direto",
 ])
 
-export const shipmentStatusEnum = pgEnum("shipment_status", ["rascunho", "confirmado"])
+export const shipmentStatusEnum = pgEnum("shipment_status", [
+	"rascunho",
+	"em_transito",
+	"recebido",
+])
+
+export const marketplaceEnum = pgEnum("marketplace", [
+	"mercado_livre",
+	"amazon",
+	"shopee",
+])
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -135,6 +145,7 @@ export const stocks = pgTable("stocks", {
 	title: text("title").notNull(),
 	qtde: integer("qtde").notNull(),
 	full: boolean("full").notNull().default(false),
+	marketplace: marketplaceEnum("marketplace"),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 	updated_at: timestamp("updated_at").notNull().defaultNow(),
 })

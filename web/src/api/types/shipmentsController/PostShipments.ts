@@ -5,7 +5,8 @@
 
 export const shipmentStatusEnum = {
   rascunho: "rascunho",
-  confirmado: "confirmado",
+  em_transito: "em_transito",
+  recebido: "recebido",
 } as const;
 
 export type ShipmentStatusEnumKey =

@@ -72,3 +72,48 @@ export interface RestockAlertRepository {
 	fetchRestockAlertProducts(): Promise<RestockAlertProductRow[]>
 	fetchRestockAlertSalesPace(): Promise<RestockAlertSalesRow[]>
 }
+
+export type Marketplace = "mercado_livre" | "amazon" | "shopee"
+
+/** Um deposito full de um produto, com o que esta disponivel para venda la. */
+export interface FullStockRow {
+	product_id: string
+	sku: string
+	brand_name: string | null
+	stock_id: string
+	stock_title: string
+	marketplace: Marketplace
+	qtde: number
+}
+
+/**
+ * Saida de um deposito full na janela, junto do numero de dias em que aquele
+ * deposito de fato tinha estoque — o denominador do Ritmo de Saida.
+ */
+export interface FullStockDemandRow {
+	stock_id: string
+	units_window: number
+	days_with_stock: number
+}
+
+/** Estoque fisico do produto: fonte de suprimento e base da reserva. */
+export interface PhysicalSupplyRow {
+	product_id: string
+	stock_id: string
+	stock_title: string
+	qtde: number
+	units_window: number
+}
+
+/** Unidades ja comprometidas com um deposito full (rascunho ou em transito). */
+export interface InTransitRow {
+	destination_stock_id: string
+	quantity: number
+}
+
+export interface FullReplenishmentRepository {
+	fetchFullStocks(): Promise<FullStockRow[]>
+	fetchFullStockDemand(windowDays: number): Promise<FullStockDemandRow[]>
+	fetchPhysicalSupply(windowDays: number): Promise<PhysicalSupplyRow[]>
+	fetchInTransitQuantities(): Promise<InTransitRow[]>
+}

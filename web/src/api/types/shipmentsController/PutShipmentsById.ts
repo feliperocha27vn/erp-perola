@@ -12,7 +12,8 @@ export type PutShipmentsByIdPathParams = {
 
 export const shipmentStatusEnum3 = {
   rascunho: "rascunho",
-  confirmado: "confirmado",
+  em_transito: "em_transito",
+  recebido: "recebido",
 } as const;
 
 export type ShipmentStatusEnum3Key =

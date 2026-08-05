@@ -4,6 +4,7 @@ import type {
 	ShipmentItemRow,
 	ShipmentRepository,
 	ShipmentRow,
+	ShipmentStatus,
 	ShipmentWithDetails,
 	ShipmentWithItemDetails,
 	ShipmentWithItems,
@@ -106,7 +107,7 @@ export class InMemoryShipmentRepository implements ShipmentRepository {
 		return this.getById(id)
 	}
 
-	async updateStatus(id: string, status: "rascunho" | "confirmado"): Promise<ShipmentRow | null> {
+	async updateStatus(id: string, status: ShipmentStatus): Promise<ShipmentRow | null> {
 		const index = this.shipments.findIndex((s) => s.id === id)
 		if (index === -1) return null
 		this.shipments[index] = { ...this.shipments[index], status, updated_at: new Date() }

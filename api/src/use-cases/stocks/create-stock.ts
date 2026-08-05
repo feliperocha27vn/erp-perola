@@ -1,5 +1,5 @@
 import { ProductNotFoundError } from "../../errors/product-not-found-error.js"
-import type { ProductRepository } from "../../repositories/product-repository.js"
+import type { Marketplace, ProductRepository } from "../../repositories/product-repository.js"
 import type { StockRepository } from "../../repositories/stock-repository.js"
 
 interface CreateStockUseCaseRequest {
@@ -7,6 +7,7 @@ interface CreateStockUseCaseRequest {
 	title: string
 	qtde: number
 	full: boolean
+	marketplace?: Marketplace | null
 }
 
 interface CreateStockUseCaseResponse {
@@ -16,6 +17,7 @@ interface CreateStockUseCaseResponse {
 		title: string
 		qtde: number
 		full: boolean
+		marketplace: Marketplace | null
 		created_at: Date
 		updated_at: Date
 	}
@@ -32,6 +34,7 @@ export class CreateStockUseCase {
 		title,
 		qtde,
 		full,
+		marketplace,
 	}: CreateStockUseCaseRequest): Promise<CreateStockUseCaseResponse> {
 		const product = await this.productRepository.getProductById(productId)
 
@@ -44,6 +47,8 @@ export class CreateStockUseCase {
 			title,
 			qtde,
 			full,
+			// Marketplace so faz sentido em estoque full; no fisico fica nulo.
+			marketplace: full ? (marketplace ?? null) : null,
 		})
 
 		return { stock }

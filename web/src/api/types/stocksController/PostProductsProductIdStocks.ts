@@ -10,6 +10,15 @@ export type PostProductsProductIdStocksPathParams = {
   productId: string;
 };
 
+export const stockMarketplaceEnum4 = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StockMarketplaceEnum4Key =
+  (typeof stockMarketplaceEnum4)[keyof typeof stockMarketplaceEnum4];
+
 /**
  * @description Default Response
  */
@@ -41,6 +50,10 @@ export type PostProductsProductIdStocks201 = {
      */
     full: boolean;
     /**
+     * @type string
+     */
+    marketplace: StockMarketplaceEnum4Key | null;
+    /**
      * @type string, date-time
      */
     created_at: string;
@@ -61,6 +74,15 @@ export type PostProductsProductIdStocks404 = {
   error: string;
 };
 
+export const postProductsProductIdStocksMutationRequestMarketplaceEnum = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type PostProductsProductIdStocksMutationRequestMarketplaceEnumKey =
+  (typeof postProductsProductIdStocksMutationRequestMarketplaceEnum)[keyof typeof postProductsProductIdStocksMutationRequestMarketplaceEnum];
+
 export type PostProductsProductIdStocksMutationRequest = {
   /**
    * @minLength 1
@@ -77,6 +99,10 @@ export type PostProductsProductIdStocksMutationRequest = {
    * @type boolean
    */
   full: boolean;
+  /**
+   * @type string
+   */
+  marketplace?: PostProductsProductIdStocksMutationRequestMarketplaceEnumKey | null;
 };
 
 export type PostProductsProductIdStocksMutationResponse =

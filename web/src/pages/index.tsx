@@ -11,10 +11,12 @@ import {
   Receipt,
   Send,
   TrendingUp,
+  Warehouse,
 } from 'lucide-react'
 import { useGetDashboardCurrentMonthSales } from '@/api/hooks/dashboardController/useGetDashboardCurrentMonthSales'
 import { useGetDashboardLastMonthSales } from '@/api/hooks/dashboardController/useGetDashboardLastMonthSales'
 import { useGetDashboardMonthlySalesPace } from '@/api/hooks/dashboardController/useGetDashboardMonthlySalesPace'
+import { FullReplenishmentCard } from './-components/dashboard/full-replenishment-card'
 import { MonthRevenueCard } from './-components/dashboard/month-revenue-card'
 import { MonthlySalesPaceChart } from './-components/dashboard/monthly-sales-pace-chart'
 import { RestockAlertCard } from './-components/dashboard/restock-alert-card'
@@ -61,6 +63,8 @@ function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         <div className="flex flex-col gap-6">
           <RestockAlertCard />
+
+          <FullReplenishmentCard />
 
           <div className="grid grid-cols-2 gap-6">
             <MonthRevenueCard
@@ -259,6 +263,26 @@ function Dashboard() {
             <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
               Acessar Envios
               <Send className="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          <Link
+            to="/abastecimento-do-full"
+            className="group relative flex flex-col text-left glass-card p-7 rounded-2xl glow-hover transition-all text-foreground hover:scale-[1.01]"
+          >
+            <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 w-fit mb-5 group-hover:bg-primary group-hover:text-white transition-all">
+              <Warehouse className="size-8" />
+            </div>
+            <h4 className="text-xl font-display font-semibold mb-2">
+              Abastecimento do Full
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Dias de autonomia por centro de distribuição, quanto enviar para
+              cada um e o que está parado ocupando prateleira.
+            </p>
+            <div className="mt-6 flex items-center text-primary font-semibold text-xs uppercase tracking-widest gap-2">
+              Ver abastecimento
+              <Warehouse className="size-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
         </div>

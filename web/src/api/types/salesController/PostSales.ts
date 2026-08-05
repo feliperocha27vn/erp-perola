@@ -13,6 +13,15 @@ export const saleChannelEnum = {
 export type SaleChannelEnumKey =
   (typeof saleChannelEnum)[keyof typeof saleChannelEnum];
 
+export const stockMarketplaceEnum = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StockMarketplaceEnumKey =
+  (typeof stockMarketplaceEnum)[keyof typeof stockMarketplaceEnum];
+
 /**
  * @description Default Response
  */
@@ -130,6 +139,10 @@ export type PostSales201 = {
        * @type boolean
        */
       full: boolean;
+      /**
+       * @type string
+       */
+      marketplace: StockMarketplaceEnumKey | null;
       /**
        * @type string, date-time
        */

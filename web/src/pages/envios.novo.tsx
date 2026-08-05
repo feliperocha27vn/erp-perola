@@ -7,7 +7,9 @@ import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/u
 import { usePostShipmentAccounts } from '@/api/hooks/shipmentAccountsController/usePostShipmentAccounts'
 import { useGetShipmentsById } from '@/api/hooks/shipmentsController/useGetShipmentsById'
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
-import { usePostShipmentsByIdConfirm } from '@/api/hooks/shipmentsController/usePostShipmentsByIdConfirm'
+import { usePostShipmentsByIdDispatch } from '@/api/hooks/shipmentsController/usePostShipmentsByIdDispatch'
+import { usePostShipmentsByIdReceive } from '@/api/hooks/shipmentsController/usePostShipmentsByIdReceive'
+import { ShipmentStatusBadge } from './-components/envios/status-badge'
 import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useGetProductsProductIdStocks'
 import { useGetProducts } from '@/api/hooks/productsController/useGetProducts'
 import { Button } from '@/components/ui/button'
@@ -231,15 +233,30 @@ function formatDate(dateStr: string) {
 function ShipmentDetailView({ shipmentId }: { shipmentId: string }) {
   const navigate = useNavigate()
   const { data, isLoading, isError } = useGetShipmentsById(shipmentId)
-  const confirmMutation = usePostShipmentsByIdConfirm({
+
+  const dispatchMutation = usePostShipmentsByIdDispatch({
     mutation: {
       onSuccess: () => {
-        toast.success('Envio confirmado! Estoque atualizado.')
+        toast.success('Envio despachado. Estoque físico debitado.')
         queryClient.invalidateQueries({ queryKey: [{ url: '/shipments' }] })
         navigate({ to: '/envios' })
       },
       onError: (err: any) => {
-        const msg = err?.response?.data?.error ?? 'Erro ao confirmar envio.'
+        const msg = err?.response?.data?.error ?? 'Erro ao despachar envio.'
+        toast.error(msg)
+      },
+    },
+  })
+
+  const receiveMutation = usePostShipmentsByIdReceive({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Entrada confirmada. Estoque do CD atualizado.')
+        queryClient.invalidateQueries({ queryKey: [{ url: '/shipments' }] })
+        navigate({ to: '/envios' })
+      },
+      onError: (err: any) => {
+        const msg = err?.response?.data?.error ?? 'Erro ao confirmar recebimento.'
         toast.error(msg)
       },
     },
@@ -270,11 +287,21 @@ function ShipmentDetailView({ shipmentId }: { shipmentId: string }) {
         {shipment?.status === 'rascunho' && (
           <Button
             className="gap-2"
-            disabled={confirmMutation.isPending}
-            onClick={() => confirmMutation.mutate({ id: shipmentId })}
+            disabled={dispatchMutation.isPending}
+            onClick={() => dispatchMutation.mutate({ id: shipmentId })}
           >
             <Send size={16} />
-            Confirmar envio
+            Despachar envio
+          </Button>
+        )}
+        {shipment?.status === 'em_transito' && (
+          <Button
+            className="gap-2"
+            disabled={receiveMutation.isPending}
+            onClick={() => receiveMutation.mutate({ id: shipmentId })}
+          >
+            <PackageCheck size={16} />
+            Confirmar entrada no CD
           </Button>
         )}
       </div>
@@ -305,17 +332,7 @@ function ShipmentDetailView({ shipmentId }: { shipmentId: string }) {
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Status</p>
-              {shipment.status === 'confirmado' ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 w-fit">
-                  <PackageCheck size={11} />
-                  Confirmado
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 w-fit">
-                  <Send size={11} />
-                  Rascunho
-                </span>
-              )}
+              <ShipmentStatusBadge status={shipment.status} />
             </div>
             {shipment.notes && (
               <div className="flex flex-col gap-1">
@@ -439,7 +456,7 @@ function EnviosNovoForm() {
   }
 
   const createMutation = usePostShipments()
-  const confirmMutation = usePostShipmentsByIdConfirm()
+  const dispatchMutation = usePostShipmentsByIdDispatch()
 
   const handleSaveDraft = async () => {
     const payload = buildPayload()
@@ -454,22 +471,22 @@ function EnviosNovoForm() {
     }
   }
 
-  const handleConfirm = async () => {
+  const handleDispatch = async () => {
     const payload = buildPayload()
     if (!payload) return
     try {
       const res = await createMutation.mutateAsync({ data: payload })
-      await confirmMutation.mutateAsync({ id: res.shipment.id })
-      toast.success('Envio confirmado! Estoque atualizado.')
+      await dispatchMutation.mutateAsync({ id: res.shipment.id })
+      toast.success('Envio despachado. Estoque físico debitado.')
       queryClient.invalidateQueries({ queryKey: [{ url: '/shipments' }] })
       navigate({ to: '/envios' })
     } catch (err: any) {
-      const msg = err?.response?.data?.error ?? 'Erro ao confirmar envio.'
+      const msg = err?.response?.data?.error ?? 'Erro ao despachar envio.'
       toast.error(msg)
     }
   }
 
-  const isPending = createMutation.isPending || confirmMutation.isPending
+  const isPending = createMutation.isPending || dispatchMutation.isPending
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -638,9 +655,9 @@ function EnviosNovoForm() {
           <Save size={16} />
           Salvar rascunho
         </Button>
-        <Button onClick={handleConfirm} disabled={isPending} className="gap-2">
+        <Button onClick={handleDispatch} disabled={isPending} className="gap-2">
           <Send size={16} />
-          Confirmar envio
+          Salvar e despachar
         </Button>
       </div>
     </div>

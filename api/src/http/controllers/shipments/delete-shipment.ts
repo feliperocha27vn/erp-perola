@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import z from "zod"
-import { ShipmentAlreadyConfirmedError } from "../../../errors/shipment-already-confirmed-error.js"
+import { ShipmentNotEditableError } from "../../../errors/shipment-not-editable-error.js"
 import { ShipmentNotFoundError } from "../../../errors/shipment-not-found-error.js"
 import { makeDeleteShipmentUseCase } from "../../../factories/shipments/make-delete-shipment-use-case.js"
 
@@ -28,7 +28,7 @@ export const deleteShipment: FastifyPluginAsyncZod = async (app) => {
 				if (error instanceof ShipmentNotFoundError) {
 					return reply.status(404).send({ error: error.message })
 				}
-				if (error instanceof ShipmentAlreadyConfirmedError) {
+				if (error instanceof ShipmentNotEditableError) {
 					return reply.status(409).send({ error: error.message })
 				}
 				throw error

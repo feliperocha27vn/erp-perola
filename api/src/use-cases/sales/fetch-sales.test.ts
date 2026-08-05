@@ -48,6 +48,7 @@ function makeSale(
 			title: "Stock",
 			qtde: 10,
 			full: true,
+			marketplace: "mercado_livre" as const,
 			created_at: now,
 			updated_at: now,
 		},

@@ -19,6 +19,7 @@ import { Route as LancamentosDeEstoqueRouteImport } from './pages/lancamentos-de
 import { Route as GerenciadorDeProdutosRouteImport } from './pages/gerenciador-de-produtos'
 import { Route as EnviosRouteImport } from './pages/envios'
 import { Route as AlertasDeReposicaoRouteImport } from './pages/alertas-de-reposicao'
+import { Route as AbastecimentoDoFullRouteImport } from './pages/abastecimento-do-full'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as EnviosIndexRouteImport } from './pages/envios.index'
 import { Route as EnviosNovoRouteImport } from './pages/envios.novo'
@@ -73,6 +74,11 @@ const AlertasDeReposicaoRoute = AlertasDeReposicaoRouteImport.update({
   path: '/alertas-de-reposicao',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AbastecimentoDoFullRoute = AbastecimentoDoFullRouteImport.update({
+  id: '/abastecimento-do-full',
+  path: '/abastecimento-do-full',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -91,6 +97,7 @@ const EnviosNovoRoute = EnviosNovoRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/abastecimento-do-full': typeof AbastecimentoDoFullRoute
   '/alertas-de-reposicao': typeof AlertasDeReposicaoRoute
   '/envios': typeof EnviosRouteWithChildren
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/abastecimento-do-full': typeof AbastecimentoDoFullRoute
   '/alertas-de-reposicao': typeof AlertasDeReposicaoRoute
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
   '/lancamentos-de-estoque': typeof LancamentosDeEstoqueRoute
@@ -121,6 +129,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/abastecimento-do-full': typeof AbastecimentoDoFullRoute
   '/alertas-de-reposicao': typeof AlertasDeReposicaoRoute
   '/envios': typeof EnviosRouteWithChildren
   '/gerenciador-de-produtos': typeof GerenciadorDeProdutosRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/abastecimento-do-full'
     | '/alertas-de-reposicao'
     | '/envios'
     | '/gerenciador-de-produtos'
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/abastecimento-do-full'
     | '/alertas-de-reposicao'
     | '/gerenciador-de-produtos'
     | '/lancamentos-de-estoque'
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/abastecimento-do-full'
     | '/alertas-de-reposicao'
     | '/envios'
     | '/gerenciador-de-produtos'
@@ -183,6 +195,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AbastecimentoDoFullRoute: typeof AbastecimentoDoFullRoute
   AlertasDeReposicaoRoute: typeof AlertasDeReposicaoRoute
   EnviosRoute: typeof EnviosRouteWithChildren
   GerenciadorDeProdutosRoute: typeof GerenciadorDeProdutosRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlertasDeReposicaoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/abastecimento-do-full': {
+      id: '/abastecimento-do-full'
+      path: '/abastecimento-do-full'
+      fullPath: '/abastecimento-do-full'
+      preLoaderRoute: typeof AbastecimentoDoFullRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -306,6 +326,7 @@ const EnviosRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AbastecimentoDoFullRoute: AbastecimentoDoFullRoute,
   AlertasDeReposicaoRoute: AlertasDeReposicaoRoute,
   EnviosRoute: EnviosRouteWithChildren,
   GerenciadorDeProdutosRoute: GerenciadorDeProdutosRoute,

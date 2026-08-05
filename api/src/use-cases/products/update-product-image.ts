@@ -26,6 +26,7 @@ interface UpdateProductImageUseCaseReply {
 			title: string
 			qtde: number
 			full: boolean
+		marketplace: "mercado_livre" | "amazon" | "shopee" | null
 			created_at: Date
 			updated_at: Date
 		}[]

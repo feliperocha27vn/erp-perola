@@ -8,7 +8,7 @@ const shipmentSchema = z.object({
 	account_name: z.string(),
 	date: z.date(),
 	notes: z.string().nullable(),
-	status: z.enum(["rascunho", "confirmado"]),
+	status: z.enum(["rascunho", "em_transito", "recebido"]),
 	item_count: z.number(),
 	created_at: z.date(),
 	updated_at: z.date(),

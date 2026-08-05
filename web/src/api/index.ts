@@ -23,6 +23,8 @@ export type { PatchProductsIdImageMutationKey } from "./hooks/productsController
 export type { PostProductsMutationKey } from "./hooks/productsController/usePostProducts.ts";
 export type { GetReportsAbcQueryKey } from "./hooks/reportsController/useGetReportsAbc.ts";
 export type { GetReportsAbcSuspenseQueryKey } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
+export type { GetReportsFullReplenishmentAlertsQueryKey } from "./hooks/reportsController/useGetReportsFullReplenishmentAlerts.ts";
+export type { GetReportsFullReplenishmentAlertsSuspenseQueryKey } from "./hooks/reportsController/useGetReportsFullReplenishmentAlertsSuspense.ts";
 export type { GetReportsRestockAlertsQueryKey } from "./hooks/reportsController/useGetReportsRestockAlerts.ts";
 export type { GetReportsRestockAlertsSuspenseQueryKey } from "./hooks/reportsController/useGetReportsRestockAlertsSuspense.ts";
 export type { GetReportsSalesQueryKey } from "./hooks/reportsController/useGetReportsSales.ts";
@@ -45,7 +47,8 @@ export type { GetShipmentsByIdQueryKey } from "./hooks/shipmentsController/useGe
 export type { GetShipmentsByIdSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsByIdSuspense.ts";
 export type { GetShipmentsSuspenseQueryKey } from "./hooks/shipmentsController/useGetShipmentsSuspense.ts";
 export type { PostShipmentsMutationKey } from "./hooks/shipmentsController/usePostShipments.ts";
-export type { PostShipmentsByIdConfirmMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export type { PostShipmentsByIdDispatchMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdDispatch.ts";
+export type { PostShipmentsByIdReceiveMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdReceive.ts";
 export type { PutShipmentsByIdMutationKey } from "./hooks/shipmentsController/usePutShipmentsById.ts";
 export type { GetProductsProductIdStockEntriesQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntries.ts";
 export type { GetProductsProductIdStockEntriesSuspenseQueryKey } from "./hooks/stockEntriesController/useGetProductsProductIdStockEntriesSuspense.ts";
@@ -133,6 +136,7 @@ export type {
   GetProductsQueryParamsSortOrderEnumKey,
   GetProductsQueryParamsWithoutImageEnumKey,
   GetProductsQueryResponse,
+  StocksMarketplaceEnum2Key,
 } from "./types/productsController/GetProducts.ts";
 export type {
   GetProductsSalesVelocity200,
@@ -149,6 +153,7 @@ export type {
   PatchProductsIdMutationRequest,
   PatchProductsIdMutationResponse,
   PatchProductsIdPathParams,
+  StocksMarketplaceEnum3Key,
 } from "./types/productsController/PatchProductsId.ts";
 export type {
   PatchProductsIdImage200,
@@ -157,6 +162,7 @@ export type {
   PatchProductsIdImageMutationRequest,
   PatchProductsIdImageMutationResponse,
   PatchProductsIdImagePathParams,
+  StocksMarketplaceEnum4Key,
 } from "./types/productsController/PatchProductsIdImage.ts";
 export type {
   PostProducts201,
@@ -165,6 +171,7 @@ export type {
   PostProductsMutation,
   PostProductsMutationRequest,
   PostProductsMutationResponse,
+  StocksMarketplaceEnumKey,
 } from "./types/productsController/PostProducts.ts";
 export type {
   GetReportsAbc200,
@@ -173,6 +180,14 @@ export type {
   GetReportsAbcQueryResponse,
   ItemsClassEnumKey,
 } from "./types/reportsController/GetReportsAbc.ts";
+export type {
+  AlertsMarketplaceEnumKey,
+  AlertsSeverityEnumKey,
+  GetReportsFullReplenishmentAlerts200,
+  GetReportsFullReplenishmentAlertsQuery,
+  GetReportsFullReplenishmentAlertsQueryResponse,
+  IdleMarketplaceEnumKey,
+} from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export type {
   GetReportsRestockAlerts200,
   GetReportsRestockAlertsQuery,
@@ -206,6 +221,7 @@ export type {
   GetSalesQueryParams,
   GetSalesQueryResponse,
   ItemsChannelEnumKey,
+  StockMarketplaceEnum2Key,
 } from "./types/salesController/GetSales.ts";
 export type {
   PatchSalesId200,
@@ -217,6 +233,7 @@ export type {
   PatchSalesIdMutationResponse,
   PatchSalesIdPathParams,
   SaleChannelEnum2Key,
+  StockMarketplaceEnum3Key,
 } from "./types/salesController/PatchSalesId.ts";
 export type {
   PostSales201,
@@ -227,6 +244,7 @@ export type {
   PostSalesMutationRequestChannelEnumKey,
   PostSalesMutationResponse,
   SaleChannelEnumKey,
+  StockMarketplaceEnumKey,
 } from "./types/salesController/PostSales.ts";
 export type {
   DeleteShipmentAccountsById204,
@@ -287,14 +305,22 @@ export type {
   ShipmentStatusEnumKey,
 } from "./types/shipmentsController/PostShipments.ts";
 export type {
-  PostShipmentsByIdConfirm204,
-  PostShipmentsByIdConfirm404,
-  PostShipmentsByIdConfirm409,
-  PostShipmentsByIdConfirm422,
-  PostShipmentsByIdConfirmMutation,
-  PostShipmentsByIdConfirmMutationResponse,
-  PostShipmentsByIdConfirmPathParams,
-} from "./types/shipmentsController/PostShipmentsByIdConfirm.ts";
+  PostShipmentsByIdDispatch204,
+  PostShipmentsByIdDispatch404,
+  PostShipmentsByIdDispatch409,
+  PostShipmentsByIdDispatch422,
+  PostShipmentsByIdDispatchMutation,
+  PostShipmentsByIdDispatchMutationResponse,
+  PostShipmentsByIdDispatchPathParams,
+} from "./types/shipmentsController/PostShipmentsByIdDispatch.ts";
+export type {
+  PostShipmentsByIdReceive204,
+  PostShipmentsByIdReceive404,
+  PostShipmentsByIdReceive409,
+  PostShipmentsByIdReceiveMutation,
+  PostShipmentsByIdReceiveMutationResponse,
+  PostShipmentsByIdReceivePathParams,
+} from "./types/shipmentsController/PostShipmentsByIdReceive.ts";
 export type {
   PutShipmentsById200,
   PutShipmentsById404,
@@ -339,22 +365,27 @@ export type {
   GetProductsProductIdStocksPathParams,
   GetProductsProductIdStocksQuery,
   GetProductsProductIdStocksQueryResponse,
+  StocksMarketplaceEnum5Key,
 } from "./types/stocksController/GetProductsProductIdStocks.ts";
 export type {
   PatchStocksStockId200,
   PatchStocksStockId404,
   PatchStocksStockIdMutation,
   PatchStocksStockIdMutationRequest,
+  PatchStocksStockIdMutationRequestMarketplaceEnumKey,
   PatchStocksStockIdMutationResponse,
   PatchStocksStockIdPathParams,
+  StockMarketplaceEnum5Key,
 } from "./types/stocksController/PatchStocksStockId.ts";
 export type {
   PostProductsProductIdStocks201,
   PostProductsProductIdStocks404,
   PostProductsProductIdStocksMutation,
   PostProductsProductIdStocksMutationRequest,
+  PostProductsProductIdStocksMutationRequestMarketplaceEnumKey,
   PostProductsProductIdStocksMutationResponse,
   PostProductsProductIdStocksPathParams,
+  StockMarketplaceEnum4Key,
 } from "./types/stocksController/PostProductsProductIdStocks.ts";
 export type {
   GetStores200,
@@ -377,6 +408,7 @@ export { patchProductsId } from "./clients/productsController/patchProductsId.ts
 export { patchProductsIdImage } from "./clients/productsController/patchProductsIdImage.ts";
 export { postProducts } from "./clients/productsController/postProducts.ts";
 export { getReportsAbc } from "./clients/reportsController/getReportsAbc.ts";
+export { getReportsFullReplenishmentAlerts } from "./clients/reportsController/getReportsFullReplenishmentAlerts.ts";
 export { getReportsRestockAlerts } from "./clients/reportsController/getReportsRestockAlerts.ts";
 export { getReportsSales } from "./clients/reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./clients/reportsController/getReportsStockByBrand.ts";
@@ -392,7 +424,8 @@ export { deleteShipmentsById } from "./clients/shipmentsController/deleteShipmen
 export { getShipments } from "./clients/shipmentsController/getShipments.ts";
 export { getShipmentsById } from "./clients/shipmentsController/getShipmentsById.ts";
 export { postShipments } from "./clients/shipmentsController/postShipments.ts";
-export { postShipmentsByIdConfirm } from "./clients/shipmentsController/postShipmentsByIdConfirm.ts";
+export { postShipmentsByIdDispatch } from "./clients/shipmentsController/postShipmentsByIdDispatch.ts";
+export { postShipmentsByIdReceive } from "./clients/shipmentsController/postShipmentsByIdReceive.ts";
 export { putShipmentsById } from "./clients/shipmentsController/putShipmentsById.ts";
 export { getProductsProductIdStockEntries } from "./clients/stockEntriesController/getProductsProductIdStockEntries.ts";
 export { getStockEntries } from "./clients/stockEntriesController/getStockEntries.ts";
@@ -477,6 +510,12 @@ export { useGetReportsAbc } from "./hooks/reportsController/useGetReportsAbc.ts"
 export { getReportsAbcSuspenseQueryKey } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
 export { getReportsAbcSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
 export { useGetReportsAbcSuspense } from "./hooks/reportsController/useGetReportsAbcSuspense.ts";
+export { getReportsFullReplenishmentAlertsQueryKey } from "./hooks/reportsController/useGetReportsFullReplenishmentAlerts.ts";
+export { getReportsFullReplenishmentAlertsQueryOptions } from "./hooks/reportsController/useGetReportsFullReplenishmentAlerts.ts";
+export { useGetReportsFullReplenishmentAlerts } from "./hooks/reportsController/useGetReportsFullReplenishmentAlerts.ts";
+export { getReportsFullReplenishmentAlertsSuspenseQueryKey } from "./hooks/reportsController/useGetReportsFullReplenishmentAlertsSuspense.ts";
+export { getReportsFullReplenishmentAlertsSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsFullReplenishmentAlertsSuspense.ts";
+export { useGetReportsFullReplenishmentAlertsSuspense } from "./hooks/reportsController/useGetReportsFullReplenishmentAlertsSuspense.ts";
 export { getReportsRestockAlertsQueryKey } from "./hooks/reportsController/useGetReportsRestockAlerts.ts";
 export { getReportsRestockAlertsQueryOptions } from "./hooks/reportsController/useGetReportsRestockAlerts.ts";
 export { useGetReportsRestockAlerts } from "./hooks/reportsController/useGetReportsRestockAlerts.ts";
@@ -543,9 +582,12 @@ export { useGetShipmentsSuspense } from "./hooks/shipmentsController/useGetShipm
 export { postShipmentsMutationKey } from "./hooks/shipmentsController/usePostShipments.ts";
 export { postShipmentsMutationOptions } from "./hooks/shipmentsController/usePostShipments.ts";
 export { usePostShipments } from "./hooks/shipmentsController/usePostShipments.ts";
-export { postShipmentsByIdConfirmMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
-export { postShipmentsByIdConfirmMutationOptions } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
-export { usePostShipmentsByIdConfirm } from "./hooks/shipmentsController/usePostShipmentsByIdConfirm.ts";
+export { postShipmentsByIdDispatchMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdDispatch.ts";
+export { postShipmentsByIdDispatchMutationOptions } from "./hooks/shipmentsController/usePostShipmentsByIdDispatch.ts";
+export { usePostShipmentsByIdDispatch } from "./hooks/shipmentsController/usePostShipmentsByIdDispatch.ts";
+export { postShipmentsByIdReceiveMutationKey } from "./hooks/shipmentsController/usePostShipmentsByIdReceive.ts";
+export { postShipmentsByIdReceiveMutationOptions } from "./hooks/shipmentsController/usePostShipmentsByIdReceive.ts";
+export { usePostShipmentsByIdReceive } from "./hooks/shipmentsController/usePostShipmentsByIdReceive.ts";
 export { putShipmentsByIdMutationKey } from "./hooks/shipmentsController/usePutShipmentsById.ts";
 export { putShipmentsByIdMutationOptions } from "./hooks/shipmentsController/usePutShipmentsById.ts";
 export { usePutShipmentsById } from "./hooks/shipmentsController/usePutShipmentsById.ts";
@@ -591,16 +633,31 @@ export { periodsPeriodEnum3 } from "./types/productsController/GetProductSalesDa
 export { periodsPeriodEnum4 } from "./types/productsController/GetProductSalesDaily.ts";
 export { getProductsQueryParamsSortOrderEnum } from "./types/productsController/GetProducts.ts";
 export { getProductsQueryParamsWithoutImageEnum } from "./types/productsController/GetProducts.ts";
+export { stocksMarketplaceEnum2 } from "./types/productsController/GetProducts.ts";
 export { getProductsSalesVelocityQueryParamsWithoutImageEnum } from "./types/productsController/GetProductsSalesVelocity.ts";
+export { stocksMarketplaceEnum3 } from "./types/productsController/PatchProductsId.ts";
+export { stocksMarketplaceEnum4 } from "./types/productsController/PatchProductsIdImage.ts";
+export { stocksMarketplaceEnum } from "./types/productsController/PostProducts.ts";
 export { itemsClassEnum } from "./types/reportsController/GetReportsAbc.ts";
+export { alertsMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { alertsSeverityEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { idleMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";
+export { stockMarketplaceEnum2 } from "./types/salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/PatchSalesId.ts";
 export { saleChannelEnum2 } from "./types/salesController/PatchSalesId.ts";
+export { stockMarketplaceEnum3 } from "./types/salesController/PatchSalesId.ts";
 export { postSalesMutationRequestChannelEnum } from "./types/salesController/PostSales.ts";
 export { saleChannelEnum } from "./types/salesController/PostSales.ts";
+export { stockMarketplaceEnum } from "./types/salesController/PostSales.ts";
 export { shipmentsStatusEnum } from "./types/shipmentsController/GetShipments.ts";
 export { shipmentStatusEnum2 } from "./types/shipmentsController/GetShipmentsById.ts";
 export { shipmentStatusEnum } from "./types/shipmentsController/PostShipments.ts";
 export { shipmentStatusEnum3 } from "./types/shipmentsController/PutShipmentsById.ts";
+export { stocksMarketplaceEnum5 } from "./types/stocksController/GetProductsProductIdStocks.ts";
+export { patchStocksStockIdMutationRequestMarketplaceEnum } from "./types/stocksController/PatchStocksStockId.ts";
+export { stockMarketplaceEnum5 } from "./types/stocksController/PatchStocksStockId.ts";
+export { postProductsProductIdStocksMutationRequestMarketplaceEnum } from "./types/stocksController/PostProductsProductIdStocks.ts";
+export { stockMarketplaceEnum4 } from "./types/stocksController/PostProductsProductIdStocks.ts";

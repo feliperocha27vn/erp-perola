@@ -148,6 +148,7 @@ export class InMemorySaleRepository implements SaleRepository {
 				title: "",
 				qtde: 0,
 				full: false,
+				marketplace: null,
 				created_at: now,
 				updated_at: now,
 			},

@@ -10,6 +10,15 @@ export type PatchProductsIdPathParams = {
   id: string;
 };
 
+export const stocksMarketplaceEnum3 = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StocksMarketplaceEnum3Key =
+  (typeof stocksMarketplaceEnum3)[keyof typeof stocksMarketplaceEnum3];
+
 /**
  * @description Default Response
  */
@@ -99,6 +108,10 @@ export type PatchProductsId200 = {
        * @type boolean
        */
       full: boolean;
+      /**
+       * @type string
+       */
+      marketplace: StocksMarketplaceEnum3Key | null;
       /**
        * @type string, date-time
        */

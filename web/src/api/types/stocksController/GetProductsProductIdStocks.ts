@@ -10,6 +10,15 @@ export type GetProductsProductIdStocksPathParams = {
   productId: string;
 };
 
+export const stocksMarketplaceEnum5 = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StocksMarketplaceEnum5Key =
+  (typeof stocksMarketplaceEnum5)[keyof typeof stocksMarketplaceEnum5];
+
 /**
  * @description Default Response
  */
@@ -40,6 +49,10 @@ export type GetProductsProductIdStocks200 = {
      * @type boolean
      */
     full: boolean;
+    /**
+     * @type string
+     */
+    marketplace: StocksMarketplaceEnum5Key | null;
     /**
      * @type string, date-time
      */

@@ -10,6 +10,15 @@ export type PatchStocksStockIdPathParams = {
   stockId: string;
 };
 
+export const stockMarketplaceEnum5 = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type StockMarketplaceEnum5Key =
+  (typeof stockMarketplaceEnum5)[keyof typeof stockMarketplaceEnum5];
+
 /**
  * @description Default Response
  */
@@ -41,6 +50,10 @@ export type PatchStocksStockId200 = {
      */
     full: boolean;
     /**
+     * @type string
+     */
+    marketplace: StockMarketplaceEnum5Key | null;
+    /**
      * @type string, date-time
      */
     created_at: string;
@@ -61,6 +74,15 @@ export type PatchStocksStockId404 = {
   error: string;
 };
 
+export const patchStocksStockIdMutationRequestMarketplaceEnum = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type PatchStocksStockIdMutationRequestMarketplaceEnumKey =
+  (typeof patchStocksStockIdMutationRequestMarketplaceEnum)[keyof typeof patchStocksStockIdMutationRequestMarketplaceEnum];
+
 export type PatchStocksStockIdMutationRequest = {
   /**
    * @minLength 1
@@ -77,6 +99,10 @@ export type PatchStocksStockIdMutationRequest = {
    * @type boolean | undefined
    */
   full?: boolean;
+  /**
+   * @type string
+   */
+  marketplace?: PatchStocksStockIdMutationRequestMarketplaceEnumKey | null;
 };
 
 export type PatchStocksStockIdMutationResponse = PatchStocksStockId200;

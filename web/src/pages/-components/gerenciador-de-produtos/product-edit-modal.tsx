@@ -45,10 +45,65 @@ function parseBrlToCents(raw: string): number | null {
 
 // ─── Stock helpers ────────────────────────────────────────────────────────────
 
-type EditableStock = { title: string; qtde: string; full: boolean }
+type Marketplace = 'mercado_livre' | 'amazon' | 'shopee'
 
-function normalizeStockForm(s: { title: string; qtde: number; full: boolean }): EditableStock {
-  return { title: s.title, qtde: String(s.qtde), full: s.full }
+type EditableStock = {
+  title: string
+  qtde: string
+  full: boolean
+  marketplace: Marketplace
+}
+
+const MARKETPLACE_OPTIONS: { value: Marketplace; label: string }[] = [
+  { value: 'mercado_livre', label: 'Mercado Livre Full' },
+  { value: 'amazon', label: 'Amazon FBA' },
+  { value: 'shopee', label: 'Shopee' },
+]
+
+function normalizeStockForm(s: {
+  title: string
+  qtde: number
+  full: boolean
+  marketplace?: Marketplace | null
+}): EditableStock {
+  return {
+    title: s.title,
+    qtde: String(s.qtde),
+    full: s.full,
+    marketplace: s.marketplace ?? 'mercado_livre',
+  }
+}
+
+/** So estoque full tem marketplace; no fisico o campo e ignorado. */
+function marketplaceFor(form: EditableStock): Marketplace | null {
+  return form.full ? form.marketplace : null
+}
+
+function MarketplaceSelect({
+  value,
+  onChange,
+}: {
+  value: Marketplace
+  onChange: (next: Marketplace) => void
+}) {
+  return (
+    <div className="space-y-1">
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value as Marketplace)}
+        className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+      >
+        {MARKETPLACE_OPTIONS.map(o => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <p className="text-[11px] text-muted-foreground">
+        Define o prazo de entrega usado no Abastecimento do Full.
+      </p>
+    </div>
+  )
 }
 
 function parseQtde(v: string): number | null {
@@ -103,8 +158,8 @@ export function ProductEditModal({
   // ── Estoques tab state ──
   const [isCreating, setIsCreating] = useState(false)
   const [editingStockId, setEditingStockId] = useState<string | null>(null)
-  const [createForm, setCreateForm] = useState<EditableStock>({ title: '', qtde: '0', full: false })
-  const [editForm, setEditForm] = useState<EditableStock>({ title: '', qtde: '0', full: false })
+  const [createForm, setCreateForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
+  const [editForm, setEditForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
 
   // ── Lançamentos tab state ──
   const [launchingStockId, setLaunchingStockId] = useState<string | null>(null)
@@ -186,7 +241,7 @@ export function ProductEditModal({
         toast.success('Estoque cadastrado!')
         invalidateStocks()
         setIsCreating(false)
-        setCreateForm({ title: '', qtde: '0', full: false })
+        setCreateForm({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
       },
       onError: () => toast.error('Erro ao cadastrar estoque.'),
     },
@@ -309,7 +364,7 @@ export function ProductEditModal({
     const qtde = parseQtde(createForm.qtde)
     if (!title) { toast.error('Informe o nome da loja/marketplace.'); return }
     if (qtde === null) { toast.error('Informe uma quantidade válida.'); return }
-    createStockMutation.mutate({ productId, data: { title, qtde, full: createForm.full } })
+    createStockMutation.mutate({ productId, data: { title, qtde, full: createForm.full, marketplace: marketplaceFor(createForm) } })
   }
 
   const handleStartEditingStock = (stock: ProductStockItem) => {
@@ -323,7 +378,7 @@ export function ProductEditModal({
     const qtde = parseQtde(editForm.qtde)
     if (!title) { toast.error('Informe o nome da loja/marketplace.'); return }
     if (qtde === null) { toast.error('Informe uma quantidade válida.'); return }
-    updateStockMutation.mutate({ stockId, data: { title, qtde, full: editForm.full } })
+    updateStockMutation.mutate({ stockId, data: { title, qtde, full: editForm.full, marketplace: marketplaceFor(editForm) } })
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -492,6 +547,14 @@ export function ProductEditModal({
                             </Switch.Root>
                             <span>{editForm.full ? 'Full' : 'Normal'}</span>
                           </div>
+                          {editForm.full && (
+                            <MarketplaceSelect
+                              value={editForm.marketplace}
+                              onChange={next =>
+                                setEditForm(p => ({ ...p, marketplace: next }))
+                              }
+                            />
+                          )}
                           <div className="grid grid-cols-2 gap-2">
                             <Button
                               onClick={() => handleUpdateStock(stock.id)}
@@ -640,6 +703,14 @@ export function ProductEditModal({
                       </Switch.Root>
                       <span>{createForm.full ? 'Full' : 'Normal'}</span>
                     </div>
+                    {createForm.full && (
+                      <MarketplaceSelect
+                        value={createForm.marketplace}
+                        onChange={next =>
+                          setCreateForm(p => ({ ...p, marketplace: next }))
+                        }
+                      />
+                    )}
                     <div className="grid grid-cols-2 gap-2">
                       <Button onClick={handleCreateStock} disabled={createStockMutation.isPending} type="button">
                         {createStockMutation.isPending ? 'Salvando...' : 'Salvar'}

@@ -28,12 +28,22 @@ export interface ShipmentItemDetail {
 	created_at: Date
 }
 
+/**
+ * rascunho    -> planejado, nenhum estoque mexeu
+ * em_transito -> despachado, origem debitada, destino ainda NAO creditado
+ * recebido    -> deu entrada no CD, destino creditado
+ *
+ * O estado intermediario existe para que qtde de um estoque full signifique
+ * "disponivel para venda", e nao "ja despachei" — ver ADR 0006.
+ */
+export type ShipmentStatus = "rascunho" | "em_transito" | "recebido"
+
 export interface ShipmentRow {
 	id: string
 	account_id: string
 	date: Date
 	notes: string | null
-	status: "rascunho" | "confirmado"
+	status: ShipmentStatus
 	created_at: Date
 	updated_at: Date
 }
@@ -72,6 +82,6 @@ export interface ShipmentRepository {
 	getById(id: string): Promise<ShipmentWithItemDetails | null>
 	create(data: CreateShipmentInput): Promise<ShipmentWithItems>
 	update(id: string, data: UpdateShipmentInput): Promise<ShipmentWithItemDetails | null>
-	updateStatus(id: string, status: "rascunho" | "confirmado"): Promise<ShipmentRow | null>
+	updateStatus(id: string, status: ShipmentStatus): Promise<ShipmentRow | null>
 	delete(id: string): Promise<void>
 }

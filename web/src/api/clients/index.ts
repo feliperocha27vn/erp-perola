@@ -14,6 +14,7 @@ export { patchProductsId } from "./productsController/patchProductsId.ts";
 export { patchProductsIdImage } from "./productsController/patchProductsIdImage.ts";
 export { postProducts } from "./productsController/postProducts.ts";
 export { getReportsAbc } from "./reportsController/getReportsAbc.ts";
+export { getReportsFullReplenishmentAlerts } from "./reportsController/getReportsFullReplenishmentAlerts.ts";
 export { getReportsRestockAlerts } from "./reportsController/getReportsRestockAlerts.ts";
 export { getReportsSales } from "./reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./reportsController/getReportsStockByBrand.ts";
@@ -29,7 +30,8 @@ export { deleteShipmentsById } from "./shipmentsController/deleteShipmentsById.t
 export { getShipments } from "./shipmentsController/getShipments.ts";
 export { getShipmentsById } from "./shipmentsController/getShipmentsById.ts";
 export { postShipments } from "./shipmentsController/postShipments.ts";
-export { postShipmentsByIdConfirm } from "./shipmentsController/postShipmentsByIdConfirm.ts";
+export { postShipmentsByIdDispatch } from "./shipmentsController/postShipmentsByIdDispatch.ts";
+export { postShipmentsByIdReceive } from "./shipmentsController/postShipmentsByIdReceive.ts";
 export { putShipmentsById } from "./shipmentsController/putShipmentsById.ts";
 export { getProductsProductIdStockEntries } from "./stockEntriesController/getProductsProductIdStockEntries.ts";
 export { getStockEntries } from "./stockEntriesController/getStockEntries.ts";

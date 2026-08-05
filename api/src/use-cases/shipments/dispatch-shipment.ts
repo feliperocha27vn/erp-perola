@@ -1,26 +1,38 @@
 import { InsufficientStockError } from "../../errors/insufficient-stock-error.js"
-import { ShipmentAlreadyConfirmedError } from "../../errors/shipment-already-confirmed-error.js"
+import { InvalidShipmentTransitionError } from "../../errors/invalid-shipment-transition-error.js"
 import { ShipmentNotFoundError } from "../../errors/shipment-not-found-error.js"
-import type { StockEntryRepository } from "../../repositories/stock-entry-repository.js"
 import type { ShipmentRepository } from "../../repositories/shipment-repository.js"
+import type { StockEntryRepository } from "../../repositories/stock-entry-repository.js"
 import type { StockRepository } from "../../repositories/stock-repository.js"
 
-interface ConfirmShipmentUseCaseRequest {
+interface DispatchShipmentUseCaseRequest {
 	shipmentId: string
 }
 
-export class ConfirmShipmentUseCase {
+/**
+ * rascunho -> em_transito.
+ *
+ * Debita o estoque de origem, porque a mercadoria saiu fisicamente do galpao.
+ * NAO credita o destino: no CD ela so fica vendavel apos o check-in, e creditar
+ * agora inflaria os Dias de Autonomia durante todo o lead time — justamente a
+ * janela em que a ruptura e mais provavel. Ver ADR 0006.
+ */
+export class DispatchShipmentUseCase {
 	constructor(
 		private shipmentRepo: ShipmentRepository,
 		private stockRepo: StockRepository,
 		private stockEntryRepo: StockEntryRepository,
 	) {}
 
-	async execute({ shipmentId }: ConfirmShipmentUseCaseRequest) {
+	async execute({ shipmentId }: DispatchShipmentUseCaseRequest) {
 		const shipment = await this.shipmentRepo.getById(shipmentId)
 		if (!shipment) throw new ShipmentNotFoundError()
-		if (shipment.status === "confirmado") throw new ShipmentAlreadyConfirmedError()
+		if (shipment.status !== "rascunho") {
+			throw new InvalidShipmentTransitionError(shipment.status, "rascunho")
+		}
 
+		// Valida todos os itens antes de mexer em qualquer estoque, para nao
+		// deixar o envio pela metade quando um item nao couber.
 		for (const item of shipment.items) {
 			const sourceStock = await this.stockRepo.getById(item.source_stock_id)
 			if (!sourceStock) throw new ShipmentNotFoundError()
@@ -30,31 +42,22 @@ export class ConfirmShipmentUseCase {
 			}
 		}
 
-		const note = `Envio FBA #${shipmentId}`
+		const note = `Envio #${shipmentId} — despachado`
 
 		for (const item of shipment.items) {
 			const sourceStock = await this.stockRepo.getById(item.source_stock_id)
-			const destinationStock = await this.stockRepo.getById(item.destination_stock_id)
+			if (!sourceStock) throw new ShipmentNotFoundError()
 
 			await this.stockRepo.update(item.source_stock_id, {
-				qtde: sourceStock!.qtde - item.quantity,
+				qtde: sourceStock.qtde - item.quantity,
 			})
 			await this.stockEntryRepo.create({
 				stock_id: item.source_stock_id,
 				quantity: -item.quantity,
 				notes: note,
 			})
-
-			await this.stockRepo.update(item.destination_stock_id, {
-				qtde: destinationStock!.qtde + item.quantity,
-			})
-			await this.stockEntryRepo.create({
-				stock_id: item.destination_stock_id,
-				quantity: item.quantity,
-				notes: note,
-			})
 		}
 
-		await this.shipmentRepo.updateStatus(shipmentId, "confirmado")
+		await this.shipmentRepo.updateStatus(shipmentId, "em_transito")
 	}
 }

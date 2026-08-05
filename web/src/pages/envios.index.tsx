@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { useDeleteShipmentsById } from '@/api/hooks/shipmentsController/useDeleteShipmentsById'
 import { useGetShipments } from '@/api/hooks/shipmentsController/useGetShipments'
-import { usePostShipmentsByIdConfirm } from '@/api/hooks/shipmentsController/usePostShipmentsByIdConfirm'
+import { usePostShipmentsByIdDispatch } from '@/api/hooks/shipmentsController/usePostShipmentsByIdDispatch'
+import { usePostShipmentsByIdReceive } from '@/api/hooks/shipmentsController/usePostShipmentsByIdReceive'
+import { ShipmentStatusBadge } from './-components/envios/status-badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -20,23 +22,6 @@ export const Route = createFileRoute('/envios/')({
   component: EnviosPage,
 })
 
-function statusBadge(status: 'rascunho' | 'confirmado') {
-  if (status === 'confirmado') {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-        <PackageCheck size={11} />
-        Confirmado
-      </span>
-    )
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
-      <Send size={11} />
-      Rascunho
-    </span>
-  )
-}
-
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('pt-BR')
 }
@@ -51,7 +36,8 @@ function EnviosPage() {
   const shipments = data?.shipments ?? []
 
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [confirmId, setConfirmId] = useState<string | null>(null)
+  const [dispatchId, setDispatchId] = useState<string | null>(null)
+  const [receiveId, setReceiveId] = useState<string | null>(null)
 
   const deleteMutation = useDeleteShipmentsById({
     mutation: {
@@ -66,17 +52,32 @@ function EnviosPage() {
     },
   })
 
-  const confirmMutation = usePostShipmentsByIdConfirm({
+  const dispatchMutation = usePostShipmentsByIdDispatch({
     mutation: {
       onSuccess: () => {
-        toast.success('Envio confirmado! Estoque atualizado.')
-        setConfirmId(null)
+        toast.success('Envio despachado. Estoque físico debitado.')
+        setDispatchId(null)
         invalidateShipments()
       },
       onError: (err: any) => {
-        const msg = err?.response?.data?.error ?? 'Erro ao confirmar envio.'
+        const msg = err?.response?.data?.error ?? 'Erro ao despachar envio.'
         toast.error(msg)
-        setConfirmId(null)
+        setDispatchId(null)
+      },
+    },
+  })
+
+  const receiveMutation = usePostShipmentsByIdReceive({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Entrada confirmada. Estoque do CD atualizado.')
+        setReceiveId(null)
+        invalidateShipments()
+      },
+      onError: (err: any) => {
+        const msg = err?.response?.data?.error ?? 'Erro ao confirmar recebimento.'
+        toast.error(msg)
+        setReceiveId(null)
       },
     },
   })
@@ -158,17 +159,30 @@ function EnviosPage() {
             <span className="flex-1 text-sm font-medium text-foreground">{s.account_name}</span>
             <span className="w-36 text-sm text-foreground">{formatDate(s.date)}</span>
             <span className="w-20 text-sm text-foreground">{s.item_count} SKUs</span>
-            <span className="w-36">{statusBadge(s.status)}</span>
+            <span className="w-36">
+              <ShipmentStatusBadge status={s.status} />
+            </span>
             <div className="w-48 flex items-center justify-end gap-2">
               {s.status === 'rascunho' && (
                 <Button
                   size="sm"
                   variant="outline"
                   className="gap-1.5 h-8 text-xs"
-                  onClick={() => setConfirmId(s.id)}
+                  onClick={() => setDispatchId(s.id)}
                 >
                   <Send size={12} />
-                  Confirmar
+                  Despachar
+                </Button>
+              )}
+              {s.status === 'em_transito' && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 h-8 text-xs"
+                  onClick={() => setReceiveId(s.id)}
+                >
+                  <PackageCheck size={12} />
+                  Recebido
                 </Button>
               )}
               <Button
@@ -220,25 +234,50 @@ function EnviosPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Confirm Dialog */}
-      <Dialog open={!!confirmId} onOpenChange={(o) => !o && setConfirmId(null)}>
+      {/* Dispatch Dialog */}
+      <Dialog open={!!dispatchId} onOpenChange={(o) => !o && setDispatchId(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirmar envio</DialogTitle>
+            <DialogTitle>Despachar envio</DialogTitle>
             <DialogDescription>
-              Ao confirmar, o estoque será movimentado automaticamente. Esta ação não pode ser
-              desfeita.
+              O estoque físico será debitado agora. O estoque do centro de distribuição só é
+              creditado quando você confirmar a entrada lá — até lá a mercadoria não conta como
+              disponível para venda.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmId(null)}>
+            <Button variant="outline" onClick={() => setDispatchId(null)}>
               Cancelar
             </Button>
             <Button
-              disabled={confirmMutation.isPending}
-              onClick={() => confirmId && confirmMutation.mutate({ id: confirmId })}
+              disabled={dispatchMutation.isPending}
+              onClick={() => dispatchId && dispatchMutation.mutate({ id: dispatchId })}
             >
-              Confirmar envio
+              Despachar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Receive Dialog */}
+      <Dialog open={!!receiveId} onOpenChange={(o) => !o && setReceiveId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar entrada no CD</DialogTitle>
+            <DialogDescription>
+              Confirme apenas quando o centro de distribuição já tiver dado entrada. O estoque do
+              depósito de destino será creditado e passará a contar nos dias de autonomia.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setReceiveId(null)}>
+              Cancelar
+            </Button>
+            <Button
+              disabled={receiveMutation.isPending}
+              onClick={() => receiveId && receiveMutation.mutate({ id: receiveId })}
+            >
+              Confirmar entrada
             </Button>
           </DialogFooter>
         </DialogContent>
