@@ -16,7 +16,7 @@ export function RestockAlertCard() {
   const preview = items.slice(0, PREVIEW_LIMIT)
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4">
+    <div className="glass-card rounded-2xl p-6 md:p-8 space-y-4 flex flex-col h-full">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-xl border border-primary/20">
@@ -38,7 +38,7 @@ export function RestockAlertCard() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-2">
+        <div className="space-y-2 flex flex-1 flex-col">
           <Skeleton className="h-4 w-40" />
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
@@ -48,16 +48,17 @@ export function RestockAlertCard() {
           title="Não foi possível carregar"
           description="Verifique sua conexão e tente novamente."
           onRetry={() => refetch()}
+          className="flex-1"
         />
       ) : items.length === 0 ? (
-        <div className="flex items-center gap-3 py-4">
+        <div className="flex flex-1 items-center gap-3 py-4">
           <PackageCheck className="size-8 text-emerald-500" />
           <p className="text-sm text-muted-foreground">
             Nenhum produto precisa de reposição no momento.
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 flex flex-1 flex-col">
           <p className="text-xs text-muted-foreground">
             <span className="text-destructive font-semibold">
               {criticoCount} crítico{criticoCount !== 1 ? 's' : ''}
@@ -67,11 +68,11 @@ export function RestockAlertCard() {
               {atencaoCount} em atenção
             </span>
           </p>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border flex flex-1 flex-col">
             {preview.map(item => (
               <div
                 key={item.product_id}
-                className="flex items-center justify-between gap-3 py-2.5"
+                className="flex max-h-24 flex-1 items-center justify-between gap-3 py-2.5"
               >
                 <div className="min-w-0">
                   <p className="font-mono font-semibold text-sm text-foreground truncate">
