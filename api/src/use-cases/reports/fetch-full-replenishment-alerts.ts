@@ -8,8 +8,10 @@ import type {
 export const WINDOW_DAYS = 90
 
 /**
- * Abaixo disto o denominador "dias com estoque" e pequeno demais para confiar:
- * um deposito que teve estoque 2 dias e vendeu 1 implicaria 0,5 unidade/dia.
+ * Piso do denominador. Abaixo disto "dias com estoque" e pequeno demais para
+ * dividir: um deposito que teve estoque 2 dias e vendeu 1 implicaria 0,5
+ * unidade/dia. Nesses casos o ritmo e diluido por 14 dias em vez do periodo
+ * real — continua sendo venda do proprio deposito, so que sem extrapolar.
  */
 export const MIN_DAYS_WITH_STOCK = 14
 
@@ -108,34 +110,18 @@ export class FetchFullReplenishmentAlertsUseCase {
 			inTransitByStock.set(row.destination_stock_id, current + row.quantity)
 		}
 
-		// Ritmo medio por deposito do produto, usado quando um deposito especifico
-		// nao tem dias com estoque suficientes para uma taxa propria.
-		const productTotals = new Map<string, { units: number; days: number }>()
-		for (const stock of fullStocks) {
-			const demand = demandByStock.get(stock.stock_id)
-			const totals = productTotals.get(stock.product_id) ?? { units: 0, days: 0 }
-			totals.units += demand?.units_window ?? 0
-			totals.days += demand?.days_with_stock ?? 0
-			productTotals.set(stock.product_id, totals)
-		}
-
 		const evaluated: Evaluated[] = fullStocks.map((stock) => {
 			const demand = demandByStock.get(stock.stock_id)
 			const unitsWindow = demand?.units_window ?? 0
 			const daysWithStock = demand?.days_with_stock ?? 0
 			const inTransit = inTransitByStock.get(stock.stock_id) ?? 0
 
-			let rate: number
-			let rateIsEstimated: boolean
-
-			if (daysWithStock >= MIN_DAYS_WITH_STOCK) {
-				rate = unitsWindow / daysWithStock
-				rateIsEstimated = false
-			} else {
-				const totals = productTotals.get(stock.product_id)
-				rate = totals && totals.days > 0 ? totals.units / totals.days : 0
-				rateIsEstimated = true
-			}
+			// Cada deposito e tracionado so pelas proprias vendas. Nada de media
+			// entre CDs: um SKU que gira na Lilian e nao gira na Laurinda nao pode
+			// virar pedido de envio para a Laurinda.
+			const rate =
+				unitsWindow > 0 ? unitsWindow / Math.max(daysWithStock, MIN_DAYS_WITH_STOCK) : 0
+			const rateIsEstimated = unitsWindow > 0 && daysWithStock < MIN_DAYS_WITH_STOCK
 
 			return {
 				stock,

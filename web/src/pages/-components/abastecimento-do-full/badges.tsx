@@ -80,7 +80,7 @@ export function AutonomyValue({
 export function EstimatedRateTag() {
   return (
     <span
-      title="O depósito teve estoque por poucos dias na janela, então o ritmo foi estimado pela média dos outros depósitos deste produto."
+      title="O depósito teve estoque por poucos dias na janela. O ritmo usa só as vendas dele, mas diluídas por 14 dias, para não extrapolar a partir de uma amostra curta."
       className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200"
     >
       <Clock className="size-2.5" />

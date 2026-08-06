@@ -76,23 +76,70 @@ describe("FetchFullReplenishmentAlertsUseCase — ritmo de saída", () => {
 		expect(alerts[0].days_of_autonomy).toBeCloseTo(10)
 	})
 
-	it("não confia em amostra pequena e marca a taxa como estimada", async () => {
-		// Lilian teve estoque so 2 dias e vendeu 1 — 0,5/dia seria uma extrapolacao absurda.
+	it("não puxa o ritmo de um depósito para outro do mesmo produto", async () => {
+		// A Lilian gira bem esse relogio; a Laurinda esta zerada e nao vendeu
+		// nenhuma unidade na janela. Sem venda propria nao ha tracao propria:
+		// pedir envio para a Laurinda seria empurrar giro que e da Lilian.
 		repo.fullStocks = [
-			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
-			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 17 }),
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 10 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0 }),
 		]
 		repo.demand = [
-			{ stock_id: "lilian", units_window: 1, days_with_stock: 2 },
-			{ stock_id: "laurinda", units_window: 18, days_with_stock: 90 },
+			{ stock_id: "lilian", units_window: 27, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 },
 		]
 		repo.physical = [physicalSupply()]
 
-		const { alerts } = await sut.execute()
-		const lilian = alerts.find((a) => a.stock_id === "lilian")
+		const { alerts, idle } = await sut.execute()
 
-		expect(lilian?.rate_is_estimated).toBe(true)
-		expect(lilian?.demand_rate_per_day).toBeLessThan(0.5)
+		expect(alerts.map((a) => a.stock_id)).not.toContain("laurinda")
+		expect(idle.map((i) => i.stock_id)).not.toContain("laurinda")
+	})
+
+	it("não alerta depósito com estoque parado por causa do giro do vizinho", async () => {
+		// A Laurinda tem unidade em casa e nao vendeu nenhuma: isso e estoque
+		// parado, nao ruptura. O giro da Lilian nao muda esse diagnostico.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 10 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 2 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 27, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 0, days_with_stock: 40 },
+		]
+		repo.physical = [physicalSupply()]
+
+		const { alerts, idle } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).not.toContain("laurinda")
+		expect(idle.map((i) => i.stock_id)).toContain("laurinda")
+	})
+
+	it("alerta o depósito que rupturou depois de ter vendido por conta própria", async () => {
+		// Vendeu 4 em 8 dias com estoque e zerou. E venda dela, entao ela alerta.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0 }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 4, days_with_stock: 8 }]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].stock_id).toBe("laurinda")
+		expect(alerts[0].days_of_autonomy).toBe(0)
+	})
+
+	it("dilui amostra curta pelo piso de 14 dias em vez de extrapolar", async () => {
+		// 2 unidades em 2 dias com estoque. Dividir por 2 daria 1/dia — uma
+		// extrapolacao absurda a partir de dois dias. Divide por 14: 0,14/dia.
+		repo.fullStocks = [fullStock({ stock_id: "lilian", qtde: 1 })]
+		repo.demand = [{ stock_id: "lilian", units_window: 2, days_with_stock: 2 }]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].rate_is_estimated).toBe(true)
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(2 / 14)
 	})
 })
 
