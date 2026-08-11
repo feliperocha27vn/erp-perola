@@ -116,12 +116,29 @@ export async function buildApp() {
 		app.register(fastifyStatic, {
 			root: webDistPath,
 			prefix: "/",
-			maxAge: "30d",
-			immutable: true,
+			setHeaders: (res, filePath) => {
+				// index.html aponta para os bundles com hash no nome. Se ele for
+				// cacheado, o navegador continua carregando a versao antiga depois
+				// de um deploy ate o usuario limpar o cache na mao.
+				if (filePath.endsWith("index.html")) {
+					res.setHeader("Cache-Control", "no-cache")
+					return
+				}
+
+				// Vite gera /assets com hash no nome, entao o conteudo nunca muda
+				// para um mesmo arquivo e pode ser cacheado indefinidamente.
+				if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+					res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+					return
+				}
+
+				// Arquivos de /public mantem o nome entre builds (favicon, svg).
+				res.setHeader("Cache-Control", "public, max-age=3600")
+			},
 		})
 
 		app.setNotFoundHandler((_request, reply) => {
-			return reply.sendFile("index.html", { maxAge: 0, immutable: false })
+			return reply.sendFile("index.html")
 		})
 	}
 
