@@ -116,6 +116,9 @@ export async function buildApp() {
 		app.register(fastifyStatic, {
 			root: webDistPath,
 			prefix: "/",
+			// Sem isso o send calcula o proprio Cache-Control e o @fastify/static
+			// sobrescreve o que o setHeaders definiu (index.js:402).
+			cacheControl: false,
 			setHeaders: (res, filePath) => {
 				// index.html aponta para os bundles com hash no nome. Se ele for
 				// cacheado, o navegador continua carregando a versao antiga depois
