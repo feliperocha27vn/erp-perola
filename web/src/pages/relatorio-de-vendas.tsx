@@ -13,6 +13,7 @@ type StoreGroup = { storeName: string; items: SaleRow[] }
 type View = 'lista' | 'por-loja'
 
 const SEM_LOJA = 'Sem loja'
+const SEM_CANAL = 'Sem canal'
 
 const searchSchema = z.object({
   startDate: z.string().optional(),
@@ -72,8 +73,14 @@ function buildWhatsAppMessage(startDate: string, endDate: string, groups: StoreG
   let grandTotal = 0
 
   for (const group of groups) {
-    const bySku = new Map<string, { quantity: number; total: number }>()
+    const byChannel = new Map<string, Map<string, { quantity: number; total: number }>>()
     for (const row of group.items) {
+      const channel = row.channel || SEM_CANAL
+      let bySku = byChannel.get(channel)
+      if (!bySku) {
+        bySku = new Map()
+        byChannel.set(channel, bySku)
+      }
       const existing = bySku.get(row.sku)
       bySku.set(row.sku, {
         quantity: (existing?.quantity ?? 0) + row.quantity,
@@ -81,11 +88,22 @@ function buildWhatsAppMessage(startDate: string, endDate: string, groups: StoreG
       })
     }
 
+    const channels = Array.from(byChannel.entries()).sort(([a], [b]) => {
+      if (a === SEM_CANAL) return 1
+      if (b === SEM_CANAL) return -1
+      return a.localeCompare(b, 'pt-BR')
+    })
+
     let storeTotal = 0
     lines.push(`🏪 *${group.storeName}*`)
-    for (const [sku, { quantity, total }] of bySku) {
-      lines.push(`• ${sku} x${quantity} — ${formatCents(total)}`)
-      storeTotal += total
+    lines.push('')
+    for (const [channel, bySku] of channels) {
+      lines.push(`_${channel}_`)
+      for (const [sku, { quantity, total }] of bySku) {
+        lines.push(`• ${sku} x${quantity} — ${formatCents(total)}`)
+        storeTotal += total
+      }
+      lines.push('')
     }
     lines.push(`*Total ${group.storeName}: ${formatCents(storeTotal)}*`)
     lines.push('')
