@@ -29,6 +29,7 @@ export function RestockAlertCard() {
         {!isLoading && !isError && items.length > 0 && (
           <Link
             to="/alertas-de-reposicao"
+            search={{ brand: undefined }}
             className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
           >
             Ver todos
@@ -91,6 +92,7 @@ export function RestockAlertCard() {
           {items.length > PREVIEW_LIMIT && (
             <Link
               to="/alertas-de-reposicao"
+              search={{ brand: undefined }}
               className="block text-center text-xs font-semibold text-primary hover:underline pt-1"
             >
               Ver mais {items.length - PREVIEW_LIMIT} produto
