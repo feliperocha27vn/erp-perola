@@ -59,6 +59,14 @@ export interface FullReplenishmentAlertItem {
 	physical_available_qty: number
 }
 
+/**
+ * Por que aquele saldo esta parado.
+ * - `sem_venda`: nenhuma unidade saiu do deposito na janela.
+ * - `excesso`: ha mais cobertura do que o teto do marketplace admite.
+ * - `conta_secundaria`: o SKU foi concentrado em outra conta do mesmo canal.
+ */
+export type IdleReason = "sem_venda" | "excesso" | "conta_secundaria"
+
 export interface IdleFullStockItem {
 	product_id: string
 	sku: string
@@ -71,6 +79,9 @@ export interface IdleFullStockItem {
 	/** null quando nao houve nenhuma venda na janela. */
 	days_of_autonomy: number | null
 	max_days: number
+	reason: IdleReason
+	/** Conta que ficou com o SKU. Preenchido so quando `reason` e `conta_secundaria`. */
+	winner_stock_title: string | null
 }
 
 interface FetchFullReplenishmentAlertsUseCaseResponse {
@@ -134,24 +145,55 @@ export class FetchFullReplenishmentAlertsUseCase {
 			}
 		})
 
+		const runnersUp = this.electAccounts(evaluated)
+
 		const idle: IdleFullStockItem[] = []
 		const candidates: Evaluated[] = []
 
 		for (const entry of evaluated) {
 			const params = MARKETPLACE_PARAMS[entry.stock.marketplace]
 			const reorderPoint = params.leadTimeDays + SAFETY_MARGIN_DAYS
+			const winnerTitle = runnersUp.get(entry.stock.stock_id)
+
+			// Conta preterida nao recebe abastecimento, mesmo em ruptura: o SKU mora
+			// na conta vizinha. O que ja esta la vira estoque parado, para escoar ou
+			// ser retirado.
+			if (winnerTitle !== undefined) {
+				if (entry.stock.qtde > 0) {
+					idle.push(
+						this.toIdleItem(
+							entry,
+							params.maxDays,
+							entry.autonomy,
+							"conta_secundaria",
+							winnerTitle,
+						),
+					)
+				}
+				continue
+			}
 
 			// Sem ritmo nao ha o que projetar. Se ainda assim ha estoque parado la,
 			// isso e o caso "90 dias sem venda" que o ML penaliza.
 			if (entry.rate === 0) {
 				if (entry.stock.qtde > 0) {
-					idle.push(this.toIdleItem(entry, params.maxDays, null))
+					idle.push(
+						this.toIdleItem(entry, params.maxDays, null, "sem_venda", null),
+					)
 				}
 				continue
 			}
 
 			if (entry.autonomy !== null && entry.autonomy > params.maxDays) {
-				idle.push(this.toIdleItem(entry, params.maxDays, entry.autonomy))
+				idle.push(
+					this.toIdleItem(
+						entry,
+						params.maxDays,
+						entry.autonomy,
+						"excesso",
+						null,
+					),
+				)
 				continue
 			}
 
@@ -172,10 +214,58 @@ export class FetchFullReplenishmentAlertsUseCase {
 		return { alerts, idle }
 	}
 
+	/**
+	 * Dentro de um marketplace, cada SKU fica em uma conta so: a que mais vende.
+	 * Espalhar o mesmo produto pelos tres fulls do ML reparte o giro entre os
+	 * anuncios, multiplica o frete de abastecimento e deixa saldo imobilizado em
+	 * duas contas — quando concentrado, o mesmo estoque gira em um lugar so.
+	 *
+	 * Empate resolve pelo saldo que ja esta no CD: trocar o SKU de casa custa um
+	 * envio, entao na duvida fica onde ja tem mercadoria.
+	 *
+	 * A regra so vale quando alguma conta do canal vendeu na janela. Se ninguem
+	 * vendeu, nao ha o que concentrar e nenhuma delas e "preterida" — cada uma
+	 * segue para estoque parado pelo motivo dela.
+	 *
+	 * @returns stock_id de cada conta preterida -> titulo da conta que ficou com o SKU
+	 */
+	private electAccounts(evaluated: Evaluated[]): Map<string, string> {
+		const byProductAndMarketplace = new Map<string, Evaluated[]>()
+
+		for (const entry of evaluated) {
+			const key = `${entry.stock.product_id}::${entry.stock.marketplace}`
+			const list = byProductAndMarketplace.get(key) ?? []
+			list.push(entry)
+			byProductAndMarketplace.set(key, list)
+		}
+
+		const runnersUp = new Map<string, string>()
+
+		for (const entries of byProductAndMarketplace.values()) {
+			if (entries.length < 2) continue
+			if (!entries.some((entry) => entry.unitsWindow > 0)) continue
+
+			const [winner, ...rest] = [...entries].sort(
+				(a, b) =>
+					b.unitsWindow - a.unitsWindow ||
+					b.stock.qtde - a.stock.qtde ||
+					a.stock.stock_id.localeCompare(b.stock.stock_id),
+			)
+
+			for (const loser of rest) {
+				runnersUp.set(loser.stock.stock_id, winner.stock.stock_title)
+			}
+		}
+
+		return runnersUp
+	}
+
 	private toIdleItem(
 		entry: Evaluated,
 		maxDays: number,
 		autonomy: number | null,
+		reason: IdleReason,
+		winnerStockTitle: string | null,
 	): IdleFullStockItem {
 		return {
 			product_id: entry.stock.product_id,
@@ -188,6 +278,8 @@ export class FetchFullReplenishmentAlertsUseCase {
 			units_window: entry.unitsWindow,
 			days_of_autonomy: autonomy === null ? null : round2(autonomy),
 			max_days: maxDays,
+			reason,
+			winner_stock_title: winnerStockTitle,
 		}
 	}
 

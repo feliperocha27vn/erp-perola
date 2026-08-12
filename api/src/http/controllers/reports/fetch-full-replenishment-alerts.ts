@@ -37,6 +37,8 @@ const idleItemSchema = z.object({
 	units_window: z.number(),
 	days_of_autonomy: z.number().nullable(),
 	max_days: z.number(),
+	reason: z.enum(["sem_venda", "excesso", "conta_secundaria"]),
+	winner_stock_title: z.string().nullable(),
 })
 
 export const fetchFullReplenishmentAlerts: FastifyPluginAsyncZod = async (app) => {

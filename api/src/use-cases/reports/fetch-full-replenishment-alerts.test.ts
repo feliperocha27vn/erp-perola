@@ -77,42 +77,42 @@ describe("FetchFullReplenishmentAlertsUseCase — ritmo de saída", () => {
 	})
 
 	it("não puxa o ritmo de um depósito para outro do mesmo produto", async () => {
-		// A Lilian gira bem esse relogio; a Laurinda esta zerada e nao vendeu
+		// A Lilian gira bem esse relogio no ML; o FBA esta zerado e nao vendeu
 		// nenhuma unidade na janela. Sem venda propria nao ha tracao propria:
-		// pedir envio para a Laurinda seria empurrar giro que e da Lilian.
+		// pedir envio para o FBA seria empurrar giro que e do ML.
 		repo.fullStocks = [
 			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 10 }),
-			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0 }),
+			fullStock({ stock_id: "fba", stock_title: "Amazon", marketplace: "amazon", qtde: 0 }),
 		]
 		repo.demand = [
 			{ stock_id: "lilian", units_window: 27, days_with_stock: 90 },
-			{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 },
+			{ stock_id: "fba", units_window: 0, days_with_stock: 0 },
 		]
 		repo.physical = [physicalSupply()]
 
 		const { alerts, idle } = await sut.execute()
 
-		expect(alerts.map((a) => a.stock_id)).not.toContain("laurinda")
-		expect(idle.map((i) => i.stock_id)).not.toContain("laurinda")
+		expect(alerts.map((a) => a.stock_id)).not.toContain("fba")
+		expect(idle.map((i) => i.stock_id)).not.toContain("fba")
 	})
 
 	it("não alerta depósito com estoque parado por causa do giro do vizinho", async () => {
-		// A Laurinda tem unidade em casa e nao vendeu nenhuma: isso e estoque
-		// parado, nao ruptura. O giro da Lilian nao muda esse diagnostico.
+		// O FBA tem unidade em casa e nao vendeu nenhuma: isso e estoque parado,
+		// nao ruptura. O giro do ML nao muda esse diagnostico.
 		repo.fullStocks = [
 			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 10 }),
-			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 2 }),
+			fullStock({ stock_id: "fba", stock_title: "Amazon", marketplace: "amazon", qtde: 2 }),
 		]
 		repo.demand = [
 			{ stock_id: "lilian", units_window: 27, days_with_stock: 90 },
-			{ stock_id: "laurinda", units_window: 0, days_with_stock: 40 },
+			{ stock_id: "fba", units_window: 0, days_with_stock: 40 },
 		]
 		repo.physical = [physicalSupply()]
 
 		const { alerts, idle } = await sut.execute()
 
-		expect(alerts.map((a) => a.stock_id)).not.toContain("laurinda")
-		expect(idle.map((i) => i.stock_id)).toContain("laurinda")
+		expect(alerts.map((a) => a.stock_id)).not.toContain("fba")
+		expect(idle.map((i) => i.stock_id)).toContain("fba")
 	})
 
 	it("alerta o depósito que rupturou depois de ter vendido por conta própria", async () => {
@@ -144,14 +144,14 @@ describe("FetchFullReplenishmentAlertsUseCase — ritmo de saída", () => {
 })
 
 describe("FetchFullReplenishmentAlertsUseCase — granularidade por depósito", () => {
-	it("alerta a Lilian em ruptura mesmo com a Laurinda cheia", async () => {
+	it("alerta o ML em ruptura mesmo com o FBA cheio", async () => {
 		repo.fullStocks = [
 			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
-			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 17 }),
+			fullStock({ stock_id: "fba", stock_title: "Amazon", marketplace: "amazon", qtde: 17 }),
 		]
 		repo.demand = [
 			{ stock_id: "lilian", units_window: 18, days_with_stock: 90 },
-			{ stock_id: "laurinda", units_window: 6, days_with_stock: 90 },
+			{ stock_id: "fba", units_window: 6, days_with_stock: 90 },
 		]
 		repo.physical = [physicalSupply()]
 
@@ -159,7 +159,135 @@ describe("FetchFullReplenishmentAlertsUseCase — granularidade por depósito", 
 
 		// Somados dariam 18 unidades para 24 vendas/90d — cobertura confortavel.
 		expect(alerts.map((a) => a.stock_id)).toContain("lilian")
+		expect(alerts.map((a) => a.stock_id)).not.toContain("fba")
+	})
+})
+
+describe("FetchFullReplenishmentAlertsUseCase — uma conta por SKU", () => {
+	it("abastece só a conta que mais vende o SKU dentro do marketplace", async () => {
+		// As tres contas do ML estao em ruptura do mesmo relogio. Espalhar o SKU
+		// pelas tres divide o giro e imobiliza saldo em duas; fica na Lilian.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 1 }),
+			fullStock({ stock_id: "larissa", stock_title: "Larissa", qtde: 1 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 40, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 18, days_with_stock: 90 },
+			{ stock_id: "larissa", units_window: 9, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).toEqual(["lilian"])
+	})
+
+	it("manda a conta preterida para o estoque parado, apontando quem ficou com o SKU", async () => {
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 6 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 40, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 18, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply()]
+
+		const { idle } = await sut.execute()
+
+		const laurinda = idle.find((i) => i.stock_id === "laurinda")
+		expect(laurinda?.reason).toBe("conta_secundaria")
+		expect(laurinda?.winner_stock_title).toBe("Lilian")
+	})
+
+	it("não considera parada a conta preterida que já está zerada", async () => {
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 40, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 18, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply()]
+
+		const { alerts, idle } = await sut.execute()
+
 		expect(alerts.map((a) => a.stock_id)).not.toContain("laurinda")
+		expect(idle.map((i) => i.stock_id)).not.toContain("laurinda")
+	})
+
+	it("concentra por marketplace: o mesmo SKU pode estar no ML e na Amazon", async () => {
+		// Sao canais diferentes, cada um com seu proprio CD e seu proprio cliente.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
+			fullStock({ stock_id: "fba", stock_title: "Amazon", marketplace: "amazon", qtde: 1 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 40, days_with_stock: 90 },
+			{ stock_id: "fba", units_window: 18, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id).sort()).toEqual(["fba", "lilian"])
+	})
+
+	it("desempata pelo saldo que já está no CD", async () => {
+		// Mesmas vendas nas duas: fica com quem ja tem mais unidades la, porque
+		// mudar o SKU de casa custa um envio.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 2 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 5 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 45, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 45, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).toEqual(["laurinda"])
+	})
+
+	it("não elege conta quando nenhuma delas vendeu na janela", async () => {
+		// Sem venda em lugar nenhum nao ha o que concentrar: as duas continuam
+		// sendo estoque parado pelo motivo delas, e nao por perder a disputa.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 3 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 4 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 0, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 0, days_with_stock: 90 },
+		]
+		repo.physical = [physicalSupply()]
+
+		const { idle } = await sut.execute()
+
+		expect(idle).toHaveLength(2)
+		expect(idle.every((i) => i.reason === "sem_venda")).toBe(true)
+	})
+
+	it("não sugere reposição para a conta preterida nem quando ela rupturou", async () => {
+		// A Laurinda zerou e vendeu por conta propria, mas o SKU e da Lilian.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0 }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 40, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 4, days_with_stock: 8 },
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).toEqual(["lilian"])
 	})
 })
 
@@ -244,23 +372,23 @@ describe("FetchFullReplenishmentAlertsUseCase — quantidade sugerida e rateio",
 	it("serve primeiro quem tem menos autonomia quando o físico não dá para todos", async () => {
 		repo.fullStocks = [
 			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1 }),
-			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 4 }),
+			fullStock({ stock_id: "fba", stock_title: "Amazon", marketplace: "amazon", qtde: 4 }),
 		]
 		repo.demand = [
 			{ stock_id: "lilian", units_window: 45, days_with_stock: 90 },
-			{ stock_id: "laurinda", units_window: 45, days_with_stock: 90 },
+			{ stock_id: "fba", units_window: 45, days_with_stock: 90 },
 		]
-		// Ambos querem ~22 unidades, mas so ha 5 no fisico.
+		// Ambos querem mais de 20 unidades, mas so ha 5 no fisico.
 		repo.physical = [physicalSupply({ qtde: 5 })]
 
 		const { alerts } = await sut.execute()
 
 		const lilian = alerts.find((a) => a.stock_id === "lilian")
-		const laurinda = alerts.find((a) => a.stock_id === "laurinda")
+		const fba = alerts.find((a) => a.stock_id === "fba")
 
 		expect(lilian?.suggested_quantity).toBe(5)
-		expect(laurinda?.suggested_quantity).toBe(0)
-		expect(laurinda?.limited_by_physical_stock).toBe(true)
+		expect(fba?.suggested_quantity).toBe(0)
+		expect(fba?.limited_by_physical_stock).toBe(true)
 	})
 
 	it("reserva estoque físico para as vendas diretas", async () => {

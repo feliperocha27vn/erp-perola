@@ -2,6 +2,7 @@ import { AlertTriangle, Clock, Timer } from 'lucide-react'
 import type {
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
+  IdleReasonEnumKey,
 } from '@/api/types/reportsController/GetReportsFullReplenishmentAlerts'
 
 const MARKETPLACE_LABEL: Record<AlertsMarketplaceEnumKey, string> = {
@@ -73,6 +74,46 @@ export function AutonomyValue({
       <span className="text-muted-foreground font-normal text-xs ml-1">
         dias
       </span>
+    </span>
+  )
+}
+
+/** Por que aquele saldo está parado — cada motivo pede uma ação diferente. */
+export function IdleReasonBadge({
+  reason,
+  winnerStockTitle,
+}: {
+  reason: IdleReasonEnumKey
+  winnerStockTitle: string | null
+}) {
+  if (reason === 'conta_secundaria') {
+    return (
+      <span
+        title={`Este SKU foi concentrado em ${winnerStockTitle ?? 'outra conta'}, que vende mais nos últimos 90 dias. Esta conta não recebe mais abastecimento dele — deixe escoar ou retire.`}
+        className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-violet-50 text-violet-700 border-violet-200 whitespace-nowrap"
+      >
+        concentrado em {winnerStockTitle ?? 'outra conta'}
+      </span>
+    )
+  }
+
+  if (reason === 'sem_venda') {
+    return (
+      <span
+        title="Nenhuma unidade saiu deste depósito nos últimos 90 dias."
+        className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-700 border-slate-200 whitespace-nowrap"
+      >
+        sem venda em 90d
+      </span>
+    )
+  }
+
+  return (
+    <span
+      title="A cobertura passa do teto de dias do marketplace. Acima disso o CD vira custo."
+      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-amber-50 text-amber-700 border-amber-200 whitespace-nowrap"
+    >
+      acima do teto
     </span>
   )
 }

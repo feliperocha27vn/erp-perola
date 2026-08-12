@@ -21,6 +21,7 @@ import { queryClient } from '@/lib/react-query'
 import {
   AutonomyValue,
   EstimatedRateTag,
+  IdleReasonBadge,
   MarketplaceBadge,
   SeverityBadge,
 } from './-components/abastecimento-do-full/badges'
@@ -93,7 +94,8 @@ function AbastecimentoDoFullPage() {
           Dias de autonomia de cada produto em cada centro de distribuição, no
           ritmo de saída dos últimos 90 dias. O alerta dispara antes que o
           estoque acabe dentro do prazo de entrega daquele marketplace — ML Full
-          conta 7 dias, Amazon FBA 14.
+          conta 7 dias, Amazon FBA 14. Dentro de cada marketplace, o SKU é
+          abastecido em uma conta só: a que mais vendeu na janela.
         </p>
       )}
 
@@ -358,11 +360,13 @@ function IdleSection({ items }: { items: IdleItem[] }) {
           Estoque parado no Full
         </p>
         <p className="text-xs text-muted-foreground max-w-3xl">
-          {items.length} depósito{items.length !== 1 ? 's' : ''} com muito mais
-          estoque do que a saída justifica. No ML Full, 90 dias sem venda abre
-          prazo de retirada e acima de 6 meses o custo sobe 6,4%; na Amazon, o
-          excesso derruba seu IPI e reduz quanto você consegue enviar. São também
-          unidades que não estão no físico para socorrer outro CD.
+          {items.length} depósito{items.length !== 1 ? 's' : ''} com estoque que
+          a saída não justifica — seja por excesso, seja porque o SKU foi
+          concentrado em outra conta do mesmo marketplace. No ML Full, 90 dias
+          sem venda abre prazo de retirada e acima de 6 meses o custo sobe 6,4%;
+          na Amazon, o excesso derruba seu IPI e reduz quanto você consegue
+          enviar. São também unidades que não estão no físico para socorrer outro
+          CD.
         </p>
       </div>
 
@@ -384,6 +388,9 @@ function IdleSection({ items }: { items: IdleItem[] }) {
               </th>
               <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
                 Autonomia
+              </th>
+              <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Motivo
               </th>
             </tr>
           </thead>
@@ -412,6 +419,12 @@ function IdleSection({ items }: { items: IdleItem[] }) {
                 </td>
                 <td className="px-4 py-2.5 text-right whitespace-nowrap">
                   <AutonomyValue days={item.days_of_autonomy} />
+                </td>
+                <td className="px-4 py-2.5 whitespace-nowrap">
+                  <IdleReasonBadge
+                    reason={item.reason}
+                    winnerStockTitle={item.winner_stock_title}
+                  />
                 </td>
               </tr>
             ))}

@@ -29,6 +29,15 @@ export const idleMarketplaceEnum = {
 export type IdleMarketplaceEnumKey =
   (typeof idleMarketplaceEnum)[keyof typeof idleMarketplaceEnum];
 
+export const idleReasonEnum = {
+  sem_venda: "sem_venda",
+  excesso: "excesso",
+  conta_secundaria: "conta_secundaria",
+} as const;
+
+export type IdleReasonEnumKey =
+  (typeof idleReasonEnum)[keyof typeof idleReasonEnum];
+
 /**
  * @description Default Response
  */
@@ -158,6 +167,14 @@ export type GetReportsFullReplenishmentAlerts200 = {
      * @type number
      */
     max_days: number;
+    /**
+     * @type string
+     */
+    reason: IdleReasonEnumKey;
+    /**
+     * @type string
+     */
+    winner_stock_title: string | null;
   }[];
 };
 

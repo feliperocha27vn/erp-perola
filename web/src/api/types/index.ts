@@ -123,6 +123,7 @@ export type {
   GetReportsFullReplenishmentAlertsQuery,
   GetReportsFullReplenishmentAlertsQueryResponse,
   IdleMarketplaceEnumKey,
+  IdleReasonEnumKey,
 } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export type {
   GetReportsRestockAlerts200,
@@ -343,6 +344,7 @@ export { itemsClassEnum } from "./reportsController/GetReportsAbc.ts";
 export { alertsMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsSeverityEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { idleReasonEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./reportsController/GetReportsRestockAlerts.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";
