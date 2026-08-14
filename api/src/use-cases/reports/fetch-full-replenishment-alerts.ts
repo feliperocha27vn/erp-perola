@@ -1,4 +1,6 @@
 import type {
+	AccountChannelDemandRow,
+	AccountChannelRow,
 	FullReplenishmentRepository,
 	FullStockRow,
 	Marketplace,
@@ -7,6 +9,29 @@ import type {
 
 /** Janela de apuracao. Relogio gira devagar; 30 dias devolve zero na maioria dos SKUs. */
 export const WINDOW_DAYS = 90
+
+/**
+ * Janela curta, para a media de 90 dias nao esconder uma aceleracao. Um relogio
+ * que vendeu 34 em 90 dias esta em 0,38/dia na conta longa; se 10 dessas sairam
+ * nos ultimos 15, o ritmo de agora e 0,67/dia — quase o dobro, e e por ele que a
+ * reposicao tem de ser dimensionada.
+ */
+export const SHORT_WINDOW_DAYS = 15
+
+/**
+ * Minimo de unidades na janela curta para ela poder mandar no calculo. Abaixo
+ * disso, duas ou tres vendas em sequencia virariam "tendencia" e o alvo dobraria
+ * por acaso.
+ */
+export const TREND_MIN_UNITS = 5
+
+/**
+ * Alvo minimo para valer a pena abrir o SKU no full de uma conta. Abrir custa
+ * uma perna de envio e o anuncio novo; com o alvo do ML isso equivale a exigir
+ * cerca de 8 unidades na janela, ou uma venda a cada 11 dias. Abaixo disso a
+ * lista viraria o catalogo inteiro de quem ja vendeu duas pecas no trimestre.
+ */
+export const MIN_TARGET_TO_OPEN_FULL = 4
 
 /**
  * Piso do denominador. Abaixo disto "dias com estoque" e pequeno demais para
@@ -27,7 +52,13 @@ export const ELECTION_MIN_DAYS = 30
 /** Folga sobre o lead time, para o alerta nao chegar em cima da hora. */
 export const SAFETY_MARGIN_DAYS = 7
 
-/** Dias de venda direta que ficam reservados no estoque fisico. */
+/**
+ * Dias de venda direta que ficam reservados no estoque fisico.
+ *
+ * Direta mesmo — balcao. Venda de marketplace despachada do galpao fica de
+ * fora: ela e a demanda que o full existe para absorver, e reserva-la seria
+ * usar o mesmo pedido como razao para abastecer e para nao abastecer.
+ */
 export const PHYSICAL_RESERVE_DAYS = 15
 
 interface MarketplaceParams {
@@ -63,6 +94,21 @@ export type ShortfallReason =
 	| "rascunho_pendente"
 	| "dividido_entre_cds"
 
+/**
+ * De onde veio o Ritmo de Saida da linha.
+ *
+ * - `deposito`: das vendas que sairam daquele full. E a leitura preferida —
+ *   mede o anuncio que existe, ja corrigida por dias com estoque.
+ * - `conta`: das vendas da conta naquele canal, tenha saido de onde tiver
+ *   saido. Vale quando o full esta vazio ou vende menos do que a conta procura:
+ *   um full zerado nao vende por nao ter o que vender, e ler isso como
+ *   "sem demanda" era o que fazia o produto sumir da tela.
+ */
+export type DemandSource = "deposito" | "conta"
+
+/** Para onde o ritmo recente aponta em relacao a media da janela. */
+export type DemandTrend = "acelerando" | "estavel" | "desacelerando"
+
 /** De qual deposito proprio sai cada parte da quantidade sugerida. */
 export interface AlertSource {
 	stock_id: string
@@ -76,11 +122,20 @@ export interface FullReplenishmentAlertItem {
 	brand_name: string | null
 	stock_id: string
 	stock_title: string
+	/** Conta dona do deposito. Nulo enquanto o deposito nao tiver conta associada. */
+	store_id: string | null
+	store_name: string | null
 	marketplace: Marketplace
 	available_qty: number
 	in_transit_qty: number
 	units_window: number
 	demand_rate_per_day: number
+	demand_source: DemandSource
+	demand_trend: DemandTrend
+	/** Unidades que a conta vendeu no canal na janela longa, de qualquer deposito. */
+	account_units_long: number
+	/** As mesmas, na janela curta. */
+	account_units_short: number
 	/** Autonomia do que esta disponivel para venda hoje, sem contar o que vem a caminho. */
 	days_of_autonomy: number | null
 	rate_is_estimated: boolean
@@ -127,9 +182,37 @@ export interface IdleFullStockItem {
 	winner_stock_title: string | null
 }
 
+/**
+ * Um produto que a conta vende bem no canal e que nao esta no full dela.
+ *
+ * Fica numa lista separada de proposito: os alertas falam de depositos que
+ * existem e precisam de reposicao, enquanto isto e uma proposta de abrir o SKU
+ * na conta. Misturar os dois enterraria a reposicao do dia sob uma lista de
+ * oportunidades.
+ */
+export interface MissingFullListingItem {
+	product_id: string
+	sku: string
+	brand_name: string | null
+	store_id: string
+	store_name: string
+	marketplace: Marketplace
+	account_units_long: number
+	account_units_short: number
+	demand_rate_per_day: number
+	demand_trend: DemandTrend
+	/** Quanto iria para o full, se o deposito existisse. */
+	target_quantity: number
+	/** Saldo proprio livre do produto, ja descontado o que os alertas prometeram. */
+	physical_available_qty: number
+	/** Titulo sugerido para o deposito a criar, copiado dos outros fulls da conta. */
+	suggested_stock_title: string
+}
+
 interface FetchFullReplenishmentAlertsUseCaseResponse {
 	alerts: FullReplenishmentAlertItem[]
 	idle: IdleFullStockItem[]
+	missing: MissingFullListingItem[]
 }
 
 interface Evaluated {
@@ -139,6 +222,12 @@ interface Evaluated {
 	unitsWindow: number
 	daysWithStock: number
 	inTransit: number
+	/** Ritmo lido na conta+canal. Zero quando o deposito nao tem conta associada. */
+	accountRate: number
+	accountUnitsLong: number
+	accountUnitsShort: number
+	demandSource: DemandSource
+	demandTrend: DemandTrend
 	/** Autonomia do disponivel — e o que aparece na tela. */
 	autonomy: number | null
 	/** Autonomia contando o que ja vem a caminho — e o que decide se alerta. */
@@ -238,17 +327,32 @@ export class FetchFullReplenishmentAlertsUseCase {
 	constructor(private repo: FullReplenishmentRepository) {}
 
 	async execute(): Promise<FetchFullReplenishmentAlertsUseCaseResponse> {
-		const [fullStocks, demandRows, physicalRows, inTransitRows, draftedRows] =
-			await Promise.all([
-				this.repo.fetchFullStocks(),
-				this.repo.fetchFullStockDemand(WINDOW_DAYS),
-				this.repo.fetchPhysicalSupply(WINDOW_DAYS),
-				this.repo.fetchInTransitQuantities(),
-				this.repo.fetchDraftedSourceCommitments(),
-			])
+		const [
+			fullStocks,
+			demandRows,
+			accountDemandRows,
+			accountChannels,
+			physicalRows,
+			inTransitRows,
+			draftedRows,
+		] = await Promise.all([
+			this.repo.fetchFullStocks(),
+			this.repo.fetchFullStockDemand(WINDOW_DAYS),
+			this.repo.fetchAccountChannelDemand(WINDOW_DAYS, SHORT_WINDOW_DAYS),
+			this.repo.fetchAccountsOperatingFull(),
+			this.repo.fetchPhysicalSupply(WINDOW_DAYS),
+			this.repo.fetchInTransitQuantities(),
+			this.repo.fetchDraftedSourceCommitments(),
+		])
 
 		const demandByStock = new Map(demandRows.map((row) => [row.stock_id, row]))
 		const physicalByProduct = new Map(physicalRows.map((row) => [row.product_id, row]))
+		const accountDemandBySlot = new Map(
+			accountDemandRows.map((row) => [
+				slotKey(row.product_id, row.store_id, row.marketplace),
+				row,
+			]),
+		)
 
 		const inTransitByStock = new Map<string, number>()
 		for (const row of inTransitRows) {
@@ -268,20 +372,41 @@ export class FetchFullReplenishmentAlertsUseCase {
 			const daysWithStock = demand?.days_with_stock ?? 0
 			const inTransit = inTransitByStock.get(stock.stock_id) ?? 0
 
-			// Cada deposito e tracionado so pelas proprias vendas. Nada de media
-			// entre CDs: um SKU que gira na Lilian e nao gira na Laurinda nao pode
-			// virar pedido de envio para a Laurinda.
-			const rate =
+			// O deposito e tracionado pelas proprias vendas: e a medida do anuncio
+			// que existe, ja corrigida pelos dias em que houve o que vender.
+			const ownRate =
 				unitsWindow > 0 ? unitsWindow / Math.max(daysWithStock, MIN_DAYS_WITH_STOCK) : 0
-			const rateIsEstimated = unitsWindow > 0 && daysWithStock < MIN_DAYS_WITH_STOCK
+
+			// Mas o silencio de um deposito vazio nao e falta de procura. A conta
+			// dona dele pode estar vendendo o mesmo produto no mesmo canal despachando
+			// do galpao — demanda que migraria para o full se ele tivesse mercadoria.
+			// Continua valendo que giro de OUTRA conta nao puxa esta: a leitura e da
+			// conta deste deposito, nao a soma do canal.
+			const accountDemand = stock.store_id
+				? accountDemandBySlot.get(
+						slotKey(stock.product_id, stock.store_id, stock.marketplace),
+					)
+				: undefined
+			const accountRate = accountDemand ? channelRate(accountDemand) : 0
+
+			const rate = Math.max(ownRate, accountRate)
+			const demandSource: DemandSource = accountRate > ownRate ? "conta" : "deposito"
 
 			return {
 				stock,
 				rate,
-				rateIsEstimated,
+				rateIsEstimated:
+					demandSource === "deposito" &&
+					unitsWindow > 0 &&
+					daysWithStock < MIN_DAYS_WITH_STOCK,
 				unitsWindow,
 				daysWithStock,
 				inTransit,
+				accountRate,
+				accountUnitsLong: accountDemand?.units_long ?? 0,
+				accountUnitsShort: accountDemand?.units_short ?? 0,
+				demandSource,
+				demandTrend: demandTrend(accountDemand),
 				autonomy: rate > 0 ? stock.qtde / rate : null,
 				effectiveAutonomy: rate > 0 ? (stock.qtde + inTransit) / rate : null,
 			}
@@ -353,7 +478,119 @@ export class FetchFullReplenishmentAlertsUseCase {
 
 		idle.sort((a, b) => (b.days_of_autonomy ?? Number.MAX_SAFE_INTEGER) - (a.days_of_autonomy ?? Number.MAX_SAFE_INTEGER))
 
-		return { alerts, idle }
+		const missing = this.findMissingListings({
+			accountDemandRows,
+			accountChannels,
+			evaluated,
+			alerts,
+			physicalByProduct,
+			draftedBySource,
+		})
+
+		return { alerts, idle, missing }
+	}
+
+	/**
+	 * Produtos que a conta vende no canal e que nao estao no full dela.
+	 *
+	 * O relatorio so sabia repor o que ja existia: sem linha em `stocks` com
+	 * `full = true`, o produto nunca entrava na conta, por mais que vendesse. E o
+	 * caso do relogio que sai por envio proprio todo mes e nunca foi para o CD.
+	 *
+	 * A concentracao continua valendo: so entra a conta que vende mais do que
+	 * qualquer full ja existente do mesmo produto no mesmo canal — abrir o SKU
+	 * numa segunda conta reparte o giro, que e exatamente o que a eleicao evita.
+	 */
+	private findMissingListings(input: {
+		accountDemandRows: AccountChannelDemandRow[]
+		accountChannels: AccountChannelRow[]
+		evaluated: Evaluated[]
+		alerts: FullReplenishmentAlertItem[]
+		physicalByProduct: Map<string, PhysicalSupplyRow>
+		draftedBySource: Map<string, number>
+	}): MissingFullListingItem[] {
+		const channelByAccount = new Map(
+			input.accountChannels.map((row) => [
+				`${row.store_id}::${row.marketplace}`,
+				row,
+			]),
+		)
+
+		const occupiedSlots = new Set<string>()
+		const incumbentRate = new Map<string, number>()
+
+		for (const entry of input.evaluated) {
+			const { product_id, store_id, marketplace } = entry.stock
+			if (store_id) occupiedSlots.add(slotKey(product_id, store_id, marketplace))
+
+			const key = `${product_id}::${marketplace}`
+			incumbentRate.set(key, Math.max(incumbentRate.get(key) ?? 0, entry.rate))
+		}
+
+		// O saldo proprio ja prometido aos alertas nao esta mais disponivel para
+		// uma conta que sequer tem deposito aberto.
+		const grantedByProduct = new Map<string, number>()
+		for (const alert of input.alerts) {
+			grantedByProduct.set(
+				alert.product_id,
+				(grantedByProduct.get(alert.product_id) ?? 0) + alert.suggested_quantity,
+			)
+		}
+
+		const items: MissingFullListingItem[] = []
+
+		for (const row of input.accountDemandRows) {
+			if (occupiedSlots.has(slotKey(row.product_id, row.store_id, row.marketplace))) {
+				continue
+			}
+
+			// Sugerir full numa conta que nao opera o canal seria propor abrir uma
+			// operacao, nao um SKU.
+			const channel = channelByAccount.get(`${row.store_id}::${row.marketplace}`)
+			if (!channel) continue
+
+			const rate = channelRate(row)
+			if (rate <= 0) continue
+
+			if (rate <= (incumbentRate.get(`${row.product_id}::${row.marketplace}`) ?? 0)) {
+				continue
+			}
+
+			const params = MARKETPLACE_PARAMS[row.marketplace]
+			const target = Math.min(
+				Math.ceil(rate * params.targetDays),
+				Math.floor(rate * params.maxDays),
+			)
+			if (target < MIN_TARGET_TO_OPEN_FULL) continue
+
+			const pool = buildPhysicalPool(
+				input.physicalByProduct.get(row.product_id),
+				input.draftedBySource,
+			)
+
+			items.push({
+				product_id: row.product_id,
+				sku: row.sku,
+				brand_name: row.brand_name,
+				store_id: row.store_id,
+				store_name: row.store_name,
+				marketplace: row.marketplace,
+				account_units_long: row.units_long,
+				account_units_short: row.units_short,
+				demand_rate_per_day: round2(rate),
+				demand_trend: demandTrend(row),
+				target_quantity: target,
+				physical_available_qty: Math.max(
+					0,
+					pool.available - (grantedByProduct.get(row.product_id) ?? 0),
+				),
+				suggested_stock_title: channel.sample_stock_title,
+			})
+		}
+
+		items.sort((a, b) => b.demand_rate_per_day - a.demand_rate_per_day)
+
+		return items
 	}
 
 	/**
@@ -391,7 +628,7 @@ export class FetchFullReplenishmentAlertsUseCase {
 
 		for (const entries of byProductAndMarketplace.values()) {
 			if (entries.length < 2) continue
-			if (!entries.some((entry) => entry.unitsWindow > 0)) continue
+			if (!entries.some((entry) => electionScore(entry) > 0)) continue
 
 			const [winner, ...rest] = [...entries].sort(
 				(a, b) =>
@@ -486,16 +723,28 @@ export class FetchFullReplenishmentAlertsUseCase {
 					brand_name: entry.stock.brand_name,
 					stock_id: entry.stock.stock_id,
 					stock_title: entry.stock.stock_title,
+					store_id: entry.stock.store_id,
+					store_name: entry.stock.store_name,
 					marketplace: entry.stock.marketplace,
 					available_qty: entry.stock.qtde,
 					in_transit_qty: entry.inTransit,
 					units_window: entry.unitsWindow,
 					demand_rate_per_day: round2(entry.rate),
+					demand_source: entry.demandSource,
+					demand_trend: entry.demandTrend,
+					account_units_long: entry.accountUnitsLong,
+					account_units_short: entry.accountUnitsShort,
 					days_of_autonomy: entry.autonomy === null ? null : round2(entry.autonomy),
 					rate_is_estimated: entry.rateIsEstimated,
 					reorder_point_days: params.leadTimeDays + SAFETY_MARGIN_DAYS,
+					// Critico e perda de venda: o anuncio do full esta girando e vai
+					// parar. Se o deposito nao vendeu nada na janela, nao ha anuncio
+					// girando para parar — a conta continua entregando por outro
+					// caminho, e o caso e de reforcar o full, nao de apagar incendio.
 					severity:
-						entry.effectiveAutonomy !== null && entry.effectiveAutonomy < params.leadTimeDays
+						entry.unitsWindow > 0 &&
+						entry.effectiveAutonomy !== null &&
+						entry.effectiveAutonomy < params.leadTimeDays
 							? "critico"
 							: "atencao",
 					needed_quantity: needed,
@@ -525,9 +774,51 @@ export class FetchFullReplenishmentAlertsUseCase {
 /**
  * Ritmo para efeito de eleicao da conta dona do SKU. Mesma conta do ritmo do
  * alerta, com denominador minimo maior — ver `ELECTION_MIN_DAYS`.
+ *
+ * Entra tambem o ritmo da conta no canal, porque senao a eleicao trava quem
+ * mais vende: uma conta cujo full zerou pontua zero pelo deposito, perde o SKU
+ * para quem vendeu uma unica unidade e nunca mais recebe abastecimento — nao
+ * vende porque nao tem estoque, e nao tem estoque porque nao vende.
  */
 function electionScore(entry: Evaluated) {
-	return entry.unitsWindow / Math.max(entry.daysWithStock, ELECTION_MIN_DAYS)
+	return Math.max(
+		entry.unitsWindow / Math.max(entry.daysWithStock, ELECTION_MIN_DAYS),
+		entry.accountRate,
+	)
+}
+
+/** Chave de um par produto+conta+canal — a unidade de decisao do relatorio. */
+function slotKey(productId: string, storeId: string, marketplace: Marketplace) {
+	return `${productId}::${storeId}::${marketplace}`
+}
+
+/**
+ * Ritmo de uma conta num canal. Fica com o maior entre a media da janela longa
+ * e a da curta: a longa e a base estavel, a curta so assume quando tem volume
+ * para sustentar a leitura e aponta para cima.
+ */
+function channelRate(row: { units_long: number; units_short: number }) {
+	const longRate = row.units_long / WINDOW_DAYS
+	const shortRate =
+		row.units_short >= TREND_MIN_UNITS ? row.units_short / SHORT_WINDOW_DAYS : 0
+
+	return Math.max(longRate, shortRate)
+}
+
+/**
+ * Para onde o ritmo recente aponta. Serve de aviso na tela, nao entra na conta —
+ * quem dimensiona a reposicao e `channelRate`.
+ */
+function demandTrend(row: { units_long: number; units_short: number } | undefined): DemandTrend {
+	if (!row || row.units_long === 0) return "estavel"
+
+	const longRate = row.units_long / WINDOW_DAYS
+	const shortRate = row.units_short / SHORT_WINDOW_DAYS
+
+	if (row.units_short >= TREND_MIN_UNITS && shortRate > longRate * 1.3) return "acelerando"
+	if (shortRate < longRate * 0.5) return "desacelerando"
+
+	return "estavel"
 }
 
 /** Dias de folga antes de a ruptura passar a ser inevitavel mesmo enviando hoje. */

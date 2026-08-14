@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import type {
+	AccountChannelDemandRow,
+	AccountChannelRow,
 	DraftedSourceRow,
 	FullReplenishmentRepository,
 	FullStockDemandRow,
@@ -16,6 +18,8 @@ import {
 class FakeFullReplenishmentRepository implements FullReplenishmentRepository {
 	public fullStocks: FullStockRow[] = []
 	public demand: FullStockDemandRow[] = []
+	public accountDemand: AccountChannelDemandRow[] = []
+	public accountChannels: AccountChannelRow[] = []
 	public physical: PhysicalSupplyRow[] = []
 	public inTransit: InTransitRow[] = []
 	public drafted: DraftedSourceRow[] = []
@@ -25,6 +29,12 @@ class FakeFullReplenishmentRepository implements FullReplenishmentRepository {
 	}
 	async fetchFullStockDemand() {
 		return this.demand
+	}
+	async fetchAccountChannelDemand() {
+		return this.accountDemand
+	}
+	async fetchAccountsOperatingFull() {
+		return this.accountChannels
 	}
 	async fetchPhysicalSupply() {
 		return this.physical
@@ -45,6 +55,23 @@ function fullStock(overrides: Partial<FullStockRow> & { stock_id: string }): Ful
 		stock_title: "Lilian",
 		marketplace: "mercado_livre",
 		qtde: 1,
+		store_id: null,
+		store_name: null,
+		...overrides,
+	}
+}
+
+function accountDemand(
+	overrides: Partial<AccountChannelDemandRow> & { store_id: string },
+): AccountChannelDemandRow {
+	return {
+		product_id: "prod-1",
+		sku: "REL-001",
+		brand_name: "ORIENT",
+		store_name: overrides.store_id,
+		marketplace: "mercado_livre",
+		units_long: 0,
+		units_short: 0,
 		...overrides,
 	}
 }
@@ -148,6 +175,238 @@ describe("FetchFullReplenishmentAlertsUseCase — ritmo de saída", () => {
 
 		expect(alerts[0].rate_is_estimated).toBe(true)
 		expect(alerts[0].demand_rate_per_day).toBeCloseTo(2 / 14)
+	})
+})
+
+describe("FetchFullReplenishmentAlertsUseCase — demanda da conta", () => {
+	it("lê a demanda da conta quando o full está vazio e a venda saiu do galpão", async () => {
+		// A Laurinda vendeu 27 no ML na janela, todas despachadas do galpao porque
+		// o full dela esta zerado. Pelo deposito o ritmo e zero e a linha sumia da
+		// tela inteira; pela conta sao 0,3/dia de procura real naquele canal.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0, store_id: "loja-laurinda", store_name: "Laurinda" }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 }]
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 27 })]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].stock_id).toBe("laurinda")
+		expect(alerts[0].demand_source).toBe("conta")
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(0.3)
+		expect(alerts[0].suggested_quantity).toBe(14)
+	})
+
+	it("não marca como crítico o full vazio cuja conta ainda entrega pelo galpão", async () => {
+		// Autonomia zero, mas nenhuma venda esta sendo perdida: a conta continua
+		// entregando por envio proprio. E reforco de full, nao incendio.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", qtde: 0, store_id: "loja-laurinda" }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 }]
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", units_long: 27 })]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].days_of_autonomy).toBe(0)
+		expect(alerts[0].severity).toBe("atencao")
+	})
+
+	it("dimensiona pelo ritmo dos últimos 15 dias quando ele supera a média da janela", async () => {
+		// 30 em 90 dias sao 0,33/dia; 10 nos ultimos 15 sao 0,67/dia. A media longa
+		// diluiria a aceleracao pela metade e o envio chegaria curto.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", qtde: 0, store_id: "loja-laurinda" }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 }]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-laurinda", units_long: 30, units_short: 10 }),
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(10 / 15)
+		expect(alerts[0].demand_trend).toBe("acelerando")
+	})
+
+	it("ignora a janela curta quando ela tem poucas unidades", async () => {
+		// 3 vendas em 15 dias dariam 0,2/dia contra 0,1 da media longa. Volume fino
+		// demais para dobrar o alvo por acaso.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", qtde: 0, store_id: "loja-laurinda" }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 }]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-laurinda", units_long: 9, units_short: 3 }),
+		]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(0.1)
+	})
+
+	it("prefere o ritmo do próprio depósito quando ele é maior que o da conta", async () => {
+		// O full girou 27 em 30 dias com estoque (0,9/dia). A conta vendeu as mesmas
+		// 27 em 90 dias corridos (0,3/dia) — a leitura do deposito e mais fiel.
+		repo.fullStocks = [
+			fullStock({ stock_id: "laurinda", qtde: 1, store_id: "loja-laurinda" }),
+		]
+		repo.demand = [{ stock_id: "laurinda", units_window: 27, days_with_stock: 30 }]
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", units_long: 27 })]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].demand_source).toBe("deposito")
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(0.9)
+	})
+
+	it("não deixa a conta que mais vende perder o SKU por estar com o full vazio", async () => {
+		// A Lilian vendeu 1 unidade do full em 90 dias; a Laurinda vendeu 25 no
+		// mesmo canal, todas do galpao. Pela contagem do deposito a Lilian ganhava a
+		// eleicao e a Laurinda ficava presa: sem estoque nao vende, sem vender nao
+		// recebe estoque.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 1, store_id: "loja-lilian", store_name: "Lilian" }),
+			fullStock({ stock_id: "laurinda", stock_title: "Laurinda", qtde: 0, store_id: "loja-laurinda", store_name: "Laurinda" }),
+		]
+		repo.demand = [
+			{ stock_id: "lilian", units_window: 1, days_with_stock: 90 },
+			{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 },
+		]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-lilian", store_name: "Lilian", units_long: 1 }),
+			accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 25 }),
+		]
+		repo.physical = [physicalSupply({ qtde: 100 })]
+
+		const { alerts, idle } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).toEqual(["laurinda"])
+		expect(idle.find((i) => i.stock_id === "lilian")?.reason).toBe("conta_secundaria")
+		expect(idle.find((i) => i.stock_id === "lilian")?.winner_stock_title).toBe("Laurinda")
+	})
+
+	it("não usa a demanda de uma conta para abastecer o full de outra", async () => {
+		// A Laurinda vende; a Lilian nao. O full da Lilian continua sem tracao.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 2, store_id: "loja-lilian" }),
+		]
+		repo.demand = [{ stock_id: "lilian", units_window: 0, days_with_stock: 90 }]
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", units_long: 27 })]
+		repo.physical = [physicalSupply()]
+
+		const { alerts, idle } = await sut.execute()
+
+		expect(alerts).toHaveLength(0)
+		expect(idle[0].reason).toBe("sem_venda")
+	})
+})
+
+describe("FetchFullReplenishmentAlertsUseCase — SKU que vende e não está no full", () => {
+	const laurindaNoMl: AccountChannelRow = {
+		store_id: "loja-laurinda",
+		store_name: "Laurinda",
+		marketplace: "mercado_livre",
+		sample_stock_title: "Full Laurinda",
+	}
+
+	it("propõe abrir o SKU no full da conta que já vende o produto no canal", async () => {
+		// Nao ha linha de estoque full nenhuma para este produto: o relatorio so
+		// sabia repor o que ja existia, entao um relogio que sai todo mes por envio
+		// proprio nunca entrava na conta.
+		repo.fullStocks = []
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 27 })]
+		repo.accountChannels = [laurindaNoMl]
+		repo.physical = [physicalSupply()]
+
+		const { alerts, missing } = await sut.execute()
+
+		expect(alerts).toHaveLength(0)
+		expect(missing).toHaveLength(1)
+		expect(missing[0].sku).toBe("REL-001")
+		expect(missing[0].store_name).toBe("Laurinda")
+		expect(missing[0].target_quantity).toBe(14)
+		expect(missing[0].physical_available_qty).toBe(24)
+		expect(missing[0].suggested_stock_title).toBe("Full Laurinda")
+	})
+
+	it("não propõe abrir numa segunda conta quando outra já gira mais o SKU no canal", async () => {
+		// Espalhar o mesmo SKU por duas contas do mesmo canal reparte o giro — e a
+		// mesma razao da eleicao de conta.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 5, store_id: "loja-lilian", store_name: "Lilian" }),
+		]
+		repo.demand = [{ stock_id: "lilian", units_window: 45, days_with_stock: 90 }]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-lilian", store_name: "Lilian", units_long: 45 }),
+			accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 9 }),
+		]
+		repo.accountChannels = [laurindaNoMl]
+		repo.physical = [physicalSupply()]
+
+		const { missing } = await sut.execute()
+
+		expect(missing).toHaveLength(0)
+	})
+
+	it("não propõe full para conta que não opera aquele canal", async () => {
+		repo.fullStocks = []
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", units_long: 27 })]
+		repo.accountChannels = []
+		repo.physical = [physicalSupply()]
+
+		const { missing } = await sut.execute()
+
+		expect(missing).toHaveLength(0)
+	})
+
+	it("não propõe abrir o SKU por causa de umas vendas soltas na janela", async () => {
+		// 5 em 90 dias dao um alvo de 3 unidades — nao paga a perna de envio nem o
+		// anuncio novo.
+		repo.fullStocks = []
+		repo.accountDemand = [accountDemand({ store_id: "loja-laurinda", units_long: 5 })]
+		repo.accountChannels = [laurindaNoMl]
+		repo.physical = [physicalSupply()]
+
+		const { missing } = await sut.execute()
+
+		expect(missing).toHaveLength(0)
+	})
+
+	it("não repete na proposta o saldo que os alertas já prometeram", async () => {
+		// O mesmo produto tem full na Lilian no ML, em ruptura, e demanda da
+		// Laurinda na Shopee. O que for para a Lilian nao esta mais disponivel.
+		repo.fullStocks = [
+			fullStock({ stock_id: "lilian", stock_title: "Lilian", qtde: 0, store_id: "loja-lilian", store_name: "Lilian" }),
+		]
+		repo.demand = [{ stock_id: "lilian", units_window: 18, days_with_stock: 90 }]
+		repo.accountDemand = [
+			accountDemand({
+				store_id: "loja-laurinda",
+				store_name: "Laurinda",
+				marketplace: "shopee",
+				units_long: 27,
+			}),
+		]
+		repo.accountChannels = [
+			{
+				store_id: "loja-laurinda",
+				store_name: "Laurinda",
+				marketplace: "shopee",
+				sample_stock_title: "Shopee Laurinda",
+			},
+		]
+		repo.physical = [physicalSupply({ qtde: 20 })]
+
+		const { alerts, missing } = await sut.execute()
+
+		expect(alerts[0].suggested_quantity).toBe(9)
+		expect(missing[0].physical_available_qty).toBe(11)
 	})
 })
 
@@ -469,7 +728,8 @@ describe("FetchFullReplenishmentAlertsUseCase — quantidade sugerida e rateio",
 	})
 
 	it("reserva estoque físico para as vendas diretas", async () => {
-		// Fisico vende 18 em 90 dias = 0,2/dia -> reserva 15 dias = 3 unidades.
+		// Balcao vende 18 em 90 dias = 0,2/dia -> reserva 15 dias = 3 unidades.
+		// `units_window` do fisico ja chega filtrado pelo canal Direto.
 		repo.fullStocks = [fullStock({ stock_id: "lilian", qtde: 1 })]
 		repo.demand = [{ stock_id: "lilian", units_window: 45, days_with_stock: 90 }]
 		repo.physical = [physicalSupply({ qtde: 10, units_window: 18 })]

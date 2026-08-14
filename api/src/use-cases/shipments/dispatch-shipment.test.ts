@@ -49,6 +49,7 @@ function makeStock(id: string, qtde: number, full: boolean): ProductStock {
 		qtde,
 		full,
 		marketplace: full ? "mercado_livre" : null,
+		store_id: null,
 		created_at: new Date(),
 		updated_at: new Date(),
 	}

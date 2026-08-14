@@ -10,11 +10,17 @@ const alertItemSchema = z.object({
 	brand_name: z.string().nullable(),
 	stock_id: z.string(),
 	stock_title: z.string(),
+	store_id: z.string().nullable(),
+	store_name: z.string().nullable(),
 	marketplace: marketplaceSchema,
 	available_qty: z.number(),
 	in_transit_qty: z.number(),
 	units_window: z.number(),
 	demand_rate_per_day: z.number(),
+	demand_source: z.enum(["deposito", "conta"]),
+	demand_trend: z.enum(["acelerando", "estavel", "desacelerando"]),
+	account_units_long: z.number(),
+	account_units_short: z.number(),
 	days_of_autonomy: z.number().nullable(),
 	rate_is_estimated: z.boolean(),
 	reorder_point_days: z.number(),
@@ -58,6 +64,22 @@ const idleItemSchema = z.object({
 	winner_stock_title: z.string().nullable(),
 })
 
+const missingItemSchema = z.object({
+	product_id: z.string(),
+	sku: z.string(),
+	brand_name: z.string().nullable(),
+	store_id: z.string(),
+	store_name: z.string(),
+	marketplace: marketplaceSchema,
+	account_units_long: z.number(),
+	account_units_short: z.number(),
+	demand_rate_per_day: z.number(),
+	demand_trend: z.enum(["acelerando", "estavel", "desacelerando"]),
+	target_quantity: z.number(),
+	physical_available_qty: z.number(),
+	suggested_stock_title: z.string(),
+})
+
 export const fetchFullReplenishmentAlerts: FastifyPluginAsyncZod = async (app) => {
 	app.get(
 		"/reports/full-replenishment-alerts",
@@ -65,12 +87,13 @@ export const fetchFullReplenishmentAlerts: FastifyPluginAsyncZod = async (app) =
 			schema: {
 				operationId: "getReportsFullReplenishmentAlerts",
 				description:
-					"Alerta de Abastecimento do Full: dias de autonomia por depósito full, quantidade sugerida e estoque parado",
+					"Alerta de Abastecimento do Full: dias de autonomia por depósito full, quantidade sugerida, estoque parado e SKUs que a conta vende fora do full",
 				tags: ["reports"],
 				response: {
 					200: z.object({
 						alerts: z.array(alertItemSchema),
 						idle: z.array(idleItemSchema),
+						missing: z.array(missingItemSchema),
 					}),
 				},
 			},

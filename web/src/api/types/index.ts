@@ -117,6 +117,8 @@ export type {
   ItemsClassEnumKey,
 } from "./reportsController/GetReportsAbc.ts";
 export type {
+  AlertsDemandSourceEnumKey,
+  AlertsDemandTrendEnumKey,
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
   AlertsShortfallReasonEnumKey,
@@ -125,6 +127,8 @@ export type {
   GetReportsFullReplenishmentAlertsQueryResponse,
   IdleMarketplaceEnumKey,
   IdleReasonEnumKey,
+  MissingDemandTrendEnumKey,
+  MissingMarketplaceEnumKey,
 } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export type {
   GetReportsRestockAlerts200,
@@ -352,11 +356,15 @@ export { stocksMarketplaceEnum3 } from "./productsController/PatchProductsId.ts"
 export { stocksMarketplaceEnum4 } from "./productsController/PatchProductsIdImage.ts";
 export { stocksMarketplaceEnum } from "./productsController/PostProducts.ts";
 export { itemsClassEnum } from "./reportsController/GetReportsAbc.ts";
+export { alertsDemandSourceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { alertsDemandTrendEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsSeverityEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsShortfallReasonEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleReasonEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { missingDemandTrendEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { missingMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./reportsController/GetReportsRestockAlerts.ts";
 export { postReportsFullReplenishmentAlertsAnalyze200VerdictEnum } from "./reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";

@@ -106,6 +106,10 @@ export type PostProducts201 = {
        */
       marketplace: StocksMarketplaceEnumKey | null;
       /**
+       * @type string, uuid
+       */
+      store_id: string | null;
+      /**
        * @type string, date-time
        */
       created_at: string;

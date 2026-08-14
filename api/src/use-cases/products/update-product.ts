@@ -42,6 +42,7 @@ interface UpdateProductUseCaseResponse {
 			qtde: number
 			full: boolean
 		marketplace: "mercado_livre" | "amazon" | "shopee" | null
+		store_id: string | null
 			created_at: Date
 			updated_at: Date
 		}[]

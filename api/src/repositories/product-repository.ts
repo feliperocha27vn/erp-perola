@@ -14,6 +14,8 @@ export interface ProductStock {
 	qtde: number
 	full: boolean
 	marketplace: Marketplace | null
+	/** Conta dona do deposito. Nulo no fisico, que atende todas as contas. */
+	store_id: string | null
 	created_at: Date
 	updated_at: Date
 }

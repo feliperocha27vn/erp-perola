@@ -12,6 +12,23 @@ export const alertsMarketplaceEnum = {
 export type AlertsMarketplaceEnumKey =
   (typeof alertsMarketplaceEnum)[keyof typeof alertsMarketplaceEnum];
 
+export const alertsDemandSourceEnum = {
+  deposito: "deposito",
+  conta: "conta",
+} as const;
+
+export type AlertsDemandSourceEnumKey =
+  (typeof alertsDemandSourceEnum)[keyof typeof alertsDemandSourceEnum];
+
+export const alertsDemandTrendEnum = {
+  acelerando: "acelerando",
+  estavel: "estavel",
+  desacelerando: "desacelerando",
+} as const;
+
+export type AlertsDemandTrendEnumKey =
+  (typeof alertsDemandTrendEnum)[keyof typeof alertsDemandTrendEnum];
+
 export const alertsSeverityEnum = {
   critico: "critico",
   atencao: "atencao",
@@ -49,6 +66,24 @@ export const idleReasonEnum = {
 export type IdleReasonEnumKey =
   (typeof idleReasonEnum)[keyof typeof idleReasonEnum];
 
+export const missingMarketplaceEnum = {
+  mercado_livre: "mercado_livre",
+  amazon: "amazon",
+  shopee: "shopee",
+} as const;
+
+export type MissingMarketplaceEnumKey =
+  (typeof missingMarketplaceEnum)[keyof typeof missingMarketplaceEnum];
+
+export const missingDemandTrendEnum = {
+  acelerando: "acelerando",
+  estavel: "estavel",
+  desacelerando: "desacelerando",
+} as const;
+
+export type MissingDemandTrendEnumKey =
+  (typeof missingDemandTrendEnum)[keyof typeof missingDemandTrendEnum];
+
 /**
  * @description Default Response
  */
@@ -80,6 +115,14 @@ export type GetReportsFullReplenishmentAlerts200 = {
     /**
      * @type string
      */
+    store_id: string | null;
+    /**
+     * @type string
+     */
+    store_name: string | null;
+    /**
+     * @type string
+     */
     marketplace: AlertsMarketplaceEnumKey;
     /**
      * @type number
@@ -97,6 +140,22 @@ export type GetReportsFullReplenishmentAlerts200 = {
      * @type number
      */
     demand_rate_per_day: number;
+    /**
+     * @type string
+     */
+    demand_source: AlertsDemandSourceEnumKey;
+    /**
+     * @type string
+     */
+    demand_trend: AlertsDemandTrendEnumKey;
+    /**
+     * @type number
+     */
+    account_units_long: number;
+    /**
+     * @type number
+     */
+    account_units_short: number;
     /**
      * @type number
      */
@@ -211,6 +270,63 @@ export type GetReportsFullReplenishmentAlerts200 = {
      * @type string
      */
     winner_stock_title: string | null;
+  }[];
+  /**
+   * @type array
+   */
+  missing: {
+    /**
+     * @type string
+     */
+    product_id: string;
+    /**
+     * @type string
+     */
+    sku: string;
+    /**
+     * @type string
+     */
+    brand_name: string | null;
+    /**
+     * @type string
+     */
+    store_id: string;
+    /**
+     * @type string
+     */
+    store_name: string;
+    /**
+     * @type string
+     */
+    marketplace: MissingMarketplaceEnumKey;
+    /**
+     * @type number
+     */
+    account_units_long: number;
+    /**
+     * @type number
+     */
+    account_units_short: number;
+    /**
+     * @type number
+     */
+    demand_rate_per_day: number;
+    /**
+     * @type string
+     */
+    demand_trend: MissingDemandTrendEnumKey;
+    /**
+     * @type number
+     */
+    target_quantity: number;
+    /**
+     * @type number
+     */
+    physical_available_qty: number;
+    /**
+     * @type string
+     */
+    suggested_stock_title: string;
   }[];
 };
 

@@ -54,6 +54,10 @@ export type PostProductsProductIdStocks201 = {
      */
     marketplace: StockMarketplaceEnum4Key | null;
     /**
+     * @type string, uuid
+     */
+    store_id: string | null;
+    /**
      * @type string, date-time
      */
     created_at: string;
@@ -103,6 +107,10 @@ export type PostProductsProductIdStocksMutationRequest = {
    * @type string
    */
   marketplace?: PostProductsProductIdStocksMutationRequestMarketplaceEnumKey | null;
+  /**
+   * @type string, uuid
+   */
+  store_id?: string | null;
 };
 
 export type PostProductsProductIdStocksMutationResponse =

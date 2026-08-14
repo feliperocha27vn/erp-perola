@@ -20,7 +20,7 @@ function getGetReportsFullReplenishmentAlertsUrl() {
 }
 
 /**
- * @description Alerta de Abastecimento do Full: dias de autonomia por depósito full, quantidade sugerida e estoque parado
+ * @description Alerta de Abastecimento do Full: dias de autonomia por depósito full, quantidade sugerida, estoque parado e SKUs que a conta vende fora do full
  * {@link /reports/full-replenishment-alerts}
  */
 export async function getReportsFullReplenishmentAlerts(

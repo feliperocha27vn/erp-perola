@@ -8,6 +8,7 @@ interface CreateStockUseCaseRequest {
 	qtde: number
 	full: boolean
 	marketplace?: Marketplace | null
+	storeId?: string | null
 }
 
 interface CreateStockUseCaseResponse {
@@ -18,6 +19,7 @@ interface CreateStockUseCaseResponse {
 		qtde: number
 		full: boolean
 		marketplace: Marketplace | null
+		store_id: string | null
 		created_at: Date
 		updated_at: Date
 	}
@@ -35,6 +37,7 @@ export class CreateStockUseCase {
 		qtde,
 		full,
 		marketplace,
+		storeId,
 	}: CreateStockUseCaseRequest): Promise<CreateStockUseCaseResponse> {
 		const product = await this.productRepository.getProductById(productId)
 
@@ -49,6 +52,8 @@ export class CreateStockUseCase {
 			full,
 			// Marketplace so faz sentido em estoque full; no fisico fica nulo.
 			marketplace: full ? (marketplace ?? null) : null,
+			// Conta idem: o deposito proprio atende todas, entao nao pertence a nenhuma.
+			store_id: full ? (storeId ?? null) : null,
 		})
 
 		return { stock }

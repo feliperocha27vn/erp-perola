@@ -1,6 +1,8 @@
 import { sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import type {
+	AccountChannelDemandRow,
+	AccountChannelRow,
 	DraftedSourceRow,
 	FullReplenishmentRepository,
 	FullStockDemandRow,
@@ -20,10 +22,13 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 				s.id::text        AS stock_id,
 				s.title           AS stock_title,
 				s.marketplace     AS marketplace,
-				s.qtde            AS qtde
+				s.qtde            AS qtde,
+				s.store_id::text  AS store_id,
+				st.name           AS store_name
 			FROM stocks s
 			JOIN products p ON p.id = s.product_id
 			LEFT JOIN brands b ON b.id = p.brand_id
+			LEFT JOIN stores st ON st.id = s.store_id
 			WHERE s.full = true
 				AND s.marketplace IS NOT NULL
 				AND p.deleted_at IS NULL
@@ -37,6 +42,89 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 			stock_title: String(row.stock_title),
 			marketplace: String(row.marketplace) as Marketplace,
 			qtde: Number(row.qtde),
+			store_id: row.store_id === null ? null : String(row.store_id),
+			store_name: row.store_name === null ? null : String(row.store_name),
+		}))
+	}
+
+	/**
+	 * Demanda por conta e canal, independente de qual deposito despachou.
+	 *
+	 * O `channel` da venda diz em qual marketplace o pedido entrou; o `stock_id`
+	 * diz de onde a mercadoria saiu. Sao coisas diferentes, e e a primeira que
+	 * mede a procura: uma venda no Mercado Livre despachada do galpao continua
+	 * sendo demanda do Mercado Livre daquela conta, e e ela que migraria para o
+	 * full se ele estivesse abastecido.
+	 *
+	 * Vendas diretas ficam de fora — nao pertencem a canal nenhum.
+	 */
+	async fetchAccountChannelDemand(
+		longDays: number,
+		shortDays: number,
+	): Promise<AccountChannelDemandRow[]> {
+		const rows = await db.execute(sql`
+			SELECT
+				sa.product_id::text AS product_id,
+				p.sku               AS sku,
+				b.name              AS brand_name,
+				sa.store_id::text   AS store_id,
+				st.name             AS store_name,
+				CASE sa.channel
+					WHEN 'Mercado Livre' THEN 'mercado_livre'
+					WHEN 'Amazon'        THEN 'amazon'
+					WHEN 'Shopee'        THEN 'shopee'
+				END AS marketplace,
+				COALESCE(SUM(sa.quantity), 0)::int AS units_long,
+				COALESCE(SUM(sa.quantity) FILTER (
+					WHERE sa.sale_date >= (CURRENT_DATE - (${shortDays}::int - 1))
+				), 0)::int AS units_short
+			FROM sales sa
+			JOIN stores st ON st.id = sa.store_id
+			JOIN products p ON p.id = sa.product_id
+			LEFT JOIN brands b ON b.id = p.brand_id
+			WHERE sa.channel <> 'Direto'
+				AND sa.sale_date >= (CURRENT_DATE - (${longDays}::int - 1))
+				AND p.deleted_at IS NULL
+			GROUP BY sa.product_id, p.sku, b.name, sa.store_id, st.name, sa.channel
+		`)
+
+		return [...rows].map((row) => ({
+			product_id: String(row.product_id),
+			sku: String(row.sku),
+			brand_name: row.brand_name === null ? null : String(row.brand_name),
+			store_id: String(row.store_id),
+			store_name: String(row.store_name),
+			marketplace: String(row.marketplace) as Marketplace,
+			units_long: Number(row.units_long),
+			units_short: Number(row.units_short),
+		}))
+	}
+
+	/**
+	 * Em quais canais cada conta ja opera full. So faz sentido sugerir que um
+	 * produto entre no full de uma conta que ja tem operacao naquele canal — a
+	 * sugestao e abrir mais um SKU, nao abrir uma conta.
+	 */
+	async fetchAccountsOperatingFull(): Promise<AccountChannelRow[]> {
+		const rows = await db.execute(sql`
+			SELECT DISTINCT ON (s.store_id, s.marketplace)
+				s.store_id::text AS store_id,
+				st.name          AS store_name,
+				s.marketplace    AS marketplace,
+				s.title          AS sample_stock_title
+			FROM stocks s
+			JOIN stores st ON st.id = s.store_id
+			WHERE s.full = true
+				AND s.marketplace IS NOT NULL
+				AND s.store_id IS NOT NULL
+			ORDER BY s.store_id, s.marketplace, s.created_at ASC
+		`)
+
+		return [...rows].map((row) => ({
+			store_id: String(row.store_id),
+			store_name: String(row.store_name),
+			marketplace: String(row.marketplace) as Marketplace,
+			sample_stock_title: String(row.sample_stock_title),
 		}))
 	}
 
@@ -128,6 +216,12 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 	 *
 	 * Depositos zerados entram na lista: sao origem valida assim que receberem
 	 * mercadoria e aparecem no detalhamento da tela.
+	 *
+	 * A reserva conta so o canal Direto. Uma venda de marketplace despachada do
+	 * galpao sai do saldo proprio hoje, mas e justamente a demanda que o full
+	 * deveria absorver: contando-a aqui, o mesmo pedido virava motivo para
+	 * abastecer o full e motivo para segurar o estoque, e o produto ficava preso
+	 * em "reserva de venda direta" com mercadoria em casa.
 	 */
 	async fetchPhysicalSupply(windowDays: number): Promise<PhysicalSupplyRow[]> {
 		const rows = await db.execute(sql`
@@ -136,6 +230,7 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 				FROM sales sa
 				JOIN stocks s ON s.id = sa.stock_id
 				WHERE s.full = false
+					AND sa.channel = 'Direto'
 					AND sa.sale_date >= (CURRENT_DATE - (${windowDays}::int - 1))
 				GROUP BY s.product_id
 			)

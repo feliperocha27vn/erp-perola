@@ -151,6 +151,10 @@ export type GetProducts200 = {
        */
       marketplace: StocksMarketplaceEnum2Key | null;
       /**
+       * @type string, uuid
+       */
+      store_id: string | null;
+      /**
        * @type string, date-time
        */
       created_at: string;

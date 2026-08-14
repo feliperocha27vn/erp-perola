@@ -147,6 +147,17 @@ export const stocks = pgTable("stocks", {
 	qtde: integer("qtde").notNull(),
 	full: boolean("full").notNull().default(false),
 	marketplace: marketplaceEnum("marketplace"),
+	/**
+	 * A conta dona do deposito. Preenchido nos fulls, nulo nos depositos
+	 * proprios: o galpao atende todas as contas e nao pertence a nenhuma.
+	 *
+	 * Sem esta coluna a demanda de uma conta nao chega ao full dela — uma venda
+	 * da conta no marketplace despachada do galpao fica registrada no galpao, e
+	 * o full da mesma conta parece nao ter demanda. Ver ADR 0009.
+	 */
+	store_id: uuid("store_id").references(() => stores.id, {
+		onDelete: "set null",
+	}),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 	updated_at: timestamp("updated_at").notNull().defaultNow(),
 })
@@ -199,6 +210,10 @@ export const stocksRelations = relations(stocks, ({ many, one }) => ({
 		fields: [stocks.product_id],
 		references: [products.id],
 	}),
+	store: one(stores, {
+		fields: [stocks.store_id],
+		references: [stores.id],
+	}),
 	sales: many(sales),
 	entries: many(stockEntries),
 }))
@@ -212,6 +227,7 @@ export const stockEntriesRelations = relations(stockEntries, ({ one }) => ({
 
 export const storesRelations = relations(stores, ({ many }) => ({
 	sales: many(sales),
+	stocks: many(stocks),
 }))
 
 export const salesRelations = relations(sales, ({ one }) => ({

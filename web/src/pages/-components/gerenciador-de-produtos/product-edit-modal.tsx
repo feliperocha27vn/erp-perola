@@ -8,6 +8,7 @@ import { usePatchProductsId } from '@/api/hooks/productsController/usePatchProdu
 import { useDeleteStocksStockId } from '@/api/hooks/stocksController/useDeleteStocksStockId'
 import { useGetProductsProductIdStocks } from '@/api/hooks/stocksController/useGetProductsProductIdStocks'
 import { usePatchStocksStockId } from '@/api/hooks/stocksController/usePatchStocksStockId'
+import { useGetStores } from '@/api/hooks/storesController/useGetStores'
 import { usePostProductsProductIdStocks } from '@/api/hooks/stocksController/usePostProductsProductIdStocks'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,6 +53,8 @@ type EditableStock = {
   qtde: string
   full: boolean
   marketplace: Marketplace
+  /** '' = sem conta associada. */
+  storeId: string
 }
 
 const MARKETPLACE_OPTIONS: { value: Marketplace; label: string }[] = [
@@ -65,18 +68,28 @@ function normalizeStockForm(s: {
   qtde: number
   full: boolean
   marketplace?: Marketplace | null
+  store_id?: string | null
 }): EditableStock {
   return {
     title: s.title,
     qtde: String(s.qtde),
     full: s.full,
     marketplace: s.marketplace ?? 'mercado_livre',
+    storeId: s.store_id ?? '',
   }
 }
 
 /** So estoque full tem marketplace; no fisico o campo e ignorado. */
 function marketplaceFor(form: EditableStock): Marketplace | null {
   return form.full ? form.marketplace : null
+}
+
+/**
+ * So estoque full pertence a uma conta. O deposito proprio atende todas, entao
+ * fica sem dono — e e por isso que ele nao entra na leitura de demanda por conta.
+ */
+function storeIdFor(form: EditableStock): string | null {
+  return form.full ? form.storeId || null : null
 }
 
 function MarketplaceSelect({
@@ -101,6 +114,43 @@ function MarketplaceSelect({
       </select>
       <p className="text-[11px] text-muted-foreground">
         Define o prazo de entrega usado no Abastecimento do Full.
+      </p>
+    </div>
+  )
+}
+
+/**
+ * A conta dona do depósito full. Sem ela, o relatório não consegue ligar o que
+ * a conta vende no canal ao full dela — e um depósito zerado passa a parecer um
+ * produto sem procura.
+ */
+function StoreSelect({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (next: string) => void
+}) {
+  const { data } = useGetStores()
+  const stores = data?.stores ?? []
+
+  return (
+    <div className="space-y-1">
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+      >
+        <option value="">Sem conta associada…</option>
+        {stores.map(s => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
+      <p className="text-[11px] text-muted-foreground">
+        Conta dona deste CD. É por ela que o relatório enxerga a demanda que hoje
+        sai pelo estoque próprio.
       </p>
     </div>
   )
@@ -158,8 +208,8 @@ export function ProductEditModal({
   // ── Estoques tab state ──
   const [isCreating, setIsCreating] = useState(false)
   const [editingStockId, setEditingStockId] = useState<string | null>(null)
-  const [createForm, setCreateForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
-  const [editForm, setEditForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
+  const [createForm, setCreateForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre', storeId: '' })
+  const [editForm, setEditForm] = useState<EditableStock>({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre', storeId: '' })
 
   // ── Lançamentos tab state ──
   const [launchingStockId, setLaunchingStockId] = useState<string | null>(null)
@@ -241,7 +291,7 @@ export function ProductEditModal({
         toast.success('Estoque cadastrado!')
         invalidateStocks()
         setIsCreating(false)
-        setCreateForm({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre' })
+        setCreateForm({ title: '', qtde: '0', full: false, marketplace: 'mercado_livre', storeId: '' })
       },
       onError: () => toast.error('Erro ao cadastrar estoque.'),
     },
@@ -364,7 +414,7 @@ export function ProductEditModal({
     const qtde = parseQtde(createForm.qtde)
     if (!title) { toast.error('Informe o nome da loja/marketplace.'); return }
     if (qtde === null) { toast.error('Informe uma quantidade válida.'); return }
-    createStockMutation.mutate({ productId, data: { title, qtde, full: createForm.full, marketplace: marketplaceFor(createForm) } })
+    createStockMutation.mutate({ productId, data: { title, qtde, full: createForm.full, marketplace: marketplaceFor(createForm), store_id: storeIdFor(createForm) } })
   }
 
   const handleStartEditingStock = (stock: ProductStockItem) => {
@@ -378,7 +428,7 @@ export function ProductEditModal({
     const qtde = parseQtde(editForm.qtde)
     if (!title) { toast.error('Informe o nome da loja/marketplace.'); return }
     if (qtde === null) { toast.error('Informe uma quantidade válida.'); return }
-    updateStockMutation.mutate({ stockId, data: { title, qtde, full: editForm.full, marketplace: marketplaceFor(editForm) } })
+    updateStockMutation.mutate({ stockId, data: { title, qtde, full: editForm.full, marketplace: marketplaceFor(editForm), store_id: storeIdFor(editForm) } })
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -548,12 +598,20 @@ export function ProductEditModal({
                             <span>{editForm.full ? 'Full' : 'Normal'}</span>
                           </div>
                           {editForm.full && (
-                            <MarketplaceSelect
-                              value={editForm.marketplace}
-                              onChange={next =>
-                                setEditForm(p => ({ ...p, marketplace: next }))
-                              }
-                            />
+                            <>
+                              <MarketplaceSelect
+                                value={editForm.marketplace}
+                                onChange={next =>
+                                  setEditForm(p => ({ ...p, marketplace: next }))
+                                }
+                              />
+                              <StoreSelect
+                                value={editForm.storeId}
+                                onChange={next =>
+                                  setEditForm(p => ({ ...p, storeId: next }))
+                                }
+                              />
+                            </>
                           )}
                           <div className="grid grid-cols-2 gap-2">
                             <Button
@@ -704,12 +762,20 @@ export function ProductEditModal({
                       <span>{createForm.full ? 'Full' : 'Normal'}</span>
                     </div>
                     {createForm.full && (
-                      <MarketplaceSelect
-                        value={createForm.marketplace}
-                        onChange={next =>
-                          setCreateForm(p => ({ ...p, marketplace: next }))
-                        }
-                      />
+                      <>
+                        <MarketplaceSelect
+                          value={createForm.marketplace}
+                          onChange={next =>
+                            setCreateForm(p => ({ ...p, marketplace: next }))
+                          }
+                        />
+                        <StoreSelect
+                          value={createForm.storeId}
+                          onChange={next =>
+                            setCreateForm(p => ({ ...p, storeId: next }))
+                          }
+                        />
+                      </>
                     )}
                     <div className="grid grid-cols-2 gap-2">
                       <Button onClick={handleCreateStock} disabled={createStockMutation.isPending} type="button">

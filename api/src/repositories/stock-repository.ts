@@ -6,6 +6,8 @@ export interface CreateStockInput {
 	qtde: number
 	full: boolean
 	marketplace?: Marketplace | null
+	/** Conta dona do deposito. Nulo no fisico, que atende todas as contas. */
+	store_id?: string | null
 }
 
 export interface UpdateStockInput {
@@ -13,6 +15,7 @@ export interface UpdateStockInput {
 	qtde?: number
 	full?: boolean
 	marketplace?: Marketplace | null
+	store_id?: string | null
 }
 
 export interface StockRepository {

@@ -24,6 +24,7 @@ export class InMemoryStockRepository implements StockRepository {
 			qtde: data.qtde,
 			full: data.full,
 			marketplace: data.marketplace ?? null,
+			store_id: data.store_id ?? null,
 			created_at: new Date(),
 			updated_at: new Date(),
 		}
@@ -46,6 +47,7 @@ export class InMemoryStockRepository implements StockRepository {
 		if (data.qtde !== undefined) stock.qtde = data.qtde
 		if (data.full !== undefined) stock.full = data.full
 		if (data.marketplace !== undefined) stock.marketplace = data.marketplace
+		if (data.store_id !== undefined) stock.store_id = data.store_id
 
 		stock.updated_at = new Date()
 

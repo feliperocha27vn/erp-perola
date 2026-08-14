@@ -105,6 +105,10 @@ export type PatchProductsIdImage200 = {
        */
       marketplace: StocksMarketplaceEnum4Key | null;
       /**
+       * @type string, uuid
+       */
+      store_id: string | null;
+      /**
        * @type string, date-time
        */
       created_at: string;

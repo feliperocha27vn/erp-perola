@@ -10,6 +10,7 @@ const stockSchema = z.object({
 	qtde: z.number().int(),
 	full: z.boolean(),
 	marketplace: z.enum(["mercado_livre", "amazon", "shopee"]).nullable(),
+	store_id: z.string().uuid().nullable(),
 	created_at: z.date(),
 	updated_at: z.date(),
 })
@@ -33,6 +34,7 @@ export const createStock: FastifyPluginAsyncZod = async (app) => {
 						.enum(["mercado_livre", "amazon", "shopee"])
 						.nullable()
 						.optional(),
+					store_id: z.string().uuid().nullable().optional(),
 				}),
 				response: {
 					201: z.object({ stock: stockSchema }),
@@ -49,6 +51,7 @@ export const createStock: FastifyPluginAsyncZod = async (app) => {
 					qtde: req.body.qtde,
 					full: req.body.full,
 					marketplace: req.body.marketplace,
+					storeId: req.body.store_id,
 				})
 
 				return reply.status(201).send(result)

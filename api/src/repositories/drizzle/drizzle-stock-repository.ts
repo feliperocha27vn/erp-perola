@@ -30,6 +30,7 @@ export class DrizzleStockRepository implements StockRepository {
 				qtde: data.qtde,
 				full: data.full,
 				marketplace: data.marketplace ?? null,
+				store_id: data.store_id ?? null,
 				updated_at: new Date(),
 			})
 			.returning()

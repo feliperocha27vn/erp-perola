@@ -36,6 +36,12 @@ class FakeFullReplenishmentRepository implements FullReplenishmentRepository {
 	async fetchFullStockDemand() {
 		return this.demand
 	}
+	async fetchAccountChannelDemand() {
+		return []
+	}
+	async fetchAccountsOperatingFull() {
+		return []
+	}
 	async fetchPhysicalSupply() {
 		return this.physical
 	}
@@ -116,6 +122,8 @@ function build(physicalQty: number) {
 			stock_title: "Lilian",
 			marketplace: "mercado_livre",
 			qtde: 1,
+			store_id: null,
+			store_name: null,
 		},
 	]
 	replenishmentRepo.demand = [
@@ -174,6 +182,8 @@ describe("AnalyzeFullReplenishmentSuggestionUseCase — parecer", () => {
 			stock_title: "Laurinda",
 			marketplace: "mercado_livre",
 			qtde: 6,
+			store_id: null,
+			store_name: null,
 		})
 		replenishmentRepo.demand.push({
 			stock_id: "laurinda",

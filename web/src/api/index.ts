@@ -182,6 +182,8 @@ export type {
   ItemsClassEnumKey,
 } from "./types/reportsController/GetReportsAbc.ts";
 export type {
+  AlertsDemandSourceEnumKey,
+  AlertsDemandTrendEnumKey,
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
   AlertsShortfallReasonEnumKey,
@@ -190,6 +192,8 @@ export type {
   GetReportsFullReplenishmentAlertsQueryResponse,
   IdleMarketplaceEnumKey,
   IdleReasonEnumKey,
+  MissingDemandTrendEnumKey,
+  MissingMarketplaceEnumKey,
 } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export type {
   GetReportsRestockAlerts200,
@@ -656,11 +660,15 @@ export { stocksMarketplaceEnum3 } from "./types/productsController/PatchProducts
 export { stocksMarketplaceEnum4 } from "./types/productsController/PatchProductsIdImage.ts";
 export { stocksMarketplaceEnum } from "./types/productsController/PostProducts.ts";
 export { itemsClassEnum } from "./types/reportsController/GetReportsAbc.ts";
+export { alertsDemandSourceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { alertsDemandTrendEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsSeverityEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsShortfallReasonEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleReasonEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { missingDemandTrendEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { missingMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
 export { postReportsFullReplenishmentAlertsAnalyze200VerdictEnum } from "./types/reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";

@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { useGetReportsFullReplenishmentAlerts } from '@/api/hooks/reportsController/useGetReportsFullReplenishmentAlerts'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
+import { usePostProductsProductIdStocks } from '@/api/hooks/stocksController/usePostProductsProductIdStocks'
 import type { GetReportsFullReplenishmentAlerts200 } from '@/api/types/reportsController/GetReportsFullReplenishmentAlerts'
 import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { Button } from '@/components/ui/button'
@@ -30,12 +31,14 @@ import {
 } from './-components/abastecimento-do-full/analysis-dialog'
 import {
   AutonomyValue,
+  DemandSourceTag,
   EstimatedRateTag,
   IdleReasonBadge,
   MarketplaceBadge,
   SeverityBadge,
   ShortfallTag,
   SourceBreakdown,
+  TrendTag,
 } from './-components/abastecimento-do-full/badges'
 
 export const Route = createFileRoute('/abastecimento-do-full')({
@@ -44,6 +47,7 @@ export const Route = createFileRoute('/abastecimento-do-full')({
 
 type AlertItem = GetReportsFullReplenishmentAlerts200['alerts'][number]
 type IdleItem = GetReportsFullReplenishmentAlerts200['idle'][number]
+type MissingItem = GetReportsFullReplenishmentAlerts200['missing'][number]
 
 interface DepotGroup {
   stockTitle: string
@@ -94,6 +98,7 @@ function AbastecimentoDoFullPage() {
 
   const alerts = useMemo(() => data?.alerts ?? [], [data])
   const idle = data?.idle ?? []
+  const missing = data?.missing ?? []
   const groups = useMemo(() => groupByDepot(alerts), [alerts])
 
   const criticoCount = alerts.filter(a => a.severity === 'critico').length
@@ -134,14 +139,18 @@ function AbastecimentoDoFullPage() {
 
       {!isLoading && !isError && (
         <p className="text-sm text-muted-foreground max-w-3xl">
-          Dias de autonomia de cada produto em cada centro de distribuição, no
-          ritmo de saída dos últimos 90 dias. O alerta dispara antes que o
-          estoque acabe dentro do prazo de entrega daquele marketplace — ML Full
-          conta 7 dias, Amazon FBA 14. Dentro de cada marketplace, o SKU é
-          abastecido em uma conta só: a que gira mais rápido na janela. Quando a
-          sugestão sai menor que o necessário, a linha diz o que a segurou.
-          "Analisar" pesquisa o produto e o calendário comercial e propõe um
-          ajuste sazonal — que só entra no rascunho se você aceitar.
+          Dias de autonomia de cada produto em cada centro de distribuição. O
+          ritmo de saída sai do que o depósito vendeu ou, quando ele está vazio,
+          do que a conta vende do produto naquele canal — inclusive o que
+          despachou do estoque próprio, porque um full zerado não vende por não
+          ter o que vender. A janela é de 90 dias, mas os últimos 15 assumem
+          quando o produto acelera. O alerta dispara antes que o estoque acabe
+          dentro do prazo de entrega daquele marketplace — ML Full conta 7 dias,
+          Amazon FBA 14. Dentro de cada marketplace o SKU é abastecido em uma
+          conta só: a que mais vende. Quando a sugestão sai menor que o
+          necessário, a linha diz o que a segurou. "Analisar" pesquisa o produto
+          e o calendário comercial e propõe um ajuste sazonal — que só entra no
+          rascunho se você aceitar.
         </p>
       )}
 
@@ -166,7 +175,8 @@ function AbastecimentoDoFullPage() {
         <div className="glass-card p-12 rounded-2xl flex flex-col items-center justify-center gap-3 text-center">
           <PackageCheck className="size-12 text-emerald-500" />
           <p className="text-muted-foreground">
-            Nenhum centro de distribuição precisa de abastecimento agora.
+            Nenhum depósito full aberto precisa de abastecimento agora.
+            {missing.length > 0 && ' Veja abaixo os SKUs que vendem fora dele.'}
           </p>
         </div>
       )}
@@ -192,6 +202,10 @@ function AbastecimentoDoFullPage() {
           onAnalyze={setItemToAnalyze}
         />
       ))}
+
+      {!isLoading && !isError && missing.length > 0 && (
+        <MissingSection items={missing} onCreated={() => refetch()} />
+      )}
 
       {!isLoading && !isError && idle.length > 0 && <IdleSection items={idle} />}
 
@@ -322,11 +336,15 @@ function DepotSection({
                 </td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
                   {item.demand_rate_per_day.toFixed(2)}
-                  {item.rate_is_estimated && (
-                    <div className="mt-0.5">
-                      <EstimatedRateTag />
-                    </div>
-                  )}
+                  <div className="mt-0.5 flex flex-col items-end gap-0.5">
+                    {item.rate_is_estimated && <EstimatedRateTag />}
+                    <DemandSourceTag item={item} />
+                    <TrendTag
+                      trend={item.demand_trend}
+                      unitsLong={item.account_units_long}
+                      unitsShort={item.account_units_short}
+                    />
+                  </div>
                 </td>
                 <td className="px-4 py-2.5 text-right whitespace-nowrap">
                   <AutonomyValue
@@ -430,7 +448,15 @@ function DepotSection({
                   `de ${item.needed_quantity} `}
                 unid.
               </span>
-              {item.rate_is_estimated && <EstimatedRateTag />}
+              <div className="flex flex-wrap gap-1 justify-end">
+                {item.rate_is_estimated && <EstimatedRateTag />}
+                <DemandSourceTag item={item} />
+                <TrendTag
+                  trend={item.demand_trend}
+                  unitsLong={item.account_units_long}
+                  unitsShort={item.account_units_short}
+                />
+              </div>
             </div>
 
             {overrides[item.stock_id] !== undefined ? (
@@ -537,6 +563,164 @@ function IdleSection({ items }: { items: IdleItem[] }) {
                 </td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Produtos que a conta vende no canal e que não têm depósito full aberto nela.
+ *
+ * Fica separado dos alertas porque a ação é outra: ali é reposição de um CD que
+ * existe, aqui é abrir o SKU na conta. Depois de criar o depósito a linha
+ * atravessa para os alertas sozinha, com rateio e origem como qualquer outra.
+ */
+function MissingSection({
+  items,
+  onCreated,
+}: {
+  items: MissingItem[]
+  onCreated: () => void
+}) {
+  const createStock = usePostProductsProductIdStocks()
+  const [creating, setCreating] = useState<string | null>(null)
+
+  async function handleCreate(item: MissingItem) {
+    const key = `${item.product_id}::${item.store_id}::${item.marketplace}`
+    setCreating(key)
+
+    try {
+      await createStock.mutateAsync({
+        productId: item.product_id,
+        data: {
+          title: item.suggested_stock_title,
+          qtde: 0,
+          full: true,
+          marketplace: item.marketplace,
+          store_id: item.store_id,
+        },
+      })
+
+      toast.success(
+        `Depósito "${item.suggested_stock_title}" criado para ${item.sku}. O abastecimento entra na lista acima.`,
+      )
+      onCreated()
+    } catch {
+      toast.error('Erro ao criar o depósito.')
+    } finally {
+      setCreating(null)
+    }
+  }
+
+  return (
+    <div className="glass-card rounded-2xl overflow-hidden">
+      <div className="p-6 border-b border-border space-y-1">
+        <p className="font-bold text-lg text-foreground">
+          Vende e não está no Full
+        </p>
+        <p className="text-xs text-muted-foreground max-w-3xl">
+          {items.length} produto{items.length !== 1 ? 's' : ''} que a conta já
+          vende no canal despachando do estoque próprio, sem depósito full
+          aberto. Como o relatório só repõe depósito que existe, essa demanda
+          nunca chegava a virar sugestão de envio. Criar o depósito não move
+          estoque: ele nasce zerado e a linha passa a ser abastecida como as
+          outras.
+        </p>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-secondary/30">
+              <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                SKU
+              </th>
+              <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Conta
+              </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Vendas 90d
+              </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Ritmo/dia
+              </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Caberia
+              </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Próprio
+              </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Ação
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, idx) => {
+              const key = `${item.product_id}::${item.store_id}::${item.marketplace}`
+
+              return (
+                <tr
+                  key={key}
+                  className={
+                    idx % 2 === 0
+                      ? 'border-b border-border/50'
+                      : 'border-b border-border/50 bg-secondary/10'
+                  }
+                >
+                  <td className="px-4 py-2.5 whitespace-nowrap">
+                    <span className="font-mono font-semibold text-foreground">
+                      {item.sku}
+                    </span>
+                    <div className="text-xs text-muted-foreground">
+                      {item.brand_name ?? 'Sem marca'}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2.5 whitespace-nowrap">
+                    <span className="text-foreground">{item.store_name}</span>{' '}
+                    <MarketplaceBadge marketplace={item.marketplace} />
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
+                    {item.account_units_long}
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap">
+                    {item.demand_rate_per_day.toFixed(2)}
+                    <div className="mt-0.5 flex justify-end">
+                      <TrendTag
+                        trend={item.demand_trend}
+                        unitsLong={item.account_units_long}
+                        unitsShort={item.account_units_short}
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums font-bold text-foreground whitespace-nowrap">
+                    {item.target_quantity}
+                  </td>
+                  <td
+                    title="Saldo próprio do produto já descontado o que os alertas acima prometeram."
+                    className="px-4 py-2.5 text-right tabular-nums text-muted-foreground whitespace-nowrap cursor-help"
+                  >
+                    {item.physical_available_qty}
+                  </td>
+                  <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5 h-8"
+                      disabled={creating !== null}
+                      onClick={() => handleCreate(item)}
+                    >
+                      <Warehouse size={14} />
+                      {creating === key
+                        ? 'Criando…'
+                        : `Abrir ${item.suggested_stock_title}`}
+                    </Button>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

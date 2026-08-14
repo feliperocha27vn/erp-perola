@@ -8,6 +8,7 @@ interface UpdateStockUseCaseRequest {
 	qtde?: number
 	full?: boolean
 	marketplace?: Marketplace | null
+	storeId?: string | null
 }
 
 interface UpdateStockUseCaseResponse {
@@ -18,6 +19,7 @@ interface UpdateStockUseCaseResponse {
 		qtde: number
 		full: boolean
 		marketplace: Marketplace | null
+		store_id: string | null
 		created_at: Date
 		updated_at: Date
 	}
@@ -32,15 +34,19 @@ export class UpdateStockUseCase {
 		qtde,
 		full,
 		marketplace,
+		storeId,
 	}: UpdateStockUseCaseRequest): Promise<UpdateStockUseCaseResponse> {
-		// Deixar de ser full limpa o marketplace: estoque fisico nao tem centro de distribuicao.
+		// Deixar de ser full limpa o marketplace e a conta: estoque fisico nao tem
+		// centro de distribuicao nem dono, atende todas as contas.
 		const nextMarketplace = full === false ? null : marketplace
+		const nextStoreId = full === false ? null : storeId
 
 		const stock = await this.stockRepository.update(stockId, {
 			title,
 			qtde,
 			full,
 			marketplace: nextMarketplace,
+			store_id: nextStoreId,
 		})
 
 		if (!stock) {

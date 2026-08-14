@@ -84,6 +84,39 @@ export interface FullStockRow {
 	stock_title: string
 	marketplace: Marketplace
 	qtde: number
+	/** Conta dona do deposito. Nulo enquanto ninguem tiver associado. */
+	store_id: string | null
+	store_name: string | null
+}
+
+/**
+ * Quanto uma conta vendeu de um produto num canal, somando todos os depositos
+ * que despacharam — inclusive o galpao.
+ *
+ * E a demanda que o full daquela conta enfrentaria se estivesse abastecido. O
+ * numero por deposito (`FullStockDemandRow`) nao serve para isso: um full vazio
+ * vende zero por nao ter o que vender, nao por falta de procura.
+ */
+export interface AccountChannelDemandRow {
+	product_id: string
+	sku: string
+	brand_name: string | null
+	store_id: string
+	store_name: string
+	marketplace: Marketplace
+	/** Unidades na janela longa — a base. */
+	units_long: number
+	/** Unidades na janela curta — o que denuncia aceleracao. */
+	units_short: number
+}
+
+/** Uma conta que ja opera full num canal, com o padrao de titulo que ela usa. */
+export interface AccountChannelRow {
+	store_id: string
+	store_name: string
+	marketplace: Marketplace
+	/** Titulo de um full existente da conta, base para nomear um novo. */
+	sample_stock_title: string
 }
 
 /**
@@ -112,7 +145,11 @@ export interface PhysicalDepositRow {
  */
 export interface PhysicalSupplyRow {
 	product_id: string
-	/** Unidades vendidas direto do fisico na janela. Base da reserva. */
+	/**
+	 * Unidades vendidas pelo canal Direto na janela, saindo de deposito proprio.
+	 * Base da reserva — venda de marketplace despachada do galpao nao entra, ver
+	 * `fetchPhysicalSupply`.
+	 */
 	units_window: number
 	deposits: PhysicalDepositRow[]
 }
@@ -135,6 +172,11 @@ export interface DraftedSourceRow {
 export interface FullReplenishmentRepository {
 	fetchFullStocks(): Promise<FullStockRow[]>
 	fetchFullStockDemand(windowDays: number): Promise<FullStockDemandRow[]>
+	fetchAccountChannelDemand(
+		longDays: number,
+		shortDays: number,
+	): Promise<AccountChannelDemandRow[]>
+	fetchAccountsOperatingFull(): Promise<AccountChannelRow[]>
 	fetchPhysicalSupply(windowDays: number): Promise<PhysicalSupplyRow[]>
 	fetchInTransitQuantities(): Promise<InTransitRow[]>
 	fetchDraftedSourceCommitments(): Promise<DraftedSourceRow[]>

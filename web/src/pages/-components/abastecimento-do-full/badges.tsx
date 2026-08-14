@@ -1,5 +1,13 @@
-import { AlertTriangle, Clock, Timer } from 'lucide-react'
+import {
+  AlertTriangle,
+  Clock,
+  Store,
+  Timer,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react'
 import type {
+  AlertsDemandTrendEnumKey,
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
   AlertsShortfallReasonEnumKey,
@@ -148,7 +156,7 @@ function shortfallDetail(item: AlertItem): string {
     case 'estoque_insuficiente':
       return `${falta} O estoque próprio inteiro soma ${item.physical_total_qty} unidade(s).`
     case 'reserva_venda_direta':
-      return `${falta} Há ${item.physical_total_qty} no estoque próprio, mas ${item.physical_reserved_qty} ficam reservadas para as vendas diretas dos próximos 15 dias. Sobram ${item.physical_available_qty} para abastecer.`
+      return `${falta} Há ${item.physical_total_qty} no estoque próprio, mas ${item.physical_reserved_qty} ficam reservadas para as vendas de balcão dos próximos 15 dias. Venda de marketplace despachada do galpão não entra nessa conta. Sobram ${item.physical_available_qty} para abastecer.`
     case 'rascunho_pendente':
       return `${falta} ${item.physical_committed_qty} unidade(s) do estoque próprio já estão prometidas a um envio em rascunho. Despache ou apague o rascunho para liberar.`
     case 'dividido_entre_cds':
@@ -195,4 +203,61 @@ export function EstimatedRateTag() {
       estimado
     </span>
   )
+}
+
+/**
+ * De onde saiu o ritmo. Só aparece quando veio da conta, porque aí o número não
+ * bate com "Vendas 90d" daquele depósito e a linha precisa explicar por quê.
+ */
+export function DemandSourceTag({ item }: { item: AlertItem }) {
+  if (item.demand_source !== 'conta') return null
+
+  const conta = item.store_name ?? 'a conta'
+
+  return (
+    <span
+      title={`Este depósito vendeu ${item.units_window} unidade(s) na janela, mas ${conta} vendeu ${item.account_units_long} do mesmo produto neste canal — as outras saíram do estoque próprio. Um full vazio não vende por não ter o que vender: o ritmo aqui é a procura da conta, que migraria para o full se ele estivesse abastecido.`}
+      className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 cursor-help"
+    >
+      <Store className="size-2.5" />
+      ritmo da conta
+    </span>
+  )
+}
+
+/** Aviso de tendência. "Estável" não vira selo — só o que muda a decisão aparece. */
+export function TrendTag({
+  trend,
+  unitsLong,
+  unitsShort,
+}: {
+  trend: AlertsDemandTrendEnumKey
+  unitsLong: number
+  unitsShort: number
+}) {
+  if (trend === 'acelerando') {
+    return (
+      <span
+        title={`${unitsShort} unidade(s) nos últimos 15 dias contra ${unitsLong} em 90. A média longa diluiria a alta pela metade e o envio chegaria curto, então o alvo usa o ritmo recente.`}
+        className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-help"
+      >
+        <TrendingUp className="size-2.5" />
+        acelerando
+      </span>
+    )
+  }
+
+  if (trend === 'desacelerando') {
+    return (
+      <span
+        title={`Só ${unitsShort} unidade(s) nos últimos 15 dias contra ${unitsLong} em 90. O alvo continua saindo da média longa — vale conferir antes de mandar tudo.`}
+        className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 cursor-help"
+      >
+        <TrendingDown className="size-2.5" />
+        desacelerando
+      </span>
+    )
+  }
+
+  return null
 }

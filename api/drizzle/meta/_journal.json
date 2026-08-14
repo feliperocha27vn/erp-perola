@@ -127,6 +127,13 @@
 			"when": 1777300000000,
 			"tag": "0017_product_insights",
 			"breakpoints": true
+		},
+		{
+			"idx": 18,
+			"version": "7",
+			"when": 1777400000000,
+			"tag": "0018_stocks_store_id",
+			"breakpoints": true
 		}
 	]
 }

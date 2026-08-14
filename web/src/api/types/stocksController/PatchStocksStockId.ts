@@ -54,6 +54,10 @@ export type PatchStocksStockId200 = {
      */
     marketplace: StockMarketplaceEnum5Key | null;
     /**
+     * @type string, uuid
+     */
+    store_id: string | null;
+    /**
      * @type string, date-time
      */
     created_at: string;
@@ -103,6 +107,10 @@ export type PatchStocksStockIdMutationRequest = {
    * @type string
    */
   marketplace?: PatchStocksStockIdMutationRequestMarketplaceEnumKey | null;
+  /**
+   * @type string, uuid
+   */
+  store_id?: string | null;
 };
 
 export type PatchStocksStockIdMutationResponse = PatchStocksStockId200;
