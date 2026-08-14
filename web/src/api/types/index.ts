@@ -119,6 +119,7 @@ export type {
 export type {
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
+  AlertsShortfallReasonEnumKey,
   GetReportsFullReplenishmentAlerts200,
   GetReportsFullReplenishmentAlertsQuery,
   GetReportsFullReplenishmentAlertsQueryResponse,
@@ -144,6 +145,16 @@ export type {
   GetReportsStockByBrandQueryParams,
   GetReportsStockByBrandQueryResponse,
 } from "./reportsController/GetReportsStockByBrand.ts";
+export type {
+  PostReportsFullReplenishmentAlertsAnalyze200,
+  PostReportsFullReplenishmentAlertsAnalyze200VerdictEnumKey,
+  PostReportsFullReplenishmentAlertsAnalyze404,
+  PostReportsFullReplenishmentAlertsAnalyze501,
+  PostReportsFullReplenishmentAlertsAnalyze502,
+  PostReportsFullReplenishmentAlertsAnalyzeMutation,
+  PostReportsFullReplenishmentAlertsAnalyzeMutationRequest,
+  PostReportsFullReplenishmentAlertsAnalyzeMutationResponse,
+} from "./reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";
 export type {
   DeleteSalesId204,
   DeleteSalesId204EnumKey,
@@ -343,10 +354,12 @@ export { stocksMarketplaceEnum } from "./productsController/PostProducts.ts";
 export { itemsClassEnum } from "./reportsController/GetReportsAbc.ts";
 export { alertsMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsSeverityEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { alertsShortfallReasonEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleMarketplaceEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleReasonEnum } from "./reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./reportsController/GetReportsRestockAlerts.ts";
+export { postReportsFullReplenishmentAlertsAnalyze200VerdictEnum } from "./reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";
 export { itemsChannelEnum } from "./salesController/GetSales.ts";
 export { stockMarketplaceEnum2 } from "./salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./salesController/PatchSalesId.ts";

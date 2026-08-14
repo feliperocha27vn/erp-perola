@@ -3,6 +3,7 @@ import {
 	boolean,
 	index,
 	integer,
+	jsonb,
 	pgEnum,
 	pgTable,
 	text,
@@ -264,6 +265,51 @@ export const shipmentItems = pgTable("shipment_items", {
 		.references(() => stocks.id, { onDelete: "restrict" }),
 	created_at: timestamp("created_at").notNull().defaultNow(),
 })
+
+export const insightVerdictEnum = pgEnum("insight_verdict", [
+	"antecipar",
+	"manter",
+	"segurar",
+])
+
+/**
+ * Cache da leitura de mercado de um produto: o que ele e, o que o calendario
+ * comercial diz sobre ele e o que a busca encontrou. Uma linha por produto.
+ *
+ * Existe porque essa parte da analise custa uma chamada com busca na web e muda
+ * devagar — o que muda todo dia sao os numeros do relatorio, e esses nunca vem
+ * daqui. `context_snapshot` guarda os numeros de quando a analise foi feita, para
+ * a tela conseguir dizer que ela envelheceu.
+ */
+export const productInsights = pgTable("product_insights", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	product_id: uuid("product_id")
+		.notNull()
+		.unique()
+		.references(() => products.id, { onDelete: "cascade" }),
+	verdict: insightVerdictEnum("verdict").notNull(),
+	/** Fator sazonal em centesimos: 140 = 1,40x. Sempre uma proposta, nunca aplicado sozinho. */
+	seasonal_factor: integer("seasonal_factor").notNull(),
+	identity: text("identity").notNull(),
+	rationale: text("rationale").notNull(),
+	critique: text("critique"),
+	sources: jsonb("sources").$type<{ title: string; url: string }[]>().notNull(),
+	/** false quando a busca na web nao estava disponivel e o parecer saiu so do modelo. */
+	grounded: boolean("grounded").notNull().default(true),
+	context_snapshot: jsonb("context_snapshot")
+		.$type<{ demand_rate_per_day: number; days_of_autonomy: number | null; needed_quantity: number }>()
+		.notNull(),
+	model: text("model").notNull(),
+	created_at: timestamp("created_at").notNull().defaultNow(),
+	updated_at: timestamp("updated_at").notNull().defaultNow(),
+})
+
+export const productInsightsRelations = relations(productInsights, ({ one }) => ({
+	product: one(products, {
+		fields: [productInsights.product_id],
+		references: [products.id],
+	}),
+}))
 
 export const shipmentAccountsRelations = relations(shipmentAccounts, ({ many }) => ({
 	shipments: many(shipments),

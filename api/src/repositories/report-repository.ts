@@ -96,13 +96,25 @@ export interface FullStockDemandRow {
 	days_with_stock: number
 }
 
-/** Estoque fisico do produto: fonte de suprimento e base da reserva. */
-export interface PhysicalSupplyRow {
-	product_id: string
+/** Um deposito fisico do produto — uma origem possivel de envio. */
+export interface PhysicalDepositRow {
 	stock_id: string
 	stock_title: string
 	qtde: number
+}
+
+/**
+ * Suprimento fisico do produto: fonte do abastecimento e base da reserva.
+ *
+ * Todos os depositos proprios entram, nao so o maior: um envio pode ter itens
+ * saindo de origens diferentes, entao o que pode ser abastecido e a soma — a
+ * mesma leitura de Estoque Fisico que o Alerta de Reposicao usa.
+ */
+export interface PhysicalSupplyRow {
+	product_id: string
+	/** Unidades vendidas direto do fisico na janela. Base da reserva. */
 	units_window: number
+	deposits: PhysicalDepositRow[]
 }
 
 /** Unidades ja comprometidas com um deposito full (rascunho ou em transito). */
@@ -111,9 +123,19 @@ export interface InTransitRow {
 	quantity: number
 }
 
+/**
+ * Unidades presas num envio em rascunho: ja prometidas a um destino, mas ainda
+ * contadas no saldo da origem, porque o rascunho nao debita estoque.
+ */
+export interface DraftedSourceRow {
+	source_stock_id: string
+	quantity: number
+}
+
 export interface FullReplenishmentRepository {
 	fetchFullStocks(): Promise<FullStockRow[]>
 	fetchFullStockDemand(windowDays: number): Promise<FullStockDemandRow[]>
 	fetchPhysicalSupply(windowDays: number): Promise<PhysicalSupplyRow[]>
 	fetchInTransitQuantities(): Promise<InTransitRow[]>
+	fetchDraftedSourceCommitments(): Promise<DraftedSourceRow[]>
 }

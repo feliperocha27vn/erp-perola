@@ -31,6 +31,7 @@ export type { GetReportsSalesQueryKey } from "./hooks/reportsController/useGetRe
 export type { GetReportsSalesSuspenseQueryKey } from "./hooks/reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./hooks/reportsController/useGetReportsStockByBrand.ts";
 export type { GetReportsStockByBrandSuspenseQueryKey } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
+export type { PostReportsFullReplenishmentAlertsAnalyzeMutationKey } from "./hooks/reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
 export type { DeleteSalesIdMutationKey } from "./hooks/salesController/useDeleteSalesId.ts";
 export type { GetSalesQueryKey } from "./hooks/salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./hooks/salesController/useGetSalesSuspense.ts";
@@ -183,6 +184,7 @@ export type {
 export type {
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
+  AlertsShortfallReasonEnumKey,
   GetReportsFullReplenishmentAlerts200,
   GetReportsFullReplenishmentAlertsQuery,
   GetReportsFullReplenishmentAlertsQueryResponse,
@@ -208,6 +210,16 @@ export type {
   GetReportsStockByBrandQueryParams,
   GetReportsStockByBrandQueryResponse,
 } from "./types/reportsController/GetReportsStockByBrand.ts";
+export type {
+  PostReportsFullReplenishmentAlertsAnalyze200,
+  PostReportsFullReplenishmentAlertsAnalyze200VerdictEnumKey,
+  PostReportsFullReplenishmentAlertsAnalyze404,
+  PostReportsFullReplenishmentAlertsAnalyze501,
+  PostReportsFullReplenishmentAlertsAnalyze502,
+  PostReportsFullReplenishmentAlertsAnalyzeMutation,
+  PostReportsFullReplenishmentAlertsAnalyzeMutationRequest,
+  PostReportsFullReplenishmentAlertsAnalyzeMutationResponse,
+} from "./types/reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";
 export type {
   DeleteSalesId204,
   DeleteSalesId204EnumKey,
@@ -413,6 +425,7 @@ export { getReportsFullReplenishmentAlerts } from "./clients/reportsController/g
 export { getReportsRestockAlerts } from "./clients/reportsController/getReportsRestockAlerts.ts";
 export { getReportsSales } from "./clients/reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./clients/reportsController/getReportsStockByBrand.ts";
+export { postReportsFullReplenishmentAlertsAnalyze } from "./clients/reportsController/postReportsFullReplenishmentAlertsAnalyze.ts";
 export { deleteSalesId } from "./clients/salesController/deleteSalesId.ts";
 export { getSales } from "./clients/salesController/getSales.ts";
 export { patchSalesId } from "./clients/salesController/patchSalesId.ts";
@@ -535,6 +548,9 @@ export { useGetReportsStockByBrand } from "./hooks/reportsController/useGetRepor
 export { getReportsStockByBrandSuspenseQueryKey } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
 export { getReportsStockByBrandSuspenseQueryOptions } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
 export { useGetReportsStockByBrandSuspense } from "./hooks/reportsController/useGetReportsStockByBrandSuspense.ts";
+export { postReportsFullReplenishmentAlertsAnalyzeMutationKey } from "./hooks/reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
+export { postReportsFullReplenishmentAlertsAnalyzeMutationOptions } from "./hooks/reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
+export { usePostReportsFullReplenishmentAlertsAnalyze } from "./hooks/reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
 export { deleteSalesIdMutationKey } from "./hooks/salesController/useDeleteSalesId.ts";
 export { deleteSalesIdMutationOptions } from "./hooks/salesController/useDeleteSalesId.ts";
 export { useDeleteSalesId } from "./hooks/salesController/useDeleteSalesId.ts";
@@ -642,10 +658,12 @@ export { stocksMarketplaceEnum } from "./types/productsController/PostProducts.t
 export { itemsClassEnum } from "./types/reportsController/GetReportsAbc.ts";
 export { alertsMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { alertsSeverityEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
+export { alertsShortfallReasonEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleMarketplaceEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { idleReasonEnum } from "./types/reportsController/GetReportsFullReplenishmentAlerts.ts";
 export { itemsReasonsEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
 export { itemsSeverityEnum } from "./types/reportsController/GetReportsRestockAlerts.ts";
+export { postReportsFullReplenishmentAlertsAnalyze200VerdictEnum } from "./types/reportsController/PostReportsFullReplenishmentAlertsAnalyze.ts";
 export { itemsChannelEnum } from "./types/salesController/GetSales.ts";
 export { stockMarketplaceEnum2 } from "./types/salesController/GetSales.ts";
 export { patchSalesIdMutationRequestChannelEnum } from "./types/salesController/PatchSalesId.ts";

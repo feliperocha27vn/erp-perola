@@ -1,6 +1,12 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { PackageCheck, PackagePlus, Send, Warehouse } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import {
+  PackageCheck,
+  PackagePlus,
+  Send,
+  Sparkles,
+  Warehouse,
+} from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useGetReportsFullReplenishmentAlerts } from '@/api/hooks/reportsController/useGetReportsFullReplenishmentAlerts'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
@@ -19,11 +25,17 @@ import { Input } from '@/components/ui/input'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import { queryClient } from '@/lib/react-query'
 import {
+  AnalysisDialog,
+  type QuantityOverride,
+} from './-components/abastecimento-do-full/analysis-dialog'
+import {
   AutonomyValue,
   EstimatedRateTag,
   IdleReasonBadge,
   MarketplaceBadge,
   SeverityBadge,
+  ShortfallTag,
+  SourceBreakdown,
 } from './-components/abastecimento-do-full/badges'
 
 export const Route = createFileRoute('/abastecimento-do-full')({
@@ -37,6 +49,20 @@ interface DepotGroup {
   stockTitle: string
   marketplace: AlertItem['marketplace']
   items: AlertItem[]
+}
+
+/**
+ * Quantidade que vai para o rascunho. A regra é o padrão; o override só existe
+ * quando o usuário aceitou explicitamente o fator sazonal da análise.
+ */
+type Overrides = Record<string, QuantityOverride>
+
+function effectiveQuantity(item: AlertItem, overrides: Overrides): number {
+  return overrides[item.stock_id]?.quantity ?? item.suggested_quantity
+}
+
+function effectiveSources(item: AlertItem, overrides: Overrides) {
+  return overrides[item.stock_id]?.sources ?? item.sources
 }
 
 /**
@@ -74,6 +100,23 @@ function AbastecimentoDoFullPage() {
   const atencaoCount = alerts.filter(a => a.severity === 'atencao').length
 
   const [depotToShip, setDepotToShip] = useState<DepotGroup | null>(null)
+  const [itemToAnalyze, setItemToAnalyze] = useState<AlertItem | null>(null)
+  const [overrides, setOverrides] = useState<Overrides>({})
+
+  const applyOverride = useCallback(
+    (stockId: string, override: QuantityOverride | null) => {
+      setOverrides(current => {
+        const next = { ...current }
+        if (override === null) {
+          delete next[stockId]
+        } else {
+          next[stockId] = override
+        }
+        return next
+      })
+    },
+    [],
+  )
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -95,7 +138,10 @@ function AbastecimentoDoFullPage() {
           ritmo de saída dos últimos 90 dias. O alerta dispara antes que o
           estoque acabe dentro do prazo de entrega daquele marketplace — ML Full
           conta 7 dias, Amazon FBA 14. Dentro de cada marketplace, o SKU é
-          abastecido em uma conta só: a que mais vendeu na janela.
+          abastecido em uma conta só: a que gira mais rápido na janela. Quando a
+          sugestão sai menor que o necessário, a linha diz o que a segurou.
+          "Analisar" pesquisa o produto e o calendário comercial e propõe um
+          ajuste sazonal — que só entra no rascunho se você aceitar.
         </p>
       )}
 
@@ -141,14 +187,23 @@ function AbastecimentoDoFullPage() {
         <DepotSection
           key={group.stockTitle}
           group={group}
+          overrides={overrides}
           onGenerate={() => setDepotToShip(group)}
+          onAnalyze={setItemToAnalyze}
         />
       ))}
 
       {!isLoading && !isError && idle.length > 0 && <IdleSection items={idle} />}
 
+      <AnalysisDialog
+        item={itemToAnalyze}
+        onClose={() => setItemToAnalyze(null)}
+        onApply={applyOverride}
+      />
+
       <GenerateShipmentDialog
         group={depotToShip}
+        overrides={overrides}
         onClose={() => setDepotToShip(null)}
       />
     </div>
@@ -157,13 +212,22 @@ function AbastecimentoDoFullPage() {
 
 function DepotSection({
   group,
+  overrides,
   onGenerate,
+  onAnalyze,
 }: {
   group: DepotGroup
+  overrides: Overrides
   onGenerate: () => void
+  onAnalyze: (item: AlertItem) => void
 }) {
-  const shippable = group.items.filter(i => i.suggested_quantity > 0)
-  const totalUnits = shippable.reduce((sum, i) => sum + i.suggested_quantity, 0)
+  const shippable = group.items.filter(
+    i => effectiveQuantity(i, overrides) > 0,
+  )
+  const totalUnits = shippable.reduce(
+    (sum, i) => sum + effectiveQuantity(i, overrides),
+    0,
+  )
 
   return (
     <div className="glass-card rounded-2xl overflow-hidden">
@@ -184,7 +248,7 @@ function DepotSection({
               {group.items.length !== 1 ? 's' : ''} ·{' '}
               {totalUnits > 0
                 ? `${totalUnits} unidade${totalUnits !== 1 ? 's' : ''} sugerida${totalUnits !== 1 ? 's' : ''}`
-                : 'sem estoque físico disponível'}
+                : 'nada a enviar agora — veja o motivo em cada linha'}
             </p>
           </div>
         </div>
@@ -229,6 +293,9 @@ function DepotSection({
               <th className="text-left font-semibold text-foreground px-4 py-3 whitespace-nowrap">
                 Situação
               </th>
+              <th className="text-right font-semibold text-foreground px-4 py-3 whitespace-nowrap">
+                Leitura
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -269,19 +336,42 @@ function DepotSection({
                 </td>
                 <td className="px-4 py-2.5 text-right whitespace-nowrap">
                   <span className="tabular-nums font-bold text-foreground">
-                    {item.suggested_quantity}
+                    {effectiveQuantity(item, overrides)}
                   </span>
-                  {item.limited_by_physical_stock && (
+                  {item.shortfall_reason !== null &&
+                    overrides[item.stock_id] === undefined && (
+                      <span className="text-muted-foreground text-xs">
+                        {' '}
+                        de {item.needed_quantity}
+                      </span>
+                    )}
+                  {overrides[item.stock_id] !== undefined ? (
                     <div
-                      title={`O estoque físico disponível (${item.physical_available_qty}) não cobre tudo que este depósito precisa. Quem tinha menos autonomia foi servido primeiro.`}
-                      className="text-[10px] text-amber-700"
+                      title={`A regra sugeria ${item.suggested_quantity}. Você aceitou o ajuste sazonal da leitura de IA.`}
+                      className="text-[10px] text-primary cursor-help"
                     >
-                      limitado pelo físico
+                      ajustado (regra: {item.suggested_quantity})
                     </div>
+                  ) : (
+                    <>
+                      <ShortfallTag item={item} />
+                      <SourceBreakdown item={item} />
+                    </>
                   )}
                 </td>
                 <td className="px-4 py-2.5 whitespace-nowrap">
                   <SeverityBadge severity={item.severity} />
+                </td>
+                <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="gap-1.5 h-8"
+                    onClick={() => onAnalyze(item)}
+                  >
+                    <Sparkles size={14} />
+                    Analisar
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -333,18 +423,37 @@ function DepotSection({
               <span className="text-xs text-muted-foreground">
                 Enviar{' '}
                 <span className="text-foreground font-bold tabular-nums text-sm">
-                  {item.suggested_quantity}
+                  {effectiveQuantity(item, overrides)}
                 </span>{' '}
+                {item.shortfall_reason !== null &&
+                  overrides[item.stock_id] === undefined &&
+                  `de ${item.needed_quantity} `}
                 unid.
               </span>
               {item.rate_is_estimated && <EstimatedRateTag />}
             </div>
 
-            {item.limited_by_physical_stock && (
-              <p className="text-[11px] text-amber-700">
-                Limitado pelo estoque físico disponível ({item.physical_available_qty}).
+            {overrides[item.stock_id] !== undefined ? (
+              <p className="text-[11px] text-primary">
+                Ajustado pela leitura de IA — a regra sugeria{' '}
+                {item.suggested_quantity}.
               </p>
+            ) : (
+              <>
+                <ShortfallTag item={item} />
+                <SourceBreakdown item={item} />
+              </>
             )}
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5 w-full"
+              onClick={() => onAnalyze(item)}
+            >
+              <Sparkles size={14} />
+              Analisar este SKU
+            </Button>
           </div>
         ))}
       </div>
@@ -437,9 +546,11 @@ function IdleSection({ items }: { items: IdleItem[] }) {
 
 function GenerateShipmentDialog({
   group,
+  overrides,
   onClose,
 }: {
   group: DepotGroup | null
+  overrides: Overrides
   onClose: () => void
 }) {
   const navigate = useNavigate()
@@ -451,8 +562,12 @@ function GenerateShipmentDialog({
 
   const createMutation = usePostShipments()
 
-  const shippable = group?.items.filter(i => i.suggested_quantity > 0) ?? []
-  const totalUnits = shippable.reduce((sum, i) => sum + i.suggested_quantity, 0)
+  const shippable =
+    group?.items.filter(i => effectiveQuantity(i, overrides) > 0) ?? []
+  const totalUnits = shippable.reduce(
+    (sum, i) => sum + effectiveQuantity(i, overrides),
+    0,
+  )
 
   async function handleGenerate() {
     if (!group) return
@@ -462,17 +577,19 @@ function GenerateShipmentDialog({
       return
     }
 
-    const items = shippable
-      .filter(i => i.physical_stock_id !== null)
-      .map(i => ({
+    // Uma linha do relatorio pode virar mais de um item: quando a quantidade
+    // sugerida sai de dois depositos proprios, cada origem e um item do envio.
+    const items = shippable.flatMap(i =>
+      effectiveSources(i, overrides).map(source => ({
         product_id: i.product_id,
-        quantity: i.suggested_quantity,
-        source_stock_id: i.physical_stock_id as string,
+        quantity: source.quantity,
+        source_stock_id: source.stock_id,
         destination_stock_id: i.stock_id,
-      }))
+      })),
+    )
 
     if (items.length === 0) {
-      toast.error('Nenhum item tem estoque físico de origem definido.')
+      toast.error('Nenhum item tem estoque próprio de origem definido.')
       return
     }
 

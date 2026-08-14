@@ -20,6 +20,17 @@ export const alertsSeverityEnum = {
 export type AlertsSeverityEnumKey =
   (typeof alertsSeverityEnum)[keyof typeof alertsSeverityEnum];
 
+export const alertsShortfallReasonEnum = {
+  sem_estoque_fisico: "sem_estoque_fisico",
+  estoque_insuficiente: "estoque_insuficiente",
+  reserva_venda_direta: "reserva_venda_direta",
+  rascunho_pendente: "rascunho_pendente",
+  dividido_entre_cds: "dividido_entre_cds",
+} as const;
+
+export type AlertsShortfallReasonEnumKey =
+  (typeof alertsShortfallReasonEnum)[keyof typeof alertsShortfallReasonEnum];
+
 export const idleMarketplaceEnum = {
   mercado_livre: "mercado_livre",
   amazon: "amazon",
@@ -105,23 +116,48 @@ export type GetReportsFullReplenishmentAlerts200 = {
     /**
      * @type number
      */
+    needed_quantity: number;
+    /**
+     * @type number
+     */
     suggested_quantity: number;
     /**
-     * @type boolean
+     * @type array
      */
-    limited_by_physical_stock: boolean;
+    sources: {
+      /**
+       * @type string
+       */
+      stock_id: string;
+      /**
+       * @type string
+       */
+      stock_title: string;
+      /**
+       * @type number
+       */
+      quantity: number;
+    }[];
     /**
-     * @type string
+     * @type number
      */
-    physical_stock_id: string | null;
+    physical_total_qty: number;
     /**
-     * @type string
+     * @type number
      */
-    physical_stock_title: string | null;
+    physical_reserved_qty: number;
+    /**
+     * @type number
+     */
+    physical_committed_qty: number;
     /**
      * @type number
      */
     physical_available_qty: number;
+    /**
+     * @type string
+     */
+    shortfall_reason: AlertsShortfallReasonEnumKey | null;
   }[];
   /**
    * @type array

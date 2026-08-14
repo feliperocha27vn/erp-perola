@@ -18,6 +18,7 @@ export { getReportsFullReplenishmentAlerts } from "./reportsController/getReport
 export { getReportsRestockAlerts } from "./reportsController/getReportsRestockAlerts.ts";
 export { getReportsSales } from "./reportsController/getReportsSales.ts";
 export { getReportsStockByBrand } from "./reportsController/getReportsStockByBrand.ts";
+export { postReportsFullReplenishmentAlertsAnalyze } from "./reportsController/postReportsFullReplenishmentAlertsAnalyze.ts";
 export { deleteSalesId } from "./salesController/deleteSalesId.ts";
 export { getSales } from "./salesController/getSales.ts";
 export { patchSalesId } from "./salesController/patchSalesId.ts";

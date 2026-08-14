@@ -10,6 +10,8 @@ const envSchema = z.object({
 		.default("development"),
 	CORS_ORIGINS: z.string().optional(),
 	GEMINI_API_KEY: z.string().optional(),
+	/** Trocavel por .env: id de modelo sai de linha sem aviso, e trocar nao pede deploy. */
+	GEMINI_MODEL: z.string().default("gemini-3.6-flash"),
 	DATABASE_URL: z.string().optional(),
 	BETTER_AUTH_SECRET: z
 		.string()

@@ -19,11 +19,28 @@ const alertItemSchema = z.object({
 	rate_is_estimated: z.boolean(),
 	reorder_point_days: z.number(),
 	severity: z.enum(["critico", "atencao"]),
+	needed_quantity: z.number(),
 	suggested_quantity: z.number(),
-	limited_by_physical_stock: z.boolean(),
-	physical_stock_id: z.string().nullable(),
-	physical_stock_title: z.string().nullable(),
+	sources: z.array(
+		z.object({
+			stock_id: z.string(),
+			stock_title: z.string(),
+			quantity: z.number(),
+		}),
+	),
+	physical_total_qty: z.number(),
+	physical_reserved_qty: z.number(),
+	physical_committed_qty: z.number(),
 	physical_available_qty: z.number(),
+	shortfall_reason: z
+		.enum([
+			"sem_estoque_fisico",
+			"estoque_insuficiente",
+			"reserva_venda_direta",
+			"rascunho_pendente",
+			"dividido_entre_cds",
+		])
+		.nullable(),
 })
 
 const idleItemSchema = z.object({

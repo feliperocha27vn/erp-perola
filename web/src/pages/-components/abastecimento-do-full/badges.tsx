@@ -2,6 +2,8 @@ import { AlertTriangle, Clock, Timer } from 'lucide-react'
 import type {
   AlertsMarketplaceEnumKey,
   AlertsSeverityEnumKey,
+  AlertsShortfallReasonEnumKey,
+  GetReportsFullReplenishmentAlerts200,
   IdleReasonEnumKey,
 } from '@/api/types/reportsController/GetReportsFullReplenishmentAlerts'
 
@@ -115,6 +117,71 @@ export function IdleReasonBadge({
     >
       acima do teto
     </span>
+  )
+}
+
+type AlertItem = GetReportsFullReplenishmentAlerts200['alerts'][number]
+
+const SHORTFALL_LABEL: Record<AlertsShortfallReasonEnumKey, string> = {
+  sem_estoque_fisico: 'sem estoque próprio',
+  estoque_insuficiente: 'físico não cobre',
+  reserva_venda_direta: 'reservado p/ venda direta',
+  rascunho_pendente: 'preso em rascunho',
+  dividido_entre_cds: 'dividido com outro CD',
+}
+
+/**
+ * Por que a sugestão saiu menor que o necessário, com os números que sustentam
+ * a frase. Antes a tela dizia só "limitado pelo físico" ao lado de um saldo
+ * físico visivelmente maior que zero — dois dados que se contradiziam.
+ */
+function shortfallDetail(item: AlertItem): string {
+  const falta = `Precisa de ${item.needed_quantity} e ${
+    item.suggested_quantity > 0
+      ? `só ${item.suggested_quantity} cabem agora`
+      : 'nenhuma cabe agora'
+  }.`
+
+  switch (item.shortfall_reason) {
+    case 'sem_estoque_fisico':
+      return `${falta} Não há nenhuma unidade deste produto em depósito próprio — isso é caso de compra, não de abastecimento. Veja o Alerta de Reposição.`
+    case 'estoque_insuficiente':
+      return `${falta} O estoque próprio inteiro soma ${item.physical_total_qty} unidade(s).`
+    case 'reserva_venda_direta':
+      return `${falta} Há ${item.physical_total_qty} no estoque próprio, mas ${item.physical_reserved_qty} ficam reservadas para as vendas diretas dos próximos 15 dias. Sobram ${item.physical_available_qty} para abastecer.`
+    case 'rascunho_pendente':
+      return `${falta} ${item.physical_committed_qty} unidade(s) do estoque próprio já estão prometidas a um envio em rascunho. Despache ou apague o rascunho para liberar.`
+    case 'dividido_entre_cds':
+      return `${falta} As ${item.physical_available_qty} unidades disponíveis foram para o centro de distribuição que fica sem estoque primeiro.`
+    default:
+      return falta
+  }
+}
+
+export function ShortfallTag({ item }: { item: AlertItem }) {
+  if (item.shortfall_reason === null) return null
+
+  return (
+    <div
+      title={shortfallDetail(item)}
+      className="text-[10px] text-amber-700 cursor-help"
+    >
+      {SHORTFALL_LABEL[item.shortfall_reason]}
+    </div>
+  )
+}
+
+/** De onde sai a mercadoria. Só aparece quando o envio nasce dividido. */
+export function SourceBreakdown({ item }: { item: AlertItem }) {
+  if (item.sources.length < 2) return null
+
+  return (
+    <div
+      title="O envio sai de mais de um depósito próprio — cada origem vira um item do rascunho."
+      className="text-[10px] text-muted-foreground cursor-help"
+    >
+      {item.sources.map(s => `${s.stock_title} ${s.quantity}`).join(' · ')}
+    </div>
   )
 }
 

@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm"
 import { db } from "../../db/connection.js"
 import type {
+	DraftedSourceRow,
 	FullReplenishmentRepository,
 	FullStockDemandRow,
 	FullStockRow,
@@ -119,23 +120,18 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 	}
 
 	/**
-	 * Fonte de suprimento por produto. Quando ha mais de um deposito fisico, usa o
-	 * de maior saldo — o envio sai de um estoque so, entao somar todos prometeria
-	 * uma quantidade que a origem escolhida nao tem.
+	 * Fonte de suprimento por produto: todos os depositos proprios, nao so o de
+	 * maior saldo. Um Envio comporta itens com origens diferentes, entao o que da
+	 * para abastecer e a soma — e essa e a mesma leitura de Estoque Fisico que o
+	 * Alerta de Reposicao ja usava, o que antes fazia os dois relatorios darem
+	 * numeros diferentes para o mesmo produto.
+	 *
+	 * Depositos zerados entram na lista: sao origem valida assim que receberem
+	 * mercadoria e aparecem no detalhamento da tela.
 	 */
 	async fetchPhysicalSupply(windowDays: number): Promise<PhysicalSupplyRow[]> {
 		const rows = await db.execute(sql`
-			WITH physical AS (
-				SELECT
-					s.id, s.product_id, s.title, s.qtde,
-					ROW_NUMBER() OVER (
-						PARTITION BY s.product_id ORDER BY s.qtde DESC, s.created_at ASC
-					) AS rn
-				FROM stocks s
-				JOIN products p ON p.id = s.product_id
-				WHERE s.full = false AND p.deleted_at IS NULL
-			),
-			physical_sales AS (
+			WITH physical_sales AS (
 				SELECT s.product_id, COALESCE(SUM(sa.quantity), 0)::int AS units
 				FROM sales sa
 				JOIN stocks s ON s.id = sa.stock_id
@@ -144,23 +140,41 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 				GROUP BY s.product_id
 			)
 			SELECT
-				ph.product_id::text AS product_id,
-				ph.id::text         AS stock_id,
-				ph.title            AS stock_title,
-				ph.qtde             AS qtde,
+				s.product_id::text AS product_id,
+				s.id::text         AS stock_id,
+				s.title            AS stock_title,
+				s.qtde             AS qtde,
 				COALESCE(ps.units, 0)::int AS units_window
-			FROM physical ph
-			LEFT JOIN physical_sales ps ON ps.product_id = ph.product_id
-			WHERE ph.rn = 1
+			FROM stocks s
+			JOIN products p ON p.id = s.product_id
+			LEFT JOIN physical_sales ps ON ps.product_id = s.product_id
+			WHERE s.full = false AND p.deleted_at IS NULL
+			ORDER BY s.product_id, s.qtde DESC, s.created_at ASC
 		`)
 
-		return [...rows].map((row) => ({
-			product_id: String(row.product_id),
-			stock_id: String(row.stock_id),
-			stock_title: String(row.stock_title),
-			qtde: Number(row.qtde),
-			units_window: Number(row.units_window),
-		}))
+		const byProduct = new Map<string, PhysicalSupplyRow>()
+
+		for (const row of rows) {
+			const productId = String(row.product_id)
+			let supply = byProduct.get(productId)
+
+			if (!supply) {
+				supply = {
+					product_id: productId,
+					units_window: Number(row.units_window),
+					deposits: [],
+				}
+				byProduct.set(productId, supply)
+			}
+
+			supply.deposits.push({
+				stock_id: String(row.stock_id),
+				stock_title: String(row.stock_title),
+				qtde: Number(row.qtde),
+			})
+		}
+
+		return [...byProduct.values()]
 	}
 
 	/** Rascunho conta junto: ja e um envio planejado, nao deve ser sugerido de novo. */
@@ -177,6 +191,30 @@ export class DrizzleFullReplenishmentRepository implements FullReplenishmentRepo
 
 		return [...rows].map((row) => ({
 			destination_stock_id: String(row.destination_stock_id),
+			quantity: Number(row.quantity),
+		}))
+	}
+
+	/**
+	 * O outro lado do rascunho: ele conta como a caminho do destino, mas o saldo
+	 * da origem so e debitado no despacho. Sem isso o mesmo estoque fisico seria
+	 * oferecido a um segundo CD e os dois rascunhos juntos nao caberiam.
+	 *
+	 * Envio em transito nao entra: aquele ja saiu do saldo da origem.
+	 */
+	async fetchDraftedSourceCommitments(): Promise<DraftedSourceRow[]> {
+		const rows = await db.execute(sql`
+			SELECT
+				si.source_stock_id::text AS source_stock_id,
+				SUM(si.quantity)::int    AS quantity
+			FROM shipment_items si
+			JOIN shipments sh ON sh.id = si.shipment_id
+			WHERE sh.status = 'rascunho'
+			GROUP BY si.source_stock_id
+		`)
+
+		return [...rows].map((row) => ({
+			source_stock_id: String(row.source_stock_id),
 			quantity: Number(row.quantity),
 		}))
 	}

@@ -31,6 +31,7 @@ export type { GetReportsSalesQueryKey } from "./reportsController/useGetReportsS
 export type { GetReportsSalesSuspenseQueryKey } from "./reportsController/useGetReportsSalesSuspense.ts";
 export type { GetReportsStockByBrandQueryKey } from "./reportsController/useGetReportsStockByBrand.ts";
 export type { GetReportsStockByBrandSuspenseQueryKey } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
+export type { PostReportsFullReplenishmentAlertsAnalyzeMutationKey } from "./reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
 export type { DeleteSalesIdMutationKey } from "./salesController/useDeleteSalesId.ts";
 export type { GetSalesQueryKey } from "./salesController/useGetSales.ts";
 export type { GetSalesSuspenseQueryKey } from "./salesController/useGetSalesSuspense.ts";
@@ -161,6 +162,9 @@ export { useGetReportsStockByBrand } from "./reportsController/useGetReportsStoc
 export { getReportsStockByBrandSuspenseQueryKey } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
 export { getReportsStockByBrandSuspenseQueryOptions } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
 export { useGetReportsStockByBrandSuspense } from "./reportsController/useGetReportsStockByBrandSuspense.ts";
+export { postReportsFullReplenishmentAlertsAnalyzeMutationKey } from "./reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
+export { postReportsFullReplenishmentAlertsAnalyzeMutationOptions } from "./reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
+export { usePostReportsFullReplenishmentAlertsAnalyze } from "./reportsController/usePostReportsFullReplenishmentAlertsAnalyze.ts";
 export { deleteSalesIdMutationKey } from "./salesController/useDeleteSalesId.ts";
 export { deleteSalesIdMutationOptions } from "./salesController/useDeleteSalesId.ts";
 export { useDeleteSalesId } from "./salesController/useDeleteSalesId.ts";
