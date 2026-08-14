@@ -10,8 +10,16 @@ const envSchema = z.object({
 		.default("development"),
 	CORS_ORIGINS: z.string().optional(),
 	GEMINI_API_KEY: z.string().optional(),
-	/** Trocavel por .env: id de modelo sai de linha sem aviso, e trocar nao pede deploy. */
-	GEMINI_MODEL: z.string().default("gemini-3.6-flash"),
+	/**
+	 * Trocavel por .env: id de modelo sai de linha sem aviso, e trocar nao pede
+	 * deploy. Vazio conta como ausente porque o docker-compose expande
+	 * `${GEMINI_MODEL:-}` para string vazia quando a variavel nao esta definida,
+	 * e `.default()` do Zod so age sobre `undefined`.
+	 */
+	GEMINI_MODEL: z.preprocess(
+		(value) => (value === "" ? undefined : value),
+		z.string().default("gemini-3.6-flash"),
+	),
 	DATABASE_URL: z.string().optional(),
 	BETTER_AUTH_SECRET: z
 		.string()

@@ -32,6 +32,9 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/analise_de_valores}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      # Sem valor, o default do env.ts vale. Existe aqui para trocar o modelo
+      # pelo painel do Coolify quando um id sair de linha, sem novo build.
+      GEMINI_MODEL: ${GEMINI_MODEL:-}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
     ports:
       - "${PORT:-3333}:3333"
