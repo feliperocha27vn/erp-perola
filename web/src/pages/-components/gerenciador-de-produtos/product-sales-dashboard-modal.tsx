@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { MessageCircle } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import {
   Area,
@@ -20,6 +21,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { ProductStockItem } from './types'
 
 type SalesDailyStore = GetProductSalesDaily200['stores'][number]
 type SalesDailyPeriod = SalesDailyStore['periods'][number]
@@ -32,6 +34,56 @@ type ProductSalesDashboardModalProps = {
   onOpenChange: (open: boolean) => void
   productId: string
   productSku: string
+  stocks: ProductStockItem[]
+}
+
+function formatUnits(units: number) {
+  return `${units} unid.`
+}
+
+function buildProductStockSalesReport(
+  sku: string,
+  stocks: ProductStockItem[],
+  stores: SalesDailyStore[]
+) {
+  const physicalStock = stocks
+    .filter(stock => !stock.full)
+    .reduce((acc, stock) => acc + stock.qtde, 0)
+  const fullStock = stocks
+    .filter(stock => stock.full)
+    .reduce((acc, stock) => acc + stock.qtde, 0)
+
+  const todas = stores.find(store => store.store_id === null)
+  const units15d = todas?.periods.find(p => p.period === 15)?.total_units ?? 0
+  const units90d = todas?.periods.find(p => p.period === 90)?.total_units ?? 0
+
+  let topStore: { name: string; units: number } | null = null
+  for (const store of stores) {
+    if (store.store_id === null) continue
+    const units = store.periods.find(p => p.period === 90)?.total_units ?? 0
+    if (units > 0 && (!topStore || units > topStore.units)) {
+      topStore = { name: store.store_name, units }
+    }
+  }
+
+  const lines = [
+    `*Relatório — SKU ${sku}*`,
+    '',
+    `Estoque físico: ${formatUnits(physicalStock)}`,
+    `Estoque Full: ${formatUnits(fullStock)}`,
+    `Total em estoque: ${formatUnits(physicalStock + fullStock)}`,
+    '',
+    `Vendas 15 dias: ${formatUnits(units15d)}`,
+    `Vendas 90 dias: ${formatUnits(units90d)}`,
+  ]
+
+  if (topStore) {
+    lines.push(
+      `Loja que mais vende: ${topStore.name} (${formatUnits(topStore.units)} em 90 dias)`
+    )
+  }
+
+  return lines.join('\n')
 }
 
 function PeriodSelector({
@@ -218,6 +270,7 @@ export function ProductSalesDashboardModal({
   onOpenChange,
   productId,
   productSku,
+  stocks,
 }: ProductSalesDashboardModalProps) {
   const [activeStore, setActiveStore] = useState<string | null>(null)
 
@@ -230,12 +283,33 @@ export function ProductSalesDashboardModal({
   const currentStore =
     stores.find(s => s.store_id === currentStoreId) ?? stores[0]
 
+  const handleGenerateReport = () => {
+    if (!data) return
+    const message = buildProductStockSalesReport(productSku, stocks, data.stores)
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(message)}`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Dashboard de Vendas</DialogTitle>
-          <DialogDescription>{productSku}</DialogDescription>
+        <DialogHeader className="flex-row items-start justify-between gap-3 pr-8 space-y-0">
+          <div>
+            <DialogTitle>Dashboard de Vendas</DialogTitle>
+            <DialogDescription>{productSku}</DialogDescription>
+          </div>
+          <button
+            type="button"
+            onClick={handleGenerateReport}
+            disabled={!data}
+            className="flex flex-shrink-0 items-center gap-2 h-9 px-3 rounded-xl bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-600/90 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+          >
+            <MessageCircle className="size-4" />
+            Gerar relatório
+          </button>
         </DialogHeader>
 
         {isLoading ? (

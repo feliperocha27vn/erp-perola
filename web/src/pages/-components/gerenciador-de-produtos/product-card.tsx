@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ProductImage } from './product-image'
-import type { ProductItem } from './types'
+import type { ProductItem, ProductStockItem } from './types'
 
 type RootProps = {
   children: ReactNode
@@ -293,9 +293,10 @@ function Velocity({ data, isLoading }: VelocityProps) {
 type SalesDashboardProps = {
   productId: string
   productSku: string
+  stocks: ProductStockItem[]
 }
 
-function SalesDashboard({ productId, productSku }: SalesDashboardProps) {
+function SalesDashboard({ productId, productSku, stocks }: SalesDashboardProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -312,6 +313,7 @@ function SalesDashboard({ productId, productSku }: SalesDashboardProps) {
         onOpenChange={setOpen}
         productId={productId}
         productSku={productSku}
+        stocks={stocks}
       />
     </>
   )

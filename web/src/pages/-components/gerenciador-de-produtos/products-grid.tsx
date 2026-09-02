@@ -41,6 +41,7 @@ export function ProductsGrid({
           <ProductCard.SalesDashboard
             productId={product.id}
             productSku={product.sku}
+            stocks={product.stocks}
           />
         </ProductCard.Root>
       ))}
