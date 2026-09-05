@@ -81,10 +81,26 @@ export class DrizzleSaleRepository implements SaleRepository {
 			day: "2-digit",
 		})
 
-		const [todayYear, todayMonth, todayDay] = dateFormatter
-			.format(new Date())
+		const now = new Date()
+		const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+
+		const [todayYear, todayMonth] = dateFormatter
+			.format(now)
 			.split("-")
 			.map(Number)
+
+		const [yesterdayYear, yesterdayMonth, yesterdayDay] = dateFormatter
+			.format(yesterday)
+			.split("-")
+			.map(Number)
+
+		// Vendas sao lancadas com um dia de atraso: o corte de dados "fechados"
+		// do mes atual e o dia de ontem, nao o de hoje. Se ontem cai no mes
+		// anterior (hoje e dia 1), ainda nao ha dado fechado no mes atual.
+		const lastClosedDayInCurrentMonth =
+			yesterdayYear === todayYear && yesterdayMonth === todayMonth
+				? yesterdayDay
+				: 0
 
 		const daysInCurrentMonth = new Date(todayYear, todayMonth, 0).getDate()
 		const lastMonthDate = new Date(todayYear, todayMonth - 2, 1)
@@ -113,7 +129,8 @@ export class DrizzleSaleRepository implements SaleRepository {
 
 			items.push({
 				day,
-				current_month_cents: day <= todayDay ? currentMonthCumulative : null,
+				current_month_cents:
+					day <= lastClosedDayInCurrentMonth ? currentMonthCumulative : null,
 				last_month_cents: day <= daysInLastMonth ? lastMonthCumulative : null,
 			})
 		}
