@@ -389,16 +389,23 @@ export class FetchFullReplenishmentAlertsUseCase {
 				: undefined
 			const accountRate = accountDemand ? channelRate(accountDemand) : 0
 
-			const rate = Math.max(ownRate, accountRate)
-			const demandSource: DemandSource = accountRate > ownRate ? "conta" : "deposito"
+			// Amostra rasa (menos de MIN_DAYS_WITH_STOCK dias reais com estoque)
+			// ainda extrapola mesmo diluida pelo piso acima: uma rajada de vendas
+			// logo apos o deposito receber mercadoria supera facilmente o ritmo de
+			// uma conta que vende ha meses. Nesse caso o ritmo do deposito so vale
+			// como PISO — nunca deixa a conta esconder um full vazio —, nao como
+			// teto: quem tem mais lastro (a conta, que ja soma o que saiu deste
+			// mesmo deposito) e quem decide para cima.
+			const thinSample = unitsWindow > 0 && daysWithStock < MIN_DAYS_WITH_STOCK
+			const capped = thinSample && stock.store_id !== null && ownRate > accountRate
+
+			const rate = capped ? accountRate : Math.max(ownRate, accountRate)
+			const demandSource: DemandSource = capped || accountRate > ownRate ? "conta" : "deposito"
 
 			return {
 				stock,
 				rate,
-				rateIsEstimated:
-					demandSource === "deposito" &&
-					unitsWindow > 0 &&
-					daysWithStock < MIN_DAYS_WITH_STOCK,
+				rateIsEstimated: demandSource === "deposito" && thinSample,
 				unitsWindow,
 				daysWithStock,
 				inTransit,

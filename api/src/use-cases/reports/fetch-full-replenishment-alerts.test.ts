@@ -307,6 +307,83 @@ describe("FetchFullReplenishmentAlertsUseCase — demanda da conta", () => {
 	})
 })
 
+describe("FetchFullReplenishmentAlertsUseCase — rajada de amostra rasa", () => {
+	it("não deixa uma rajada recente, com poucos dias de estoque, superar o ritmo real da conta", async () => {
+		// O deposito do Santo recebeu estoque, vendeu 3 unidades em poucos dias e
+		// zerou: 3/14 = 0,21/dia, mesmo diluido pelo piso de 14 dias. Mas a conta
+		// Santo, no mesmo canal, vendeu so 4 unidades em 90 dias (0,04/dia) — a
+		// rajada nao tem lastro nenhum diante disso, e nao pode superar sozinha o
+		// ritmo que a conta sustenta.
+		repo.fullStocks = [
+			fullStock({
+				stock_id: "santo",
+				stock_title: "Santo",
+				qtde: 0,
+				store_id: "loja-santo",
+				store_name: "Santo",
+			}),
+		]
+		repo.demand = [{ stock_id: "santo", units_window: 3, days_with_stock: 5 }]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-santo", store_name: "Santo", units_long: 4 }),
+		]
+		repo.physical = [physicalSupply({ qtde: 4 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].demand_source).toBe("conta")
+		expect(alerts[0].rate_is_estimated).toBe(false)
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(4 / 90)
+	})
+
+	it("libera a conta concorrente que vende mais de verdade quando a rajada do incumbente é diluída", async () => {
+		// Sem a correcao, o ritmo inflado do Santo (0,21/dia) blindava o SKU: mesmo
+		// a Laurinda vendendo quase o dobro (7 em 90 dias, 0,08/dia) pelo mesmo
+		// canal despachando do proprio estoque, ela nunca superava o incumbente e a
+		// proposta de abrir o full la nunca aparecia.
+		repo.fullStocks = [
+			fullStock({
+				stock_id: "santo",
+				stock_title: "Santo",
+				qtde: 0,
+				store_id: "loja-santo",
+				store_name: "Santo",
+			}),
+		]
+		repo.demand = [{ stock_id: "santo", units_window: 3, days_with_stock: 5 }]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-santo", store_name: "Santo", units_long: 4 }),
+			accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 7 }),
+		]
+		repo.accountChannels = [
+			{
+				store_id: "loja-laurinda",
+				store_name: "Laurinda",
+				marketplace: "mercado_livre",
+				sample_stock_title: "Full Laurinda",
+			},
+		]
+		repo.physical = [physicalSupply({ qtde: 4 })]
+
+		const { missing } = await sut.execute()
+
+		expect(missing.map((m) => m.store_name)).toContain("Laurinda")
+	})
+
+	it("continua usando a rajada como piso quando não há ritmo de conta para comparar", async () => {
+		// Deposito sem conta associada: nao ha o que comparar, entao a amostra
+		// rasa segue diluida so pelo piso de 14 dias, como sempre foi.
+		repo.fullStocks = [fullStock({ stock_id: "lilian", qtde: 1 })]
+		repo.demand = [{ stock_id: "lilian", units_window: 2, days_with_stock: 2 }]
+		repo.physical = [physicalSupply()]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts[0].rate_is_estimated).toBe(true)
+		expect(alerts[0].demand_rate_per_day).toBeCloseTo(2 / 14)
+	})
+})
+
 describe("FetchFullReplenishmentAlertsUseCase — SKU que vende e não está no full", () => {
 	const laurindaNoMl: AccountChannelRow = {
 		store_id: "loja-laurinda",
