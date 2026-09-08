@@ -786,12 +786,22 @@ export class FetchFullReplenishmentAlertsUseCase {
  * mais vende: uma conta cujo full zerou pontua zero pelo deposito, perde o SKU
  * para quem vendeu uma unica unidade e nunca mais recebe abastecimento — nao
  * vende porque nao tem estoque, e nao tem estoque porque nao vende.
+ *
+ * Mas o piso de 30 dias nao basta sozinho para conter uma rajada: um deposito
+ * que vendeu poucas unidades em bem menos de 30 dias reais ainda pode superar
+ * o ritmo de uma conta que vende ha meses. Nesses casos (amostra rasa e o
+ * deposito superando a conta) o ritmo do deposito so vale como piso — quem
+ * decide para cima e a conta, que ja soma o que saiu deste mesmo deposito.
  */
 function electionScore(entry: Evaluated) {
-	return Math.max(
-		entry.unitsWindow / Math.max(entry.daysWithStock, ELECTION_MIN_DAYS),
-		entry.accountRate,
-	)
+	const depositRate = entry.unitsWindow / Math.max(entry.daysWithStock, ELECTION_MIN_DAYS)
+
+	const thinSample = entry.unitsWindow > 0 && entry.daysWithStock < ELECTION_MIN_DAYS
+	if (thinSample && entry.stock.store_id !== null && depositRate > entry.accountRate) {
+		return entry.accountRate
+	}
+
+	return Math.max(depositRate, entry.accountRate)
 }
 
 /** Chave de um par produto+conta+canal — a unidade de decisao do relatorio. */

@@ -370,6 +370,44 @@ describe("FetchFullReplenishmentAlertsUseCase — rajada de amostra rasa", () =>
 		expect(missing.map((m) => m.store_name)).toContain("Laurinda")
 	})
 
+	it("não deixa uma rajada de amostra rasa vencer a eleição contra o ritmo real da conta", async () => {
+		// O full do Santo recebeu estoque, vendeu 3 em poucos dias e zerou: pelo
+		// piso de eleicao (30 dias) isso ainda da 3/30 = 0,1/dia — mais que o
+		// ritmo real da conta Santo (4/90 = 0,04) e mais que o da Laurinda, que
+		// nunca recebeu estoque no full mas vende 7 no mesmo canal despachando do
+		// proprio estoque (7/90 = 0,08/dia). Sem a correcao, a rajada do Santo
+		// levava o SKU embora da Laurinda, que vende de forma mais consistente.
+		repo.fullStocks = [
+			fullStock({
+				stock_id: "santo",
+				stock_title: "Santo",
+				qtde: 0,
+				store_id: "loja-santo",
+				store_name: "Santo",
+			}),
+			fullStock({
+				stock_id: "laurinda",
+				stock_title: "Laurinda",
+				qtde: 0,
+				store_id: "loja-laurinda",
+				store_name: "Laurinda",
+			}),
+		]
+		repo.demand = [
+			{ stock_id: "santo", units_window: 3, days_with_stock: 5 },
+			{ stock_id: "laurinda", units_window: 0, days_with_stock: 0 },
+		]
+		repo.accountDemand = [
+			accountDemand({ store_id: "loja-santo", store_name: "Santo", units_long: 4 }),
+			accountDemand({ store_id: "loja-laurinda", store_name: "Laurinda", units_long: 7 }),
+		]
+		repo.physical = [physicalSupply({ qtde: 4 })]
+
+		const { alerts } = await sut.execute()
+
+		expect(alerts.map((a) => a.stock_id)).toEqual(["laurinda"])
+	})
+
 	it("continua usando a rajada como piso quando não há ritmo de conta para comparar", async () => {
 		// Deposito sem conta associada: nao ha o que comparar, entao a amostra
 		// rasa segue diluida so pelo piso de 14 dias, como sempre foi.
