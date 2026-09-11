@@ -108,3 +108,16 @@
 .glow-hover {
   @apply transition-all duration-300 hover:shadow-[0_16px_32px_-24px_rgba(7,77,99,0.75)];
 }
+
+@media print {
+  @page {
+    size: landscape;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    background-image: none;
+  }
+}

@@ -11,11 +11,12 @@ class FakeReportRepository implements StockReportRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
 		return this.rows
 			.filter((row) => row.brandId === brandId)
-			.map(({ productId, sku, stocks, total }) => ({
+			.map(({ productId, sku, stocks, total, lastSaleDate }) => ({
 				productId,
 				sku,
 				stocks,
 				total,
+				lastSaleDate,
 			}))
 	}
 }
@@ -32,6 +33,7 @@ describe("FetchStockReportUseCase", () => {
 					{ id: "s-2", title: "Loja", qtde: 3 },
 				],
 				total: 13,
+				lastSaleDate: null,
 			},
 			{
 				brandId: "brand-2",
@@ -39,6 +41,7 @@ describe("FetchStockReportUseCase", () => {
 				sku: "REL-002",
 				stocks: [{ id: "s-3", title: "Galpão", qtde: 5 }],
 				total: 5,
+				lastSaleDate: null,
 			},
 		])
 
@@ -68,6 +71,7 @@ describe("FetchStockReportUseCase", () => {
 				sku: "REL-001",
 				stocks: [],
 				total: 0,
+				lastSaleDate: null,
 			},
 		])
 
@@ -87,6 +91,7 @@ describe("FetchStockReportUseCase", () => {
 				sku: "REL-SEM-MARCA",
 				stocks: [{ id: "s-1", title: "Galpão", qtde: 7 }],
 				total: 7,
+				lastSaleDate: null,
 			},
 			{
 				brandId: "brand-1",
@@ -94,6 +99,7 @@ describe("FetchStockReportUseCase", () => {
 				sku: "REL-COM-MARCA",
 				stocks: [],
 				total: 0,
+				lastSaleDate: null,
 			},
 		])
 
@@ -102,5 +108,63 @@ describe("FetchStockReportUseCase", () => {
 
 		expect(products).toHaveLength(1)
 		expect(products[0].sku).toBe("REL-SEM-MARCA")
+	})
+
+	it("computes daysWithoutSale as elapsed calendar days since lastSaleDate", async () => {
+		const now = new Date("2026-09-11T12:00:00Z")
+		const repo = new FakeReportRepository([
+			{
+				brandId: "brand-1",
+				productId: "p-1",
+				sku: "REL-001",
+				stocks: [],
+				total: 0,
+				lastSaleDate: new Date("2026-08-12T08:00:00Z"),
+			},
+		])
+
+		const useCase = new FetchStockReportUseCase(repo, () => now)
+		const { products } = await useCase.execute({ brandId: "brand-1" })
+
+		expect(products[0].lastSaleDate).toEqual(new Date("2026-08-12T08:00:00Z"))
+		expect(products[0].daysWithoutSale).toBe(30)
+	})
+
+	it("returns null lastSaleDate and daysWithoutSale for products that never sold", async () => {
+		const repo = new FakeReportRepository([
+			{
+				brandId: "brand-1",
+				productId: "p-1",
+				sku: "REL-001",
+				stocks: [],
+				total: 0,
+				lastSaleDate: null,
+			},
+		])
+
+		const useCase = new FetchStockReportUseCase(repo)
+		const { products } = await useCase.execute({ brandId: "brand-1" })
+
+		expect(products[0].lastSaleDate).toBeNull()
+		expect(products[0].daysWithoutSale).toBeNull()
+	})
+
+	it("treats a sale earlier today as zero days without sale", async () => {
+		const now = new Date("2026-09-11T18:00:00Z")
+		const repo = new FakeReportRepository([
+			{
+				brandId: "brand-1",
+				productId: "p-1",
+				sku: "REL-001",
+				stocks: [],
+				total: 0,
+				lastSaleDate: new Date("2026-09-11T09:00:00Z"),
+			},
+		])
+
+		const useCase = new FetchStockReportUseCase(repo, () => now)
+		const { products } = await useCase.execute({ brandId: "brand-1" })
+
+		expect(products[0].daysWithoutSale).toBe(0)
 	})
 })

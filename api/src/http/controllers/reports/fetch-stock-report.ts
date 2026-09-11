@@ -13,6 +13,8 @@ const stockReportRowSchema = z.object({
 	sku: z.string(),
 	stocks: z.array(stockEntrySchema),
 	total: z.number().int(),
+	lastSaleDate: z.date().nullable(),
+	daysWithoutSale: z.number().int().nullable(),
 })
 
 export const fetchStockReport: FastifyPluginAsyncZod = async (app) => {

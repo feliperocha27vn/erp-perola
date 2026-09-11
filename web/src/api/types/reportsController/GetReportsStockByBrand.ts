@@ -55,6 +55,16 @@ export type GetReportsStockByBrand200 = {
      * @type integer
      */
     total: number;
+    /**
+     * @type string, date-time
+     */
+    lastSaleDate: string | null;
+    /**
+     * @minLength -9007199254740991
+     * @maxLength 9007199254740991
+     * @type integer
+     */
+    daysWithoutSale: number | null;
   }[];
 };
 

@@ -9,11 +9,12 @@ export class InMemoryReportRepository implements StockReportRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
 		return this.rows
 			.filter((row) => row.brandId === brandId)
-			.map(({ productId, sku, stocks, total }) => ({
+			.map(({ productId, sku, stocks, total, lastSaleDate }) => ({
 				productId,
 				sku,
 				stocks,
 				total,
+				lastSaleDate,
 			}))
 	}
 }

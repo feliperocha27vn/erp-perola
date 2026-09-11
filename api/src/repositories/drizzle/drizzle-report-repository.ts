@@ -18,23 +18,38 @@ import type {
 export class DrizzleReportRepository
 	implements StockReportRepository, SalesReportRepository, AbcReportRepository, RestockAlertRepository {
 	async fetchStockReport(brandId: string | null): Promise<StockReportRow[]> {
-		const rows = await db
-			.select({
-				productId: products.id,
-				sku: products.sku,
-				stockId: stocks.id,
-				stockTitle: stocks.title,
-				stockQtde: stocks.qtde,
-			})
-			.from(products)
-			.leftJoin(stocks, eq(stocks.product_id, products.id))
-			.where(
-				and(
-					isNull(products.deleted_at),
-					brandId === null ? isNull(products.brand_id) : eq(products.brand_id, brandId),
-				),
-			)
-			.orderBy(asc(products.sku), asc(stocks.title))
+		const productFilter = and(
+			isNull(products.deleted_at),
+			brandId === null ? isNull(products.brand_id) : eq(products.brand_id, brandId),
+		)
+
+		const [rows, lastSales] = await Promise.all([
+			db
+				.select({
+					productId: products.id,
+					sku: products.sku,
+					stockId: stocks.id,
+					stockTitle: stocks.title,
+					stockQtde: stocks.qtde,
+				})
+				.from(products)
+				.leftJoin(stocks, eq(stocks.product_id, products.id))
+				.where(productFilter)
+				.orderBy(asc(products.sku), asc(stocks.title)),
+			db
+				.select({
+					productId: products.id,
+					lastSaleDate: sql<Date>`max(${sales.sale_date})`,
+				})
+				.from(products)
+				.innerJoin(sales, eq(sales.product_id, products.id))
+				.where(productFilter)
+				.groupBy(products.id),
+		])
+
+		const lastSaleByProduct = new Map(
+			lastSales.map((row) => [row.productId, new Date(row.lastSaleDate)]),
+		)
 
 		const productMap = new Map<string, StockReportRow>()
 
@@ -45,6 +60,7 @@ export class DrizzleReportRepository
 					sku: row.sku,
 					stocks: [],
 					total: 0,
+					lastSaleDate: lastSaleByProduct.get(row.productId) ?? null,
 				})
 			}
 

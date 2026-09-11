@@ -9,6 +9,7 @@ export interface StockReportRow {
 	sku: string
 	stocks: StockEntry[]
 	total: number
+	lastSaleDate: Date | null
 }
 
 export interface StockReportRepository {
