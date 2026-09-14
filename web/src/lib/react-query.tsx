@@ -1,10 +1,22 @@
 import {
+  MutationCache,
   QueryClient,
   QueryClientProvider as TanstackQueryClientProvider,
 } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
+import { getNotificationsQueryKey } from '@/api/hooks/notificationsController/useGetNotifications'
 
-const queryClient = new QueryClient({
+const queryClient: QueryClient = new QueryClient({
+  // Todo lançamento pode mudar um alerta. Reconsultar o sininho logo depois de
+  // qualquer escrita é o que faz o toast aparecer na hora, em vez de esperar a
+  // consulta de minuto em minuto. Ver ADR 0011.
+  mutationCache: new MutationCache({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: getNotificationsQueryKey(),
+      })
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60,

@@ -1,7 +1,15 @@
-import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
+import {
+	createRootRouteWithContext,
+	Outlet,
+	redirect,
+	useRouterState,
+} from '@tanstack/react-router'
 import { Toaster } from 'sonner'
+import { cn } from '@/lib/utils'
 import { AppErrorPage } from './-components/app/app-error-page'
 import { NotFoundPage } from './-components/app/not-found-page'
+import { ALERT_TOASTER_ID } from './-components/notifications/alert-toast'
+import { NotificationBell } from './-components/notifications/notification-bell'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface RouterContext {
@@ -38,12 +46,42 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		/>
 	),
 	notFoundComponent: NotFoundPage,
-	component: () => (
+	component: RootLayout,
+})
+
+function RootLayout() {
+	const pathname = useRouterState({ select: state => state.location.pathname })
+	const showBell = pathname !== '/login'
+
+	return (
 		<div className="min-h-screen selection:bg-primary/30">
-			<Toaster position="top-right" expand={false} richColors />
-			<main className="px-4 py-8 md:px-8 lg:px-12 max-w-7xl mx-auto">
+			{/* Confirmações do dia a dia: no topo, abaixo do sininho para não cobri-lo. */}
+			<Toaster
+				position="top-right"
+				expand={false}
+				richColors
+				offset={{ top: 80, right: 24 }}
+				mobileOffset={{ top: 72 }}
+			/>
+			{/* Alertas: embaixo, separados das confirmações. */}
+			<Toaster id={ALERT_TOASTER_ID} position="bottom-right" visibleToasts={4} />
+
+			{showBell && (
+				// Fica no fluxo para não cobrir o cabeçalho das páginas, e gruda no topo
+				// ao rolar. Só o botão recebe clique; a faixa transparente deixa passar.
+				<div className="pointer-events-none sticky top-0 z-40 mx-auto flex max-w-7xl justify-end px-4 pt-4 md:px-8 lg:px-12">
+					<NotificationBell className="pointer-events-auto" />
+				</div>
+			)}
+
+			<main
+				className={cn(
+					'px-4 pb-8 md:px-8 lg:px-12 max-w-7xl mx-auto',
+					showBell ? 'pt-2' : 'pt-8',
+				)}
+			>
 				<Outlet />
 			</main>
 		</div>
-	),
-})
+	)
+}

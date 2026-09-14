@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm"
 import {
 	boolean,
+	doublePrecision,
 	index,
 	integer,
 	jsonb,
@@ -357,3 +358,72 @@ export const shipmentItemsRelations = relations(shipmentItems, ({ one }) => ({
 		references: [stocks.id],
 	}),
 }))
+
+export const alertKindEnum = pgEnum("alert_kind", [
+	"reposicao",
+	"abastecimento_full",
+	"fora_do_full",
+])
+
+export const alertSeverityEnum = pgEnum("alert_severity", ["critico", "atencao"])
+
+export const alertTransitionEnum = pgEnum("alert_transition", ["entrou", "piorou"])
+
+/**
+ * Uma linha so. Existir e o que diz que a linha de base ja foi gravada: a
+ * primeira avaliacao registra o estado sem notificar o que ja estava em alerta.
+ */
+export const alertMonitor = pgTable("alert_monitor", {
+	id: integer("id").primaryKey(),
+	baseline_at: timestamp("baseline_at").notNull(),
+	last_evaluated_at: timestamp("last_evaluated_at").notNull(),
+})
+
+/**
+ * Ultimo estado conhecido de cada sujeito em condicao notificavel. Os alertas
+ * continuam calculados ao vivo; isto e so a memoria sem a qual nao ha como saber
+ * que algo "entrou" em alerta. Ver ADR 0011.
+ */
+export const alertStates = pgTable("alert_states", {
+	subject_key: text("subject_key").primaryKey(),
+	kind: alertKindEnum("kind").notNull(),
+	/** Nulo em `fora_do_full`, que nao tem gravidade. */
+	severity: alertSeverityEnum("severity"),
+	updated_at: timestamp("updated_at").notNull().defaultNow(),
+})
+
+/**
+ * O que o sininho mostra. Os numeros sao congelados no momento da transicao —
+ * e o registro de um evento; os numeros atuais ficam na pagina do alerta.
+ */
+export const alertNotifications = pgTable(
+	"alert_notifications",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		subject_key: text("subject_key").notNull(),
+		kind: alertKindEnum("kind").notNull(),
+		transition: alertTransitionEnum("transition").notNull(),
+		severity: alertSeverityEnum("severity"),
+		product_id: uuid("product_id")
+			.notNull()
+			.references(() => products.id, { onDelete: "cascade" }),
+		sku: text("sku").notNull(),
+		stock_id: uuid("stock_id"),
+		stock_title: text("stock_title"),
+		store_id: uuid("store_id"),
+		store_name: text("store_name"),
+		marketplace: marketplaceEnum("marketplace"),
+		physical_stock_qty: integer("physical_stock_qty"),
+		units_30d: integer("units_30d"),
+		days_of_autonomy: doublePrecision("days_of_autonomy"),
+		lead_time_days: integer("lead_time_days"),
+		account_units: integer("account_units"),
+		created_at: timestamp("created_at").notNull().defaultNow(),
+		read_at: timestamp("read_at"),
+		resolved_at: timestamp("resolved_at"),
+	},
+	(table) => [
+		index("alert_notifications_subject_key_idx").on(table.subject_key),
+		index("alert_notifications_created_at_idx").on(table.created_at),
+	],
+)

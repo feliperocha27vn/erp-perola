@@ -2,10 +2,12 @@ import { Select } from '@base-ui/react/select'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AlertTriangle, PackageCheck } from 'lucide-react'
 import { useMemo } from 'react'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { useGetReportsRestockAlerts } from '@/api/hooks/reportsController/useGetReportsRestockAlerts'
 import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { SectionErrorState } from '@/components/ui/section-error-state'
+import { useRowHighlight } from '@/lib/use-row-highlight'
 import {
   ReasonTags,
   SeverityBadge,
@@ -13,6 +15,8 @@ import {
 
 const searchSchema = z.object({
   brand: z.string().optional(),
+  /** Produto apontado por uma notificação: a linha é rolada até a tela e destacada. */
+  destaque: z.string().optional(),
 })
 
 export const Route = createFileRoute('/alertas-de-reposicao')({
@@ -26,8 +30,20 @@ const SEM_MARCA = 'Sem marca'
 
 function AlertasDeReposicaoPage() {
   const navigate = useNavigate({ from: Route.fullPath })
-  const { brand } = Route.useSearch()
+  const { brand, destaque } = Route.useSearch()
   const { data, isLoading, isError, refetch } = useGetReportsRestockAlerts()
+
+  useRowHighlight({
+    target: destaque,
+    ready: data !== undefined,
+    onMissing: () =>
+      toast.info('Esse produto não está mais no Alerta de Reposição.'),
+    onDone: () =>
+      navigate({
+        search: prev => ({ ...prev, destaque: undefined }),
+        replace: true,
+      }),
+  })
 
   const items = useMemo(() => data?.items ?? [], [data?.items])
 
@@ -243,6 +259,7 @@ function AlertasDeReposicaoPage() {
                 {filteredItems.map((item, idx) => (
                   <tr
                     key={item.product_id}
+                    data-highlight-key={item.product_id}
                     className={
                       idx % 2 === 0
                         ? 'border-b border-border/50'

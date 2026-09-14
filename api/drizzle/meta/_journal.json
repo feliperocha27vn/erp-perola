@@ -134,6 +134,13 @@
 			"when": 1777400000000,
 			"tag": "0018_stocks_store_id",
 			"breakpoints": true
+		},
+		{
+			"idx": 19,
+			"version": "7",
+			"when": 1777500000000,
+			"tag": "0019_alert_notifications",
+			"breakpoints": true
 		}
 	]
 }

@@ -109,6 +109,21 @@
   @apply transition-all duration-300 hover:shadow-[0_16px_32px_-24px_rgba(7,77,99,0.75)];
 }
 
+/* Linha apontada por uma notificação (ver lib/use-row-highlight). */
+@keyframes row-highlight {
+  0%,
+  55% {
+    background-color: rgb(31 91 114 / 0.14);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.row-highlight {
+  animation: row-highlight 3.2s ease-out;
+}
+
 @media print {
   @page {
     size: landscape;

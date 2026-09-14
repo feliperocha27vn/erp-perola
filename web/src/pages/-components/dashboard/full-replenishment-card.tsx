@@ -35,6 +35,7 @@ export function FullReplenishmentCard() {
         {!isLoading && !isError && (alerts.length > 0 || idleCount > 0) && (
           <Link
             to="/abastecimento-do-full"
+            search={{ destaque: undefined }}
             className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
           >
             Ver todos
@@ -116,6 +117,7 @@ export function FullReplenishmentCard() {
           {alerts.length > PREVIEW_LIMIT && (
             <Link
               to="/abastecimento-do-full"
+              search={{ destaque: undefined }}
               className="block text-center text-xs font-semibold text-primary hover:underline pt-1"
             >
               Ver mais {alerts.length - PREVIEW_LIMIT} alerta

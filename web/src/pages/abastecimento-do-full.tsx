@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
 import { useGetReportsFullReplenishmentAlerts } from '@/api/hooks/reportsController/useGetReportsFullReplenishmentAlerts'
 import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/useGetShipmentAccounts'
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
@@ -25,6 +26,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import { queryClient } from '@/lib/react-query'
+import { useRowHighlight } from '@/lib/use-row-highlight'
 import {
   AnalysisDialog,
   type QuantityOverride,
@@ -41,8 +43,17 @@ import {
   TrendTag,
 } from './-components/abastecimento-do-full/badges'
 
+const searchSchema = z.object({
+  /**
+   * Linha apontada por uma notificação: `stock_id` de um alerta, ou
+   * `produto::conta::marketplace` de um SKU que não está no Full.
+   */
+  destaque: z.string().optional(),
+})
+
 export const Route = createFileRoute('/abastecimento-do-full')({
   component: AbastecimentoDoFullPage,
+  validateSearch: searchSchema,
 })
 
 type AlertItem = GetReportsFullReplenishmentAlerts200['alerts'][number]
@@ -100,6 +111,21 @@ function AbastecimentoDoFullPage() {
   const idle = data?.idle ?? []
   const missing = data?.missing ?? []
   const groups = useMemo(() => groupByDepot(alerts), [alerts])
+
+  const navigate = useNavigate({ from: Route.fullPath })
+  const { destaque } = Route.useSearch()
+
+  useRowHighlight({
+    target: destaque,
+    ready: data !== undefined,
+    onMissing: () =>
+      toast.info('Esse item não está mais no Abastecimento do Full.'),
+    onDone: () =>
+      navigate({
+        search: prev => ({ ...prev, destaque: undefined }),
+        replace: true,
+      }),
+  })
 
   const criticoCount = alerts.filter(a => a.severity === 'critico').length
   const atencaoCount = alerts.filter(a => a.severity === 'atencao').length
@@ -316,6 +342,7 @@ function DepotSection({
             {group.items.map((item, idx) => (
               <tr
                 key={item.stock_id}
+                data-highlight-key={item.stock_id}
                 className={
                   idx % 2 === 0
                     ? 'border-b border-border/50'
@@ -400,7 +427,11 @@ function DepotSection({
       {/* Mobile */}
       <div className="md:hidden divide-y divide-border">
         {group.items.map(item => (
-          <div key={item.stock_id} className="p-4 space-y-2">
+          <div
+            key={item.stock_id}
+            data-highlight-key={item.stock_id}
+            className="p-4 space-y-2"
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-mono font-semibold text-foreground">
@@ -664,6 +695,7 @@ function MissingSection({
               return (
                 <tr
                   key={key}
+                  data-highlight-key={key}
                   className={
                     idx % 2 === 0
                       ? 'border-b border-border/50'

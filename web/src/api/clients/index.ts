@@ -6,6 +6,9 @@ export { getDashboardCurrentMonthSales } from "./dashboardController/getDashboar
 export { getDashboardLastMonthSales } from "./dashboardController/getDashboardLastMonthSales.ts";
 export { getDashboardMonthlySalesPace } from "./dashboardController/getDashboardMonthlySalesPace.ts";
 export { getHealth } from "./healthController/getHealth.ts";
+export { getNotifications } from "./notificationsController/getNotifications.ts";
+export { patchNotificationsByIdRead } from "./notificationsController/patchNotificationsByIdRead.ts";
+export { postNotificationsReadAll } from "./notificationsController/postNotificationsReadAll.ts";
 export { deleteProduct } from "./productsController/deleteProduct.ts";
 export { getProductSalesDaily } from "./productsController/getProductSalesDaily.ts";
 export { getProducts } from "./productsController/getProducts.ts";

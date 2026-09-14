@@ -49,6 +49,27 @@ export type {
   GetHealthQueryResponse,
 } from "./healthController/GetHealth.ts";
 export type {
+  GetNotifications200,
+  GetNotificationsQuery,
+  GetNotificationsQueryResponse,
+  NotificationsKindEnumKey,
+  NotificationsMarketplaceEnumKey,
+  NotificationsSeverityEnumKey,
+  NotificationsTransitionEnumKey,
+} from "./notificationsController/GetNotifications.ts";
+export type {
+  PatchNotificationsByIdRead204,
+  PatchNotificationsByIdRead404,
+  PatchNotificationsByIdReadMutation,
+  PatchNotificationsByIdReadMutationResponse,
+  PatchNotificationsByIdReadPathParams,
+} from "./notificationsController/PatchNotificationsByIdRead.ts";
+export type {
+  PostNotificationsReadAll200,
+  PostNotificationsReadAllMutation,
+  PostNotificationsReadAllMutationResponse,
+} from "./notificationsController/PostNotificationsReadAll.ts";
+export type {
   DeleteProduct204,
   DeleteProduct404,
   DeleteProductMutation,
@@ -344,6 +365,10 @@ export type {
   GetStoresQuery,
   GetStoresQueryResponse,
 } from "./storesController/GetStores.ts";
+export { notificationsKindEnum } from "./notificationsController/GetNotifications.ts";
+export { notificationsMarketplaceEnum } from "./notificationsController/GetNotifications.ts";
+export { notificationsSeverityEnum } from "./notificationsController/GetNotifications.ts";
+export { notificationsTransitionEnum } from "./notificationsController/GetNotifications.ts";
 export { periodsPeriodEnum } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum2 } from "./productsController/GetProductSalesDaily.ts";
 export { periodsPeriodEnum3 } from "./productsController/GetProductSalesDaily.ts";
