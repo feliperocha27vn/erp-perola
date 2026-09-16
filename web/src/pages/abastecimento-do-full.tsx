@@ -14,7 +14,6 @@ import { useGetShipmentAccounts } from '@/api/hooks/shipmentAccountsController/u
 import { usePostShipments } from '@/api/hooks/shipmentsController/usePostShipments'
 import { usePostProductsProductIdStocks } from '@/api/hooks/stocksController/usePostProductsProductIdStocks'
 import type { GetReportsFullReplenishmentAlerts200 } from '@/api/types/reportsController/GetReportsFullReplenishmentAlerts'
-import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -152,7 +151,6 @@ function AbastecimentoDoFullPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-4">
-        <BackToDashboardButton />
         <div className="space-y-1">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
             Relatórios

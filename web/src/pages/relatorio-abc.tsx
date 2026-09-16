@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { useGetReportsAbc } from '@/api/hooks/reportsController/useGetReportsAbc'
-import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { toIsoRangeEnd, toIsoRangeStart } from './-components/sales-manager/formatters'
 
 const searchSchema = z.object({
@@ -134,7 +133,6 @@ function RelatorioAbcPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
-          <BackToDashboardButton />
           <div className="space-y-1">
             <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
               Relatórios

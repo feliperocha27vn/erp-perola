@@ -5,7 +5,6 @@ import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { useGetReportsRestockAlerts } from '@/api/hooks/reportsController/useGetReportsRestockAlerts'
-import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { SectionErrorState } from '@/components/ui/section-error-state'
 import { useRowHighlight } from '@/lib/use-row-highlight'
 import {
@@ -84,7 +83,6 @@ function AlertasDeReposicaoPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center gap-4">
-        <BackToDashboardButton />
         <div className="space-y-1">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
             Relatórios

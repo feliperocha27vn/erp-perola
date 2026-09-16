@@ -1,4 +1,3 @@
-import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { Button } from '@/components/ui/button'
 
 type ProductsPageHeaderProps = {
@@ -9,7 +8,6 @@ export function ProductsPageHeader({ onOpenBrands }: ProductsPageHeaderProps) {
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-4">
-        <BackToDashboardButton />
         <div className="space-y-1">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
             Sistema de Controle

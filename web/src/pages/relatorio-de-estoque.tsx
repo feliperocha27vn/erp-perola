@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
 import { useGetBrands } from '@/api/hooks/brandsController/useGetBrands'
 import { useGetReportsStockByBrand } from '@/api/hooks/reportsController/useGetReportsStockByBrand'
-import { BackToDashboardButton } from '@/components/back-to-dashboard-button'
 import { Select } from '@base-ui/react/select'
 
 const searchSchema = z.object({
@@ -139,7 +138,6 @@ function RelatorioDeEstoquePage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between print:hidden">
         <div className="flex items-center gap-4">
-          <BackToDashboardButton />
           <div className="space-y-1">
             <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
               Relatórios

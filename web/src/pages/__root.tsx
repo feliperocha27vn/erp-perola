@@ -5,11 +5,11 @@ import {
 	useRouterState,
 } from '@tanstack/react-router'
 import { Toaster } from 'sonner'
-import { cn } from '@/lib/utils'
 import { AppErrorPage } from './-components/app/app-error-page'
 import { NotFoundPage } from './-components/app/not-found-page'
+import { AppSidebar } from './-components/navigation/app-sidebar'
+import { AppTopBar } from './-components/navigation/app-top-bar'
 import { ALERT_TOASTER_ID } from './-components/notifications/alert-toast'
-import { NotificationBell } from './-components/notifications/notification-bell'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface RouterContext {
@@ -51,7 +51,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootLayout() {
 	const pathname = useRouterState({ select: state => state.location.pathname })
-	const showBell = pathname !== '/login'
+	const isLogin = pathname === '/login'
 
 	return (
 		<div className="min-h-screen selection:bg-primary/30">
@@ -66,22 +66,21 @@ function RootLayout() {
 			{/* Alertas: embaixo, separados das confirmações. */}
 			<Toaster id={ALERT_TOASTER_ID} position="bottom-right" visibleToasts={4} />
 
-			{showBell && (
-				// Fica no fluxo para não cobrir o cabeçalho das páginas, e gruda no topo
-				// ao rolar. Só o botão recebe clique; a faixa transparente deixa passar.
-				<div className="pointer-events-none sticky top-0 z-40 mx-auto flex max-w-7xl justify-end px-4 pt-4 md:px-8 lg:px-12">
-					<NotificationBell className="pointer-events-auto" />
+			{isLogin ? (
+				<main className="px-4 pt-8 pb-8 md:px-8 lg:px-12 max-w-7xl mx-auto">
+					<Outlet />
+				</main>
+			) : (
+				<div className="lg:flex">
+					<AppSidebar />
+					<div className="min-w-0 flex-1">
+						<AppTopBar />
+						<main className="px-4 pt-6 pb-8 md:px-8 lg:px-12 lg:pt-2 max-w-7xl mx-auto">
+							<Outlet />
+						</main>
+					</div>
 				</div>
 			)}
-
-			<main
-				className={cn(
-					'px-4 pb-8 md:px-8 lg:px-12 max-w-7xl mx-auto',
-					showBell ? 'pt-2' : 'pt-8',
-				)}
-			>
-				<Outlet />
-			</main>
 		</div>
 	)
 }
