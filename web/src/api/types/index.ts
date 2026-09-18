@@ -325,6 +325,15 @@ export type {
   PostStocksStockIdEntriesPathParams,
 } from "./stockEntriesController/PostStocksStockIdEntries.ts";
 export type {
+  PostStocksStockIdExits201,
+  PostStocksStockIdExits404,
+  PostStocksStockIdExits422,
+  PostStocksStockIdExitsMutation,
+  PostStocksStockIdExitsMutationRequest,
+  PostStocksStockIdExitsMutationResponse,
+  PostStocksStockIdExitsPathParams,
+} from "./stockEntriesController/PostStocksStockIdExits.ts";
+export type {
   DeleteStocksStockId204,
   DeleteStocksStockId204EnumKey,
   DeleteStocksStockId404,

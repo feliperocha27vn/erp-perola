@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { z } from 'zod'
 import { useGetBrands } from '@/api/hooks/brandsController/useGetBrands'
 import { useGetStockEntries } from '@/api/hooks/stockEntriesController/useGetStockEntries'
+import { formatSignedQuantity } from '@/lib/format-signed-quantity'
 import { Select } from '@base-ui/react/select'
 
 const NO_BRAND_VALUE = 'NO_BRAND'
@@ -62,8 +63,16 @@ function LancamentosDeEstoquePage() {
 
   const entries = entriesData?.entries ?? []
 
-  const totalUnits = useMemo(
-    () => entries.reduce((sum, e) => sum + e.quantity, 0),
+  const { unitsIn, unitsOut } = useMemo(
+    () =>
+      entries.reduce(
+        (acc, e) => {
+          if (e.quantity < 0) acc.unitsOut += -e.quantity
+          else acc.unitsIn += e.quantity
+          return acc
+        },
+        { unitsIn: 0, unitsOut: 0 },
+      ),
     [entries],
   )
 
@@ -211,8 +220,14 @@ function LancamentosDeEstoquePage() {
               <p className="font-semibold text-foreground">
                 {entries.length} lançamento{entries.length !== 1 ? 's' : ''}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {totalUnits} unidade{totalUnits !== 1 ? 's' : ''} no total
+              <p className="text-xs text-muted-foreground tabular-nums">
+                <span className="text-emerald-600">
+                  +{unitsIn} un. de entrada
+                </span>
+                {' · '}
+                <span className="text-rose-600">
+                  −{unitsOut} un. de saída
+                </span>
               </p>
             </div>
           </div>
@@ -260,8 +275,14 @@ function LancamentosDeEstoquePage() {
                         <span className="text-foreground">{entry.stock_title}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums font-bold text-emerald-600 whitespace-nowrap">
-                      +{entry.quantity}
+                    <td
+                      className={
+                        entry.quantity < 0
+                          ? 'px-4 py-3 text-right tabular-nums font-bold text-rose-600 whitespace-nowrap'
+                          : 'px-4 py-3 text-right tabular-nums font-bold text-emerald-600 whitespace-nowrap'
+                      }
+                    >
+                      {formatSignedQuantity(entry.quantity)}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground max-w-[200px] truncate">
                       {entry.notes ?? '—'}

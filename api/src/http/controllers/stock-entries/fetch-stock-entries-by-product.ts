@@ -21,7 +21,7 @@ export const fetchStockEntriesByProduct: FastifyPluginAsyncZod = async (app) => 
 		{
 			schema: {
 				operationId: "getProductsProductIdStockEntries",
-				description: "Retorna histórico de entradas de estoque de um produto",
+				description: "Retorna histórico de lançamentos de estoque de um produto: entradas (quantidade positiva) e saídas (quantidade negativa)",
 				tags: ["stock-entries"],
 				params: z.object({
 					productId: z.string().uuid(),

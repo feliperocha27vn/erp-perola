@@ -40,6 +40,7 @@ export { putShipmentsById } from "./shipmentsController/putShipmentsById.ts";
 export { getProductsProductIdStockEntries } from "./stockEntriesController/getProductsProductIdStockEntries.ts";
 export { getStockEntries } from "./stockEntriesController/getStockEntries.ts";
 export { postStocksStockIdEntries } from "./stockEntriesController/postStocksStockIdEntries.ts";
+export { postStocksStockIdExits } from "./stockEntriesController/postStocksStockIdExits.ts";
 export { deleteStocksStockId } from "./stocksController/deleteStocksStockId.ts";
 export { getProductsProductIdStocks } from "./stocksController/getProductsProductIdStocks.ts";
 export { patchStocksStockId } from "./stocksController/patchStocksStockId.ts";

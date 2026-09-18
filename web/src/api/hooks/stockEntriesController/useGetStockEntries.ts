@@ -50,7 +50,7 @@ export function getStockEntriesQueryOptions(
 }
 
 /**
- * @description Retorna histórico global de entradas de estoque. Use brandId para uma marca específica, noBrand=true para produtos sem marca, ou omita para todas as marcas.
+ * @description Retorna histórico global de lançamentos de estoque: entradas (quantidade positiva) e saídas (quantidade negativa). Use brandId para uma marca específica, noBrand=true para produtos sem marca, ou omita para todas as marcas.
  * {@link /stock-entries}
  */
 export function useGetStockEntries<

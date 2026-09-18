@@ -25,7 +25,7 @@ function getGetProductsProductIdStockEntriesUrl(
 }
 
 /**
- * @description Retorna histórico de entradas de estoque de um produto
+ * @description Retorna histórico de lançamentos de estoque de um produto: entradas (quantidade positiva) e saídas (quantidade negativa)
  * {@link /products/:productId/stock-entries}
  */
 export async function getProductsProductIdStockEntries(
